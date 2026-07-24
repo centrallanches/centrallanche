@@ -4,19 +4,256 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Central Lanche</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#111;
+color:white;
+}
+
+header{
+background:#d60000;
+padding:20px;
+text-align:center;
+}
+
+header h1{
+font-size:34px;
+}
+
+header p{
+margin-top:8px;
+}
+
+.container{
+width:95%;
+max-width:900px;
+margin:auto;
+padding:20px;
+}
+
+.card{
+background:#222;
+padding:15px;
+border-radius:12px;
+margin-bottom:15px;
+}
+
+.card h3{
+margin-bottom:10px;
+}
+
+button{
+background:#d60000;
+color:white;
+border:none;
+padding:12px;
+border-radius:8px;
+font-size:16px;
+cursor:pointer;
+width:100%;
+margin-top:10px;
+}
+
+button:hover{
+background:#ff2a2a;
+}
+
+#carrinho{
+background:#1b1b1b;
+padding:20px;
+border-radius:10px;
+margin-top:30px;
+}
+
+input,select{
+width:100%;
+padding:12px;
+margin-top:10px;
+border:none;
+border-radius:8px;
+}
+
+</style>
+
 </head>
-<body style="margin:0;font-family:Arial;background:#111;color:#fff;text-align:center;">
 
-<h1 style="background:#d60000;padding:20px;">🍔 Central Lanche</h1>
+<body>
 
-<h2>O sabor que conquista!</h2>
+<header>
 
-<p>📍 Rio Grande do Sul</p>
-<p>🕕 Aberto das 18:00 às 00:00</p>
+<h1>🍔 Central Lanche</h1>
 
-<a href="https://wa.me/5500000000000" style="background:#25D366;color:white;padding:15px 25px;text-decoration:none;border-radius:8px;">
-📲 Pedir no WhatsApp
-</a>
+<p>Entrega em aproximadamente 30 minutos 🚀</p>
+
+</header>
+
+<div class="container">
+
+<h2>🔥 Promoção</h2>
+
+<div class="card">
+
+<h3>Combo Família - R$60,00</h3>
+
+<p>3 X-Salada + Batata Frita</p>
+
+<button onclick="add('Combo Família',60)">
+Adicionar
+</button>
+
+</div>
+
+<h2 style="margin-top:25px;">
+🍔 Hambúrgueres
+</h2>
+
+<div class="card">
+<h3>X-Burguer</h3>
+<p>R$15,00</p>
+<button onclick="add('X-Burguer',15)">Adicionar</button>
+</div>
+
+<div class="card">
+<h3>X-Salada</h3>
+<p>R$18,00</p>
+<button onclick="add('X-Salada',18)">Adicionar</button>
+</div>
+
+<div class="card">
+<h3>X-Bacon</h3>
+<p>R$22,00</p>
+<button onclick="add('X-Bacon',22)">Adicionar</button>
+</div>
+
+<div class="card">
+<h3>X-Egg</h3>
+<p>R$21,00</p>
+<button onclick="add('X-Egg',21)">Adicionar</button>
+</div>
+
+<div class="card">
+<h3>X-Tudo</h3>
+<p>R$30,00</p>
+<button onclick="add('X-Tudo',30)">Adicionar</button>
+</div><h2 style="margin-top:25px;">🍟 Porções</h2>
+
+<div class="card">
+<h3>Batata Pequena</h3>
+<p>R$15,00</p>
+<button onclick="add('Batata Pequena',15)">Adicionar</button>
+</div>
+
+<div class="card">
+<h3>Batata Média</h3>
+<p>R$22,00</p>
+<button onclick="add('Batata Média',22)">Adicionar</button>
+</div>
+
+<div class="card">
+<h3>Batata Grande</h3>
+<p>R$30,00</p>
+<button onclick="add('Batata Grande',30)">Adicionar</button>
+</div>
+
+<h2 style="margin-top:25px;">🥤 Bebidas</h2>
+
+<div class="card">
+<h3>Coca-Cola Lata</h3>
+<p>R$7,00</p>
+<button onclick="add('Coca-Cola Lata',7)">Adicionar</button>
+</div>
+
+<div class="card">
+<h3>Coca-Cola 2L</h3>
+<p>R$15,00</p>
+<button onclick="add('Coca-Cola 2L',15)">Adicionar</button>
+</div>
+
+<div class="card">
+<h3>Guaraná 2L</h3>
+<p>R$13,00</p>
+<button onclick="add('Guaraná 2L',13)">Adicionar</button>
+</div>
+
+<div id="carrinho">
+
+<h2>🛒 Carrinho</h2>
+
+<div id="lista"></div>
+
+<h3 id="total">Total: R$0,00</h3>
+
+<hr style="margin:20px 0;">
+
+<h2>📍 Endereço de Entrega</h2>
+
+<input type="text" placeholder="Nome">
+
+<input type="text" placeholder="Telefone">
+
+<input type="text" placeholder="Rua">
+
+<input type="text" placeholder="Número">
+
+<input type="text" placeholder="Bairro">
+
+<input type="text" placeholder="Complemento">
+
+<h2 style="margin-top:20px;">💳 Forma de Pagamento</h2>
+
+<select>
+<option>Pix</option>
+<option>Cartão</option>
+<option>Dinheiro</option>
+</select>
+
+<button onclick="finalizar()">
+Finalizar Pedido
+</button>
+
+</div><script>
+
+let total = 0;
+let lista = "";
+
+function add(nome, preco){
+
+    total += preco;
+
+    lista += "<p>✅ " + nome + " - R$" + preco.toFixed(2) + "</p>";
+
+    document.getElementById("lista").innerHTML = lista;
+
+    document.getElementById("total").innerHTML =
+    "Total: R$ " + total.toFixed(2);
+
+}
+
+function finalizar(){
+
+    if(total <= 0){
+        alert("Adicione pelo menos um produto ao carrinho.");
+        return;
+    }
+
+    alert(
+"🍔 Pedido enviado com sucesso!\n\n" +
+"Total: R$ " + total.toFixed(2) +
+"\n\n⏱️ Tempo estimado de entrega: 30 minutos.\n\nObrigado por comprar na Central Lanche!"
+    );
+
+}
+
+</script>
 
 </body>
 </html>
