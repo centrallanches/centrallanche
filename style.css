@@ -1,0 +1,106 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Poppins',sans-serif;
+    background:#000;
+    color:#fff;
+}
+
+.hero{
+    width:100%;
+    min-height:100vh;
+    background:#000;
+    background-image:url("fundo.png");
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:30px;
+    position:relative;
+}
+
+.overlay{
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.35);
+}
+
+.conteudo{
+    position:relative;
+    z-index:2;
+    max-width:450px;
+    width:100%;
+}
+
+.logo{
+    width:280px;
+    max-width:85%;
+    margin-bottom:35px;
+    animation:flutuar 3s ease-in-out infinite;
+}
+
+h1{
+    font-family:'Anton',sans-serif;
+    font-size:42px;
+    letter-spacing:2px;
+    margin-bottom:35px;
+}
+
+.botao{
+    display:inline-block;
+    width:100%;
+    padding:20px;
+    border:3px solid #f4b400;
+    border-radius:22px;
+    background:#111;
+    color:#fff;
+    text-decoration:none;
+    font-size:28px;
+    font-weight:bold;
+    transition:0.3s;
+}
+
+.botao:hover{
+    background:#f4b400;
+    color:#000;
+    transform:scale(1.03);
+}
+
+@keyframes flutuar{
+    0%{
+        transform:translateY(0);
+    }
+    50%{
+        transform:translateY(-10px);
+    }
+    100%{
+        transform:translateY(0);
+    }
+}
+
+@media(max-width:768px){
+
+.logo{
+    width:230px;
+}
+
+h1{
+    font-size:32px;
+}
+
+.botao{
+    font-size:22px;
+    padding:18px;
+}
+
+}
