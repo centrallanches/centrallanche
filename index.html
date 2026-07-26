@@ -1,83 +1,40 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Central Lanche</title>
 
-<title>Central Lanche</title>
+  <link rel="stylesheet" href="style.css">
 
-<style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial,Helvetica,sans-serif;
-}
-
-body{
-    background:#b30000;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
-}
-
-.card{
-    width:360px;
-    background:#ffffff;
-    border-radius:20px;
-    padding:30px;
-    text-align:center;
-    box-shadow:0 10px 30px rgba(0,0,0,.35);
-}
-
-.logo{
-    width:160px;
-    height:160px;
-    border-radius:50%;
-    border:5px solid #b30000;
-    object-fit:cover;
-    margin-bottom:20px;
-}
-
-h1{
-    color:#b30000;
-    font-size:28px;
-    margin-bottom:20px;
-}
-
-.botao{
-    display:block;
-    background:#b30000;
-    color:#fff;
-    text-decoration:none;
-    padding:18px;
-    border-radius:12px;
-    font-size:22px;
-    font-weight:bold;
-    transition:.3s;
-}
-
-.botao:hover{
-    background:#900000;
-}
-</style>
-
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
 
-<div class="card">
+<section class="hero">
 
-<img src="logo.png" class="logo" alt="Central Lanche">
+    <div class="overlay"></div>
 
-<h1>👇 FAÇA SEU PEDIDO AQUI 👇</h1>
+    <div class="conteudo">
 
-<a class="botao" href="https://SEU-LINK-DO-CARDAPIO">
-📖 CARDÁPIO
-</a>
+        <img src="logo.png" alt="Central Lanche" class="logo">
 
-</div>
+        <h1>
+            FAÇA SEU PEDIDO AQUI 👇
+        </h1>
+
+        <a href="COLE_AQUI_O_LINK_DO_CARDAPIO" class="botao">
+            🍽️ CARDÁPIO
+        </a>
+
+    </div>
+
+</section>
+
+<script src="script.js"></script>
 
 </body>
 </html>
