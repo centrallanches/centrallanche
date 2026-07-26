@@ -47,13 +47,18 @@ body{
     max-width:85%;
     margin-bottom:35px;
     animation:flutuar 3s ease-in-out infinite;
-}
-
 h1{
     font-family:'Anton',sans-serif;
-    font-size:42px;
+    font-size:60px;
     letter-spacing:2px;
     margin-bottom:35px;
+
+
+
+    
+     
+    
+
 }
 
 .botao{
