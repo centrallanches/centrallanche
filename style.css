@@ -43,7 +43,7 @@ body{
 }
 
 .logo{
-    width: 150px;
+    width: 100px;
     max-width:85%;
     margin-bottom:35px;
     animation:flutuar 3s ease-in-out infinite;
