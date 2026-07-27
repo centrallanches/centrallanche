@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cardápio - Central Lanches</title>
+
+<title>Central Lanches</title>
 
 <style>
+
 *{
 margin:0;
 padding:0;
@@ -14,45 +18,68 @@ font-family:Arial,sans-serif;
 }
 
 body{
-background:#F8F0E6;
+background:#f6f6f6;
 }
 
 header{
 background:#ff6b00;
-color:#fff;
+color:white;
 text-align:center;
 padding:35px 20px;
 }
 
 header h1{
-font-size:42px;
-margin-bottom:10px;
+font-size:40px;
 }
 
 header p{
-font-size:22px;
+margin-top:8px;
+font-size:18px;
+}
+
+.menu{
+position:sticky;
+top:0;
+background:white;
+display:flex;
+justify-content:center;
+gap:15px;
+padding:15px;
+box-shadow:0 2px 10px rgba(0,0,0,.1);
+z-index:999;
+}
+
+.menu a{
+background:#ff6b00;
+color:white;
+text-decoration:none;
+padding:10px 18px;
+border-radius:25px;
+font-weight:bold;
+transition:.3s;
+}
+
+.menu a:hover{
+background:#e65b00;
 }
 
 .container{
+width:95%;
 max-width:1200px;
 margin:auto;
-padding:25px;
+padding:25px 0;
 }
 
 .categoria{
-background:#fff;
-border-radius:15px;
-padding:25px;
-margin-bottom:30px;
-box-shadow:0 5px 15px rgba(0,0,0,.1);
+margin-bottom:50px;
 }
 
 .categoria h2{
+font-size:34px;
+margin-bottom:20px;
 color:#ff6b00;
-font-size:36px;
 border-bottom:3px solid #ff6b00;
 padding-bottom:10px;
-margin-bottom:25px;
 }
 
 .produtos{
@@ -62,9 +89,15 @@ gap:20px;
 }
 
 .produto{
-background:#f9f9f9;
-border-radius:12px;
+background:white;
+border-radius:15px;
 overflow:hidden;
+box-shadow:0 5px 15px rgba(0,0,0,.08);
+transition:.3s;
+}
+
+.produto:hover{
+transform:translateY(-6px);
 }
 
 .produto img{
@@ -73,20 +106,20 @@ height:220px;
 object-fit:cover;
 }
 
-.produto-info{
+.info{
 padding:15px;
 text-align:center;
 }
 
-.produto-info h3{
-font-size:30px;
+.info h3{
 margin-bottom:10px;
+font-size:25px;
 }
 
 .preco{
+color:#ff6b00;
 font-size:28px;
 font-weight:bold;
-color:#ff6b00;
 margin-bottom:10px;
 }
 
@@ -95,152 +128,218 @@ color:#666;
 margin-bottom:15px;
 }
 
-.btn-pedido{
+button{
 width:100%;
 padding:12px;
 background:#ff6b00;
-color:#fff;
 border:none;
-border-radius:8px;
+color:white;
 font-size:18px;
 font-weight:bold;
+border-radius:8px;
 cursor:pointer;
 }
 
-.btn-pedido:hover{
-background:#e85f00;
+button:hover{
+background:#e55a00;
 }
 
-@media(max-width:768px){
-header h1{
-font-size:32px;
-}
-.produto-info h3{
-font-size:22px;
-}
-.preco{
-font-size:24px;
-}
-}
 </style>
+
 </head>
 
 <body>
 
 <header>
-<h1>Central Lanches</h1>
+
+<h1>🍔 Central Lanches</h1>
+
 <p>Faça seu pedido aqui</p>
+
 </header>
+
+<nav class="menu">
+
+<a href="#lanches">🍔 Lanches</a>
+
+<a href="#porcoes">🍟 Porções</a>
+
+<a href="#bebidas">🥤 Bebidas</a>
+
+</nav>
 
 <div class="container">
 
-<section class="categoria">
-<h2>🍔 LANCHES</h2>
+<section id="lanches" class="categoria">
+
+<h2>🍔 Lanches</h2>
+
+<div class="produtos"><div class="produto">
+
+<img src="file_00000000d884820e9cdcac2b475cf5e1.png" alt="X-Burguer">
+
+<div class="info">
+<h3>X-Burguer</h3>
+<p class="preco">R$ 12,90</p>
+<p class="descricao">Pão, hambúrguer, queijo, alface, tomate, maionese e cebola.</p>
+<button>Pedir</button>
+</div>
+
+</div>
+
+<div class="produto">
+
+<img src="file_000000004dc4820e9df0a32aec3caa2a.png" alt="X-Salada">
+
+<div class="info">
+<h3>X-Salada</h3>
+<p class="preco">R$ 14,50</p>
+<p class="descricao">Pão, hambúrguer, queijo, alface, tomate, cebola e maionese.</p>
+<button>Pedir</button>
+</div>
+
+</div>
+
+<div class="produto">
+
+<img src="file_0000000064b4820ea9817e11f7a69a10.png" alt="X-Bacon">
+
+<div class="info">
+<h3>X-Bacon</h3>
+<p class="preco">R$ 16,00</p>
+<p class="descricao">Pão, hambúrguer, queijo, bacon, alface, tomate e maionese.</p>
+<button>Pedir</button>
+</div>
+
+</div>
+
+<div class="produto">
+
+<img src="file_00000000dad8820eb69dd51a1939f319.png" alt="X-Burguer Duplo">
+
+<div class="info">
+<h3>X-Burguer Duplo</h3>
+<p class="preco">R$ 19,90</p>
+<p class="descricao">Dois hambúrgueres, queijo duplo, bacon, ovo, alface, tomate e maionese.</p>
+<button>Pedir</button>
+</div>
+
+</div>
+
+<div class="produto">
+
+<img src="IMG_20260727_195613.jpg" alt="X-Galinha">
+
+<div class="info">
+<h3>X-Galinha</h3>
+<p class="preco">R$ 15,00</p>
+<p class="descricao">Filé de frango empanado, queijo, alface, tomate e maionese.</p>
+<button>Pedir</button>
+</div>
+
+</div>
+
+<div class="produto">
+
+<img src="file_000000008334820e9aad389a97da2e19.png" alt="X-Calabresa">
+
+<div class="info">
+<h3>X-Calabresa</h3>
+<p class="preco">R$ 16,50</p>
+<p class="descricao">Calabresa acebolada, queijo, alface, tomate e maionese.</p>
+<button>Pedir</button>
+</div>
+
+</div>
+
+<div class="produto">
+
+<img src="file_00000000fae0820e8a281a844d0e354d.png" alt="X-Coração">
+
+<div class="info">
+<h3>X-Coração</h3>
+<p class="preco">R$ 17,00</p>
+<p class="descricao">Coração de frango, queijo, alface, tomate e maionese.</p>
+<button>Pedir</button>
+</div>
+
+</div>
+
+</div>
+
+</section></div>
+
+</section>
+
+<section id="porcoes" class="categoria">
+
+<h2>🍟 Porções</h2>
 
 <div class="produtos">
 
 <div class="produto">
-<img src="file_00000000d884820e9cdcac2b475cf5e1.png" alt="X-Burguer">
-<div class="produto-info">
-<h3>X-Burguer</h3>
-<p class="preco">R$ 12,90</p>
-<p class="descricao">Pão, hambúrguer, queijo, alface, tomate, maionese e cebola.</p>
-<button class="btn-pedido">Pedir</button>
+<img src="porcaobatata.jpg" alt="Batata Frita">
+<div class="info">
+<h3>Batata Frita</h3>
+<p class="preco">R$ 20,00</p>
+<p class="descricao">Batata frita crocante.</p>
+<button>Pedir</button>
 </div>
 </div>
 
 <div class="produto">
-<img src="file_000000004dc4820e9df0a32aec3caa2a.png" alt="X-Salada">
-<div class="produto-info">
-<h3>X-Salada</h3>
-<p class="preco">R$ 14,50</p>
-<p class="descricao">Pão, hambúrguer, queijo, alface, tomate, cebola, picles e maionese.</p>
-<button class="btn-pedido">Pedir</button>
+<img src="3xsalada.jpg" alt="3 X-Salada">
+<div class="info">
+<h3>3 X-Salada + Batata</h3>
+<p class="preco">R$ 60,00</p>
+<p class="descricao">Combo com 3 X-Salada e batata frita.</p>
+<button>Pedir</button>
+</div>
+</div>
+
+</div>
+
+</section>
+
+<section id="bebidas" class="categoria">
+
+<h2>🥤 Bebidas</h2>
+
+<div class="produtos">
+
+<div class="produto">
+<img src="coca350.jpg" alt="Coca-Cola">
+<div class="info">
+<h3>Coca-Cola 350ml</h3>
+<p class="preco">R$ 6,00</p>
+<button>Pedir</button>
 </div>
 </div>
 
 <div class="produto">
-<img src="file_0000000064b4820ea9817e11f7a69a10.png" alt="X-Bacon">
-<div class="produto-info">
-<h3>X-Bacon</h3>
-<p class="preco">R$ 16,00</p>
-<p class="descricao">Pão, hambúrguer, queijo, bacon, alface, tomate e maionese.</p>
-<button class="btn-pedido">Pedir</button>
+<img src="guarana350.jpg" alt="Guaraná">
+<div class="info">
+<h3>Guaraná 350ml</h3>
+<p class="preco">R$ 6,00</p>
+<button>Pedir</button>
 </div>
-</div><!-- PORÇÕES -->
-<section class="categoria">
-    <h2>🍟 PORÇÕES</h2>
+</div>
 
-    <div class="produtos">
+<div class="produto">
+<img src="agua.jpg" alt="Água">
+<div class="info">
+<h3>Água Mineral</h3>
+<p class="preco">R$ 3,50</p>
+<button>Pedir</button>
+</div>
+</div>
 
-        <div class="produto">
-            <img src="porcaobatata.jpg" alt="Batata Frita">
-            <div class="produto-info">
-                <h3>Batata Frita</h3>
-                <p class="preco">R$ 20,00</p>
-                <p class="descricao">Batata frita crocante.</p>
-                <button class="btn-pedido">Pedir</button>
-            </div>
-        </div>
+</div>
 
-        <div class="produto">
-            <img src="porcaocalabresa.jpg" alt="Calabresa">
-            <div class="produto-info">
-                <h3>Calabresa Acebolada</h3>
-                <p class="preco">R$ 28,00</p>
-                <p class="descricao">Calabresa acebolada com fritas.</p>
-                <button class="btn-pedido">Pedir</button>
-            </div>
-        </div>
+</section>
 
-        <div class="produto">
-            <img src="porcaofrangofrito.jpg" alt="Frango Frito">
-            <div class="produto-info">
-                <h3>Frango Frito</h3>
-                <p class="preco">R$ 30,00</p>
-                <p class="descricao">Frango frito crocante.</p>
-                <button class="btn-pedido">Pedir</button>
-            </div>
-        </div>
+</div>
 
-        <div class="produto">
-            <img src="porcaomista.jpg" alt="Porção Mista">
-            <div class="produto-info">
-                <h3>Porção Mista</h3>
-                <p class="preco">R$ 45,00</p>
-                <p class="descricao">Batata frita, calabresa e frango.</p>
-                <button class="btn-pedido">Pedir</button>
-            </div>
-        </div>
+</body>
 
-    </div>
-</section><!-- BEBIDAS -->
-<section class="categoria">
-    <h2>🥤 BEBIDAS</h2>
-
-    <div class="produtos">
-
-        <div class="produto">
-            <img src="coca350.jpg" alt="Coca-Cola 350ml">
-            <div class="produto-info">
-                <h3>Coca-Cola 350ml</h3>
-                <p class="preco">R$ 6,00</p>
-                <p class="descricao">Lata 350ml bem gelada.</p>
-                <button class="btn-pedido">Pedir</button>
-            </div>
-        </div>
-
-        <div class="produto">
-            <img src="guarana350.jpg" alt="Guaraná 350ml">
-            <div class="produto-info">
-                <h3>Guaraná 350ml</h3>
-                <p class="preco">R$ 6,00</p>
-                <p class="descricao">Lata 350ml bem gelada.</p>
-                <button class="btn-pedido">Pedir</button>
-            </div>
-        </div>
-
-        <div class="produto">
-            <img src="fanta350.jpg" alt="Fanta 350ml">
-            <div class="produto-info">
-                <h3>
+</html>
