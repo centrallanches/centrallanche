@@ -1,138 +1,146 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cardápio - Central Lanches</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cardápio - Central Lanches</title>
 
-    <style>
-        :root{
-            --laranja:#FF6B00;
-            --fundo:#F8F0E6;
-        }
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
 
-        body{
-            font-family:sans-serif;
-            background:var(--fundo);
-            margin:0;
-        }
+body{
+background:#F8F0E6;
+}
 
-        header{
-            background:var(--laranja);
-            color:#fff;
-            text-align:center;
-            padding:2rem 1rem;
-        }
+header{
+background:#ff6b00;
+color:#fff;
+text-align:center;
+padding:35px 20px;
+}
 
-        header h1{
-            font-size:2.5rem;
-            margin:0 0 .5rem;
-        }
+header h1{
+font-size:42px;
+margin-bottom:10px;
+}
 
-        header p{
-            font-size:1.3rem;
-        }
+header p{
+font-size:22px;
+}
 
-        .container{
-            max-width:1200px;
-            margin:2rem auto;
-            padding:0 1rem;
-        }
+.container{
+max-width:1200px;
+margin:auto;
+padding:25px;
+}
 
-        .categoria{
-            background:#fff;
-            border-radius:12px;
-            padding:2rem;
-        }
+.categoria{
+background:#fff;
+border-radius:15px;
+padding:25px;
+margin-bottom:30px;
+box-shadow:0 5px 15px rgba(0,0,0,.1);
+}
 
-        .categoria h2{
-            color:var(--laranja);
-            font-size:1.8rem;
-            border-bottom:2px solid var(--laranja);
-            padding-bottom:.5rem;
-        }
+.categoria h2{
+color:#ff6b00;
+font-size:36px;
+border-bottom:3px solid #ff6b00;
+padding-bottom:10px;
+margin-bottom:25px;
+}
 
-        .produtos{
-            display:grid;
-            grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
-            gap:1.5rem;
-            justify-items:center;
-        }
+.produtos{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+gap:20px;
+}
 
-        .produto{
-            background:#f9f9f9;
-            border-radius:8px;
-            overflow:hidden;
-            width:100%;
-            max-width:250px;
-        }
+.produto{
+background:#f9f9f9;
+border-radius:12px;
+overflow:hidden;
+}
 
-        .produto img{
-            width:100%;
-            height:200px;
-            object-fit:cover;
-            border-bottom:1px solid #ddd;
-        }
+.produto img{
+width:100%;
+height:220px;
+object-fit:cover;
+}
 
-        .produto-info{
-            padding:1rem;
-            text-align:center;
-        }
+.produto-info{
+padding:15px;
+text-align:center;
+}
 
-        .produto-info h3{
-            margin:.5rem 0;
-        }
+.produto-info h3{
+font-size:30px;
+margin-bottom:10px;
+}
 
-        .preco{
-            color:var(--laranja);
-            font-weight:bold;
-            font-size:1.2rem;
-            margin-bottom:.5rem;
-        }
+.preco{
+font-size:28px;
+font-weight:bold;
+color:#ff6b00;
+margin-bottom:10px;
+}
 
-        .descricao{
-            font-size:.9rem;
-            color:#666;
-            margin-bottom:1rem;
-        }
+.descricao{
+color:#666;
+margin-bottom:15px;
+}
 
-        .btn-pedido{
-            width:100%;
-            background:var(--laranja);
-            color:#fff;
-            border:none;
-            padding:.6rem;
-            font-weight:bold;
-            border-radius:6px;
-            cursor:pointer;
-        }
+.btn-pedido{
+width:100%;
+padding:12px;
+background:#ff6b00;
+color:#fff;
+border:none;
+border-radius:8px;
+font-size:18px;
+font-weight:bold;
+cursor:pointer;
+}
 
-        @media(max-width:768px){
-            .produtos{
-                grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
-            }
-        }
-    </style>
+.btn-pedido:hover{
+background:#e85f00;
+}
+
+@media(max-width:768px){
+header h1{
+font-size:32px;
+}
+.produto-info h3{
+font-size:22px;
+}
+.preco{
+font-size:24px;
+}
+}
+</style>
 </head>
 
 <body>
 
 <header>
-    <h1>Central Lanches</h1>
-    <p>Faça seu pedido aqui</p>
+<h1>Central Lanches</h1>
+<p>Faça seu pedido aqui</p>
 </header>
 
 <div class="container">
 
 <section class="categoria">
-
 <h2>🍔 LANCHES</h2>
 
 <div class="produtos">
 
 <div class="produto">
 <img src="file_00000000d884820e9cdcac2b475cf5e1.png" alt="X-Burguer">
-
 <div class="produto-info">
 <h3>X-Burguer</h3>
 <p class="preco">R$ 12,90</p>
@@ -143,7 +151,6 @@
 
 <div class="produto">
 <img src="file_000000004dc4820e9df0a32aec3caa2a.png" alt="X-Salada">
-
 <div class="produto-info">
 <h3>X-Salada</h3>
 <p class="preco">R$ 14,50</p>
@@ -154,58 +161,86 @@
 
 <div class="produto">
 <img src="file_0000000064b4820ea9817e11f7a69a10.png" alt="X-Bacon">
-
 <div class="produto-info">
 <h3>X-Bacon</h3>
 <p class="preco">R$ 16,00</p>
 <p class="descricao">Pão, hambúrguer, queijo, bacon, alface, tomate e maionese.</p>
 <button class="btn-pedido">Pedir</button>
 </div>
-</div><div class="produto">
-<img src="file_00000000dad8820eb69dd51a1939f319.png" alt="X-Burguer Duplo">
+</div><!-- PORÇÕES -->
+<section class="categoria">
+    <h2>🍟 PORÇÕES</h2>
 
-<div class="produto-info">
-<h3>X-Burguer Duplo</h3>
-<p class="preco">R$ 19,90</p>
-<p class="descricao">Pão, 2 hambúrgueres, queijo duplo, bacon, ovo, alface, tomate, cebola, picles, milho, ervilha e maionese.</p>
-<button class="btn-pedido">Pedir</button>
-</div>
-</div>
+    <div class="produtos">
 
-<div class="produto">
-<img src="IMG_20260727_195613.jpg" alt="X-Galinha">
+        <div class="produto">
+            <img src="porcaobatata.jpg" alt="Batata Frita">
+            <div class="produto-info">
+                <h3>Batata Frita</h3>
+                <p class="preco">R$ 20,00</p>
+                <p class="descricao">Batata frita crocante.</p>
+                <button class="btn-pedido">Pedir</button>
+            </div>
+        </div>
 
-<div class="produto-info">
-<h3>X-Galinha</h3>
-<p class="preco">R$ 15,00</p>
-<p class="descricao">Pão, filé de frango empanado, queijo, alface, tomate e maionese.</p>
-<button class="btn-pedido">Pedir</button>
-</div>
-</div>
+        <div class="produto">
+            <img src="porcaocalabresa.jpg" alt="Calabresa">
+            <div class="produto-info">
+                <h3>Calabresa Acebolada</h3>
+                <p class="preco">R$ 28,00</p>
+                <p class="descricao">Calabresa acebolada com fritas.</p>
+                <button class="btn-pedido">Pedir</button>
+            </div>
+        </div>
 
-<div class="produto">
-<img src="file_000000008334820e9aad389a97da2e19.png" alt="X-Calabresa">
+        <div class="produto">
+            <img src="porcaofrangofrito.jpg" alt="Frango Frito">
+            <div class="produto-info">
+                <h3>Frango Frito</h3>
+                <p class="preco">R$ 30,00</p>
+                <p class="descricao">Frango frito crocante.</p>
+                <button class="btn-pedido">Pedir</button>
+            </div>
+        </div>
 
-<div class="produto-info">
-<h3>X-Calabresa</h3>
-<p class="preco">R$ 16,50</p>
-<p class="descricao">Pão, calabresa acebolada, queijo, alface, tomate e maionese.</p>
-<button class="btn-pedido">Pedir</button>
-</div>
-</div><div class="produto">
-<img src="file_00000000fae0820e8a281a844d0e354d.png" alt="X-Coração">
+        <div class="produto">
+            <img src="porcaomista.jpg" alt="Porção Mista">
+            <div class="produto-info">
+                <h3>Porção Mista</h3>
+                <p class="preco">R$ 45,00</p>
+                <p class="descricao">Batata frita, calabresa e frango.</p>
+                <button class="btn-pedido">Pedir</button>
+            </div>
+        </div>
 
-<div class="produto-info">
-<h3>X-Coração</h3>
-<p class="preco">R$ 17,00</p>
-<p class="descricao">Pão, coração de frango, queijo, alface, tomate e maionese.</p>
-<button class="btn-pedido">Pedir</button>
-</div>
-</div>
+    </div>
+</section><!-- BEBIDAS -->
+<section class="categoria">
+    <h2>🥤 BEBIDAS</h2>
 
-</div>
-</section>
-</div>
+    <div class="produtos">
 
-</body>
-</html>
+        <div class="produto">
+            <img src="coca350.jpg" alt="Coca-Cola 350ml">
+            <div class="produto-info">
+                <h3>Coca-Cola 350ml</h3>
+                <p class="preco">R$ 6,00</p>
+                <p class="descricao">Lata 350ml bem gelada.</p>
+                <button class="btn-pedido">Pedir</button>
+            </div>
+        </div>
+
+        <div class="produto">
+            <img src="guarana350.jpg" alt="Guaraná 350ml">
+            <div class="produto-info">
+                <h3>Guaraná 350ml</h3>
+                <p class="preco">R$ 6,00</p>
+                <p class="descricao">Lata 350ml bem gelada.</p>
+                <button class="btn-pedido">Pedir</button>
+            </div>
+        </div>
+
+        <div class="produto">
+            <img src="fanta350.jpg" alt="Fanta 350ml">
+            <div class="produto-info">
+                <h3>
