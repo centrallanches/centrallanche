@@ -1,74 +1,260 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cardápio - Central Lanches</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --cor-principal: #FF6B00;
+            --cor-secundaria: #FFF;
+            --cor-fundo: #F8F0E6;
+            --cor-texto: #333;
+            --sombra: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--cor-principal), #FF8C00);
+            color: var(--cor-secundaria);
+            padding: 2rem 1rem;
+            text-align: center;
+            box-shadow: var(--sombra);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .categoria {
+            margin-bottom: 3rem;
+            background: var(--cor-secundaria);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--sombra);
+        }
+
+        .categoria h2 {
+            color: var(--cor-principal);
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--cor-principal);
+            padding-bottom: 0.5rem;
+            text-align: left;
+        }
+
+        .produtos {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            justify-items: center;
+        }
+
+        .produto {
+            background: #f0f0f0;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            width: 100%;
+            max-width: 250px;
+        }
+
+        .produto:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .produto img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .produto-info {
+            padding: 1rem;
+        }
+
+        .produto-info h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .produto-info p {
+            color: #FF6B00;
+            font-weight: bold;
+            font-size: 1.2rem;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .descricao {
+            font-size: 0.9rem;
+            color: #666;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .btn-pedido {
+            display: block;
+            width: 100%;
+            background: var(--cor-principal);
+            color: var(--cor-secundaria);
+            border: none;
+            padding: 0.6rem;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .btn-pedido:hover {
+            background: #E65A00;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--cor-principal);
+            color: var(--cor-secundaria);
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+
+            .produtos {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 1rem;
+            }
+
+            .produto {
+                max-width: none;
+            }
+        }
+    </style>
 </head>
 <body>
+    <header>
+        <h1>🍽️ Central Lanches</h1>
+        <p>Faça seu pedido pelo WhatsApp</p>
+    </header>
 
-    <div style="text-align: center; padding: 20px;">
-        <a href="index.html" style="color: #f4b400; text-decoration: none; font-weight: bold;">&larr; Voltar para Home</a>
+    <div class="container">
+        <section class="categoria">
+            <h2>🍔 LANCHES</h2>
+            <div class="produtos">
+                <div class="produto">
+                    <img src="xburguersimples.jpg" alt="X-Burguer">
+                    <div class="produto-info">
+                        <h3>X-Burguer</h3>
+                        <p>R$ 12,90</p>
+                        <p class="descricao">Pão, hambúrguer, queijo, alface, tomate, maionese e cebola.</p>
+                        <button class="btn-pedido">📲 Pedir</button>
+                    </div>
+                </div>
+
+                <div class="produto">
+                    <img src="xsalada.jpg" alt="X-Salada">
+                    <div class="produto-info">
+                        <h3>X-Salada</h3>
+                        <p>R$ 14,50</p>
+                        <p class="descricao">Pão, hambúrguer, queijo, alface, tomate, cebola, picles e maionese.</p>
+                        <button class="btn-pedido">📲 Pedir</button>
+                    </div>
+                </div>
+
+                <div class="produto">
+                    <img src="xbacon.jpg" alt="X-Bacon">
+                    <div class="produto-info">
+                        <h3>X-Bacon</h3>
+                        <p>R$ 16,00</p>
+                        <p class="descricao">Pão, hambúrguer, queijo, bacon, alface, tomate e maionese.</p>
+                        <button class="btn-pedido">📲 Pedir</button>
+                    </div>
+                </div>
+
+                <div class="produto">
+                    <img src="xduplo.jpg" alt="X-Duplo">
+                    <div class="produto-info">
+                        <h3>X-Duplo</h3>
+                        <p>R$ 19,90</p>
+                        <p class="descricao">Pão, 2 hambúrgueres, queijo, bacon, ovo, alface, tomate, cebola, picles, milho, ervilha e maionese.</p>
+                        <button class="btn-pedido">📲 Pedir</button>
+                    </div>
+                </div>
+
+                <div class="produto">
+                    <img src="xgalinha.jpg" alt="X-Galinha">
+                    <div class="produto-info">
+                        <h3>X-Galinha</h3>
+                        <p>R$ 15,00</p>
+                        <p class="descricao">Pão, filé de frango empanado, queijo, alface, tomate e maionese.</p>
+                        <button class="btn-pedido">📲 Pedir</button>
+                    </div>
+                </div>
+
+                <div class="produto">
+                    <img src="xcalabresa.jpg" alt="X-Calabresa">
+                    <div class="produto-info">
+                        <h3>X-Calabresa</h3>
+                        <p>R$ 16,50</p>
+                        <p class="descricao">Pão, calabresa acebolada, queijo, alface, tomate e maionese.</p>
+                        <button class="btn-pedido">📲 Pedir</button>
+                    </div>
+                </div>
+
+                <div class="produto">
+                    <img src="xcoracao.jpg" alt="X-Coração">
+                    <div class="produto-info">
+                        <h3>X-Coração</h3>
+                        <p>R$ 17,00</p>
+                        <p class="descricao">Pão, coração de frango, queijo, alface, tomate e maionese.</p>
+                        <button class="btn-pedido">📲 Pedir</button>
+                    </div>
+                </div>
+            </div>
+        </section>
     </div>
 
-    <div class="menu-wrapper">
-        <h2 class="section-title">Nossos Lanches</h2>
+    <footer>
+        <p>© 2026 Central Lanches. Todos os direitos reservados.</p>
+    </footer>
 
-        <div class="cards-container">
-            
-            <!-- X-SALADA -->
-            <div class="menu-card">
-                <img src="xsalada.png" alt="X-Salada" class="card-img">
-                <div class="card-info">
-                    <h3>X-SALADA</h3>
-                    <p>Pão tostadinho, hambúrguer artesanal 150g, queijo, presunto, alface, tomate, milho, ervilha, maionese caseira, catchup e mostarda.</p>
-                    <div class="card-price">R$ 17,64</div>
-                </div>
-            </div>
-
-            <!-- X-BACON -->
-            <div class="menu-card">
-                <img src="xbacon.png" alt="X-Bacon" class="card-img">
-                <div class="card-info">
-                    <h3>X-BACON</h3>
-                    <p>Pão tostadinho, hambúrguer artesanal 150g, bacon, queijo, presunto, alface, tomate, milho, ervilha, maionese caseira, catchup e mostarda.</p>
-                    <div class="card-price">R$ 22,50</div>
-                </div>
-            </div>
-
-            <!-- X-GALINHA -->
-            <div class="menu-card">
-                <img src="xgalinha.png" alt="X-Galinha" class="card-img">
-                <div class="card-info">
-                    <h3>X-GALINHA</h3>
-                    <p>Pão tostadinho, filé de frango frito, queijo, presunto, alface, tomate, milho, ervilha, maionese caseira, catchup e mostarda.</p>
-                    <div class="card-price">R$ 20,00</div>
-                </div>
-            </div>
-
-            <!-- X-BURGUER SIMPLES -->
-            <div class="menu-card">
-                <img src="xburguer.png" alt="X-Burguer" class="card-img">
-                <div class="card-info">
-                    <h3>X-BURGUER SIMPLES</h3>
-                    <p>Pão tostadinho, hambúrguer artesanal de 150g, queijo, presunto, maionese caseira, catchup e mostarda.</p>
-                    <div class="card-price">R$ 15,00</div>
-                </div>
-            </div>
-
-            <!-- X-CORAÇÃO -->
-            <div class="menu-card">
-                <img src="xcoracao.png" alt="X-Coração" class="card-img">
-                <div class="card-info">
-                    <h3>X-CORAÇÃO</h3>
-                    <p>Pão tostadinho, 180g coração, queijo, presunto, alface, tomate, milho, ervilha, maionese caseira, catchup e mostarda. (não acompanha hambúrguer!)</p>
-                    <div class="card-price">R$ 23,60</div>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
+    <script>
+        document.querySelectorAll('.btn-pedido').forEach(button => {
+            button.addEventListener('click', function() {
+                const produto = this.closest('.produto').querySelector('h3').textContent;
+                alert(`Pedido enviado! ${produto}`);
+            });
+        });
+    </script>
 </body>
 </html>
