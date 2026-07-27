@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
 
 <meta charset="UTF-8">
@@ -14,18 +13,18 @@
 margin:0;
 padding:0;
 box-sizing:border-box;
-font-family:Arial,sans-serif;
+font-family:Arial,Helvetica,sans-serif;
 }
 
 body{
-background:#f6f6f6;
+background:#f4f4f4;
 }
 
 header{
 background:#ff6b00;
-color:white;
+color:#fff;
+padding:30px;
 text-align:center;
-padding:35px 20px;
 }
 
 header h1{
@@ -40,21 +39,21 @@ font-size:18px;
 .menu{
 position:sticky;
 top:0;
-background:white;
 display:flex;
 justify-content:center;
 gap:15px;
 padding:15px;
+background:#fff;
 box-shadow:0 2px 10px rgba(0,0,0,.1);
-z-index:999;
+z-index:1000;
 }
 
 .menu a{
-background:#ff6b00;
-color:white;
 text-decoration:none;
+background:#ff6b00;
+color:#fff;
 padding:10px 18px;
-border-radius:25px;
+border-radius:30px;
 font-weight:bold;
 transition:.3s;
 }
@@ -76,28 +75,28 @@ margin-bottom:50px;
 
 .categoria h2{
 font-size:34px;
-margin-bottom:20px;
 color:#ff6b00;
+margin-bottom:20px;
 border-bottom:3px solid #ff6b00;
 padding-bottom:10px;
 }
 
 .produtos{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
 gap:20px;
 }
 
 .produto{
-background:white;
+background:#fff;
 border-radius:15px;
 overflow:hidden;
-box-shadow:0 5px 15px rgba(0,0,0,.08);
+box-shadow:0 5px 15px rgba(0,0,0,.1);
 transition:.3s;
 }
 
 .produto:hover{
-transform:translateY(-6px);
+transform:translateY(-5px);
 }
 
 .produto img{
@@ -112,14 +111,14 @@ text-align:center;
 }
 
 .info h3{
+font-size:24px;
 margin-bottom:10px;
-font-size:25px;
 }
 
 .preco{
-color:#ff6b00;
-font-size:28px;
+font-size:26px;
 font-weight:bold;
+color:#ff6b00;
 margin-bottom:10px;
 }
 
@@ -132,16 +131,16 @@ button{
 width:100%;
 padding:12px;
 background:#ff6b00;
+color:#fff;
 border:none;
-color:white;
+border-radius:8px;
 font-size:18px;
 font-weight:bold;
-border-radius:8px;
 cursor:pointer;
 }
 
 button:hover{
-background:#e55a00;
+background:#e65b00;
 }
 
 </style>
@@ -151,21 +150,14 @@ background:#e55a00;
 <body>
 
 <header>
-
 <h1>🍔 Central Lanches</h1>
-
 <p>Faça seu pedido aqui</p>
-
 </header>
 
 <nav class="menu">
-
 <a href="#lanches">🍔 Lanches</a>
-
 <a href="#porcoes">🍟 Porções</a>
-
 <a href="#bebidas">🥤 Bebidas</a>
-
 </nav>
 
 <div class="container">
@@ -174,101 +166,88 @@ background:#e55a00;
 
 <h2>🍔 Lanches</h2>
 
-<div class="produtos"><div class="produto">
+<div class="produtos">
+  <div class="produto">
+    <img src="file_00000000d884820e9cdcac2b475cf5e1.png" alt="X-Burguer">
 
-<img src="file_00000000d884820e9cdcac2b475cf5e1.png" alt="X-Burguer">
-
-<div class="info">
-<h3>X-Burguer</h3>
-<p class="preco">R$ 12,90</p>
-<p class="descricao">Pão, hambúrguer, queijo, alface, tomate, maionese e cebola.</p>
-<button>Pedir</button>
-</div>
-
-</div>
-
-<div class="produto">
-
-<img src="file_000000004dc4820e9df0a32aec3caa2a.png" alt="X-Salada">
-
-<div class="info">
-<h3>X-Salada</h3>
-<p class="preco">R$ 14,50</p>
-<p class="descricao">Pão, hambúrguer, queijo, alface, tomate, cebola e maionese.</p>
-<button>Pedir</button>
-</div>
-
+    <div class="info">
+        <h3>X-Burguer</h3>
+        <p class="preco">R$ 12,90</p>
+        <p class="descricao">Pão, hambúrguer, queijo, alface, tomate, maionese e cebola.</p>
+        <button>Pedir</button>
+    </div>
 </div>
 
 <div class="produto">
+    <img src="file_000000004dc4820e9df0a32aec3caa2a.png" alt="X-Salada">
 
-<img src="file_0000000064b4820ea9817e11f7a69a10.png" alt="X-Bacon">
-
-<div class="info">
-<h3>X-Bacon</h3>
-<p class="preco">R$ 16,00</p>
-<p class="descricao">Pão, hambúrguer, queijo, bacon, alface, tomate e maionese.</p>
-<button>Pedir</button>
-</div>
-
-</div>
-
-<div class="produto">
-
-<img src="file_00000000dad8820eb69dd51a1939f319.png" alt="X-Burguer Duplo">
-
-<div class="info">
-<h3>X-Burguer Duplo</h3>
-<p class="preco">R$ 19,90</p>
-<p class="descricao">Dois hambúrgueres, queijo duplo, bacon, ovo, alface, tomate e maionese.</p>
-<button>Pedir</button>
-</div>
-
+    <div class="info">
+        <h3>X-Salada</h3>
+        <p class="preco">R$ 14,50</p>
+        <p class="descricao">Pão, hambúrguer, queijo, alface, tomate, cebola e maionese.</p>
+        <button>Pedir</button>
+    </div>
 </div>
 
 <div class="produto">
+    <img src="file_0000000064b4820ea9817e11f7a69a10.png" alt="X-Bacon">
 
-<img src="IMG_20260727_195613.jpg" alt="X-Galinha">
-
-<div class="info">
-<h3>X-Galinha</h3>
-<p class="preco">R$ 15,00</p>
-<p class="descricao">Filé de frango empanado, queijo, alface, tomate e maionese.</p>
-<button>Pedir</button>
-</div>
-
-</div>
-
-<div class="produto">
-
-<img src="file_000000008334820e9aad389a97da2e19.png" alt="X-Calabresa">
-
-<div class="info">
-<h3>X-Calabresa</h3>
-<p class="preco">R$ 16,50</p>
-<p class="descricao">Calabresa acebolada, queijo, alface, tomate e maionese.</p>
-<button>Pedir</button>
-</div>
-
+    <div class="info">
+        <h3>X-Bacon</h3>
+        <p class="preco">R$ 16,00</p>
+        <p class="descricao">Pão, hambúrguer, queijo, bacon, alface, tomate e maionese.</p>
+        <button>Pedir</button>
+    </div>
 </div>
 
 <div class="produto">
+    <img src="file_00000000dad8820eb69dd51a1939f319.png" alt="X-Burguer Duplo">
 
-<img src="file_00000000fae0820e8a281a844d0e354d.png" alt="X-Coração">
+    <div class="info">
+        <h3>X-Burguer Duplo</h3>
+        <p class="preco">R$ 19,90</p>
+        <p class="descricao">Dois hambúrgueres, queijo duplo, bacon, ovo, alface, tomate e maionese.</p>
+        <button>Pedir</button>
+    </div>
+</div>
 
-<div class="info">
-<h3>X-Coração</h3>
-<p class="preco">R$ 17,00</p>
-<p class="descricao">Coração de frango, queijo, alface, tomate e maionese.</p>
-<button>Pedir</button>
+<div class="produto">
+    <img src="IMG_20260727_195613.jpg" alt="X-Galinha">
+
+    <div class="info">
+        <h3>X-Galinha</h3>
+        <p class="preco">R$ 15,00</p>
+        <p class="descricao">Filé de frango empanado, queijo, alface, tomate e maionese.</p>
+        <button>Pedir</button>
+    </div>
+</div>
+
+<div class="produto">
+    <img src="file_000000008334820e9aad389a97da2e19.png" alt="X-Calabresa">
+
+    <div class="info">
+        <h3>X-Calabresa</h3>
+        <p class="preco">R$ 16,50</p>
+        <p class="descricao">Calabresa acebolada, queijo, alface, tomate e maionese.</p>
+        <button>Pedir</button>
+    </div>
+</div>
+
+<div class="produto">
+    <img src="file_00000000fae0820e8a281a844d0e354d.png" alt="X-Coração">
+
+    <div class="info">
+        <h3>X-Coração</h3>
+        <p class="preco">R$ 17,00</p>
+        <p class="descricao">Coração de frango, queijo, alface, tomate e maionese.</p>
+        <button>Pedir</button>
+    </div>
 </div>
 
 </div>
 
+</section>
 </div>
-
-</section></div>
-
 </section>
 
 <section id="porcoes" class="categoria">
@@ -278,68 +257,29 @@ background:#e55a00;
 <div class="produtos">
 
 <div class="produto">
-<img src="porcaobatata.jpg" alt="Batata Frita">
+<img src="batatafrita.jpg" alt="Batata Frita">
+
 <div class="info">
 <h3>Batata Frita</h3>
 <p class="preco">R$ 20,00</p>
-<p class="descricao">Batata frita crocante.</p>
+<p class="descricao">Porção de batata frita crocante.</p>
 <button>Pedir</button>
 </div>
+
 </div>
 
 <div class="produto">
 <img src="3xsalada.jpg" alt="3 X-Salada">
+
 <div class="info">
 <h3>3 X-Salada + Batata</h3>
 <p class="preco">R$ 60,00</p>
 <p class="descricao">Combo com 3 X-Salada e batata frita.</p>
 <button>Pedir</button>
 </div>
-</div>
 
-</div>
-
-</section>
-
-<section id="bebidas" class="categoria">
-
-<h2>🥤 Bebidas</h2>
-
-<div class="produtos">
-
-<div class="produto">
-<img src="coca350.jpg" alt="Coca-Cola">
-<div class="info">
-<h3>Coca-Cola 350ml</h3>
-<p class="preco">R$ 6,00</p>
-<button>Pedir</button>
-</div>
-</div>
-
-<div class="produto">
-<img src="guarana350.jpg" alt="Guaraná">
-<div class="info">
-<h3>Guaraná 350ml</h3>
-<p class="preco">R$ 6,00</p>
-<button>Pedir</button>
-</div>
-</div>
-
-<div class="produto">
-<img src="agua.jpg" alt="Água">
-<div class="info">
-<h3>Água Mineral</h3>
-<p class="preco">R$ 3,50</p>
-<button>Pedir</button>
-</div>
 </div>
 
 </div>
 
 </section>
-
-</div>
-
-</body>
-
-</html>
