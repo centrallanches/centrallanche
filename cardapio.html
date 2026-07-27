@@ -4,311 +4,231 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cardápio - Central Lanches</title>
-
 <style>
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', sans-serif; }
+    body { background:#f4f4f4; padding-bottom: 50px; }
+    
+    header { background:#ff6b00; color:#fff; padding:30px 20px; text-align:center; }
+    header h1 { font-size:2rem; }
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial,sans-serif;
-scroll-behavior:smooth;
-}
+    /* Menu de Abas */
+    .tabs {
+        display:flex; justify-content:center; gap:10px; padding:15px;
+        background:#fff; position:sticky; top:0; z-index:100;
+        box-shadow:0 2px 10px rgba(0,0,0,0.1);
+    }
+    .tab-btn {
+        background:#eee; border:none; padding:10px 25px;
+        border-radius:25px; font-weight:bold; color:#555; cursor:pointer;
+        transition:0.3s; font-size:1rem;
+    }
+    .tab-btn.active { background:#ff6b00; color:#fff; transform:scale(1.05); }
 
-body{
-background:#f5f5f5;
-}
+    .container { max-width:1000px; margin:20px auto; padding:0 15px; }
 
-header{
-background:#ff6b00;
-padding:35px 20px;
-text-align:center;
-color:#fff;
-}
+    /* Esconde todas as seções por padrão */
+    .categoria { display:none; animation:fadeIn 0.5s; }
+    /* Mostra a que tem a classe 'active' */
+    .categoria.active { display:grid; }
 
-header h1{
-font-size:42px;
-}
+    @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
 
-header p{
-margin-top:10px;
-font-size:20px;
-}
+    .categoria h2 {
+        color:#ff6b00; margin-bottom:20px; text-transform:uppercase;
+        border-bottom:2px solid #ff6b00; display:inline-block;
+    }
 
-.menu{
-display:flex;
-justify-content:center;
-gap:15px;
-padding:20px;
-flex-wrap:wrap;
-background:#fff;
-position:sticky;
-top:0;
-z-index:100;
-box-shadow:0 2px 10px rgba(0,0,0,.1);
-}
+    .grid-produtos {
+        display:grid; grid-template-columns:repeat(auto-fill, minmax(160px, 1fr));
+        gap:15px;
+    }
 
-.menu a{
-background:#ff6b00;
-color:#fff;
-text-decoration:none;
-padding:15px 25px;
-border-radius:40px;
-font-weight:bold;
-font-size:20px;
-}
+    .produto {
+        background:#fff; border-radius:12px; overflow:hidden;
+        box-shadow:0 2px 8px rgba(0,0,0,0.1); text-align:center;
+        transition:transform 0.2s;
+    }
+    .produto:hover { transform:translateY(-3px); }
 
-.container{
-width:95%;
-max-width:1200px;
-margin:auto;
-padding:20px 0;
-}
+    .produto img { width:100%; height:140px; object-fit:cover; }
+    
+    .info { padding:12px; }
+    .info h3 { font-size:1rem; margin-bottom:5px; height:40px; overflow:hidden; }
+    .preco { color:#ff6b00; font-weight:bold; font-size:1.1rem; margin-bottom:10px; }
+    
+    .btn-comprar {
+        width:100%; background:#ff6b00; color:#fff; border:none;
+        padding:8px; border-radius:6px; font-weight:bold; cursor:pointer;
+    }
+    .btn-comprar:active { background:#e05e00; }
 
-.categoria{
-margin-bottom:50px;
-}
-
-.categoria h2{
-color:#ff6b00;
-font-size:40px;
-margin-bottom:20px;
-}
-
-.produtos{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-gap:25px;
-}
-
-.produto{
-background:#fff;
-border-radius:20px;
-overflow:hidden;
-box-shadow:0 5px 15px rgba(0,0,0,.15);
-}
-
-.produto img{
-width:100%;
-height:260px;
-object-fit:cover;
-}
-
-.info{
-padding:20px;
-text-align:center;
-}
-
-.info h3{
-font-size:34px;
-}
-
-.preco{
-font-size:38px;
-font-weight:bold;
-color:#ff6b00;
-margin:15px 0;
-}
-
-.descricao{
-color:#666;
-font-size:18px;
-margin-bottom:20px;
-}
-
-button{
-width:100%;
-padding:15px;
-border:none;
-border-radius:10px;
-background:#ff6b00;
-color:#fff;
-font-size:22px;
-font-weight:bold;
-cursor:pointer;
-}
-
+    /* Carrinho Flutuante (Simulado) */
+    #carrinho-float {
+        position:fixed; bottom:20px; right:20px;
+        background:#333; color:#fff; padding:15px 25px;
+        border-radius:30px; box-shadow:0 4px 15px rgba(0,0,0,0.3);
+        display:none; font-weight:bold; z-index:200;
+    }
 </style>
-
 </head>
-
 <body>
 
 <header>
-<h1>Central Lanches</h1>
-<p>Faça seu pedido aqui</p>
+    <h1>Central Lanches</h1>
+    <p>Selecione a categoria abaixo</p>
 </header>
 
-<div class="menu">
-<a href="#lanches">🍔 Lanches</a>
-<a href="#porcoes">🍟 Porções</a>
-<a href="#bebidas">🥤 Bebidas</a>
+<!-- Botões de Aba -->
+<div class="tabs">
+    <button class="tab-btn active" onclick="openTab('lanches', this)">🍔 Lanches</button>
+    <button class="tab-btn" onclick="openTab('porcoes', this)">🍟 Porções</button>
+    <button class="tab-btn" onclick="openTab('bebidas', this)">🥤 Bebidas</button>
 </div>
 
 <div class="container">
 
-<section id="lanches" class="categoria">
+    <!-- ABA LANÇHES (Visível por padrão) -->
+    <div id="lanches" class="categoria active">
+        <h2>Lanches</h2>
+        <div class="grid-produtos">
+            <div class="produto">
+                <img src="xburguer.jpg" alt="X-Burguer">
+                <div class="info">
+                    <h3>X-Burguer</h3>
+                    <p class="preco">R$ 12,90</p>
+                    <button class="btn-comprar" onclick="addToCart('X-Burguer', 12.90)">Adicionar</button>
+                </div>
+            </div>
+            <div class="produto">
+                <img src="xsalada.jpg" alt="X-Salada">
+                <div class="info">
+                    <h3>X-Salada</h3>
+                    <p class="preco">R$ 14,50</p>
+                    <button class="btn-comprar" onclick="addToCart('X-Salada', 14.50)">Adicionar</button>
+                </div>
+            </div>
+            <div class="produto">
+                <img src="xbacon.jpg" alt="X-Bacon">
+                <div class="info">
+                    <h3>X-Bacon</h3>
+                    <p class="preco">R$ 16,00</p>
+                    <button class="btn-comprar" onclick="addToCart('X-Bacon', 16.00)">Adicionar</button>
+                </div>
+            </div>
+            <div class="produto">
+                <img src="xduplo.jpg" alt="X-Duplo">
+                <div class="info">
+                    <h3>X-Duplo</h3>
+                    <p class="preco">R$ 19,90</p>
+                    <button class="btn-comprar" onclick="addToCart('X-Duplo', 19.90)">Adicionar</button>
+                </div>
+            </div>
+             <div class="produto">
+                <img src="xgalinha.jpg" alt="X-Galinha">
+                <div class="info">
+                    <h3>X-Galinha</h3>
+                    <p class="preco">R$ 15,00</p>
+                    <button class="btn-comprar" onclick="addToCart('X-Galinha', 15.00)">Adicionar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<h2>🍔 Lanches</h2>
+    <!-- ABA PORÇÕES -->
+    <div id="porcoes" class="categoria">
+        <h2>Porções</h2>
+        <div class="grid-produtos">
+            <div class="produto">
+                <img src="batata.jpg" alt="Batata">
+                <div class="info">
+                    <h3>Batata Frita</h3>
+                    <p class="preco">R$ 20,00</p>
+                    <button class="btn-comprar" onclick="addToCart('Batata Frita', 20.00)">Adicionar</button>
+                </div>
+            </div>
+            <div class="produto">
+                <img src="combo.jpg" alt="Combo">
+                <div class="info">
+                    <h3>3 X-Salada + Batata</h3>
+                    <p class="preco">R$ 60,00</p>
+                    <button class="btn-comprar" onclick="addToCart('Combo 3 Saladas', 60.00)">Adicionar</button>
+                </div>
+            </div>
+             <div class="produto">
+                <img src="calabresa.jpg" alt="Calabresa">
+                <div class="info">
+                    <h3>Calabresa Acebolada</h3>
+                    <p class="preco">R$ 28,00</p>
+                    <button class="btn-comprar" onclick="addToCart('Calabresa', 28.00)">Adicionar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<div class="produtos"><div class="produto">
-<img src="file_00000000d884820e9cdcac2b475cf5e1.png" alt="X-Burguer">
-<div class="info">
-<h3>X-Burguer</h3>
-<p class="preco">R$ 12,90</p>
-<p class="descricao">Pão, hambúrguer, queijo, alface, tomate, maionese e cebola.</p>
-<button>Pedir</button>
-</div>
-</div>
-
-<div class="produto">
-<img src="file_000000004dc4820e9df0a32aec3caa2a.png" alt="X-Salada">
-<div class="info">
-<h3>X-Salada</h3>
-<p class="preco">R$ 14,50</p>
-<p class="descricao">Pão, hambúrguer, queijo, alface, tomate e maionese.</p>
-<button>Pedir</button>
-</div>
-</div>
-
-<div class="produto">
-<img src="file_0000000064b4820ea9817e11f7a69a10.png" alt="X-Bacon">
-<div class="info">
-<h3>X-Bacon</h3>
-<p class="preco">R$ 16,00</p>
-<p class="descricao">Pão, hambúrguer, queijo, bacon, alface, tomate e maionese.</p>
-<button>Pedir</button>
-</div>
-</div>
-
-<div class="produto">
-<img src="file_00000000dad8820eb69dd51a1939f319.png" alt="X-Burguer Duplo">
-<div class="info">
-<h3>X-Burguer Duplo</h3>
-<p class="preco">R$ 19,90</p>
-<p class="descricao">2 hambúrgueres, queijo duplo, bacon, ovo, alface, tomate e maionese.</p>
-<button>Pedir</button>
-</div>
-</div>
-
-<div class="produto">
-<img src="IMG_20260727_195613.jpg" alt="X-Galinha">
-<div class="info">
-<h3>X-Galinha</h3>
-<p class="preco">R$ 15,00</p>
-<p class="descricao">Filé de frango empanado, queijo, alface, tomate e maionese.</p>
-<button>Pedir</button>
-</div>
-</div>
-
-<div class="produto">
-<img src="file_000000008334820e9aad389a97da2e19.png" alt="X-Calabresa">
-<div class="info">
-<h3>X-Calabresa</h3>
-<p class="preco">R$ 16,50</p>
-<p class="descricao">Calabresa acebolada, queijo, alface, tomate e maionese.</p>
-<button>Pedir</button>
-</div>
-</div>
-
-<div class="produto">
-<img src="file_00000000fae0820e8a281a844d0e354d.png" alt="X-Coração">
-<div class="info">
-<h3>X-Coração</h3>
-<p class="preco">R$ 17,00</p>
-<p class="descricao">Coração de frango, queijo, alface, tomate e maionese.</p>
-<button>Pedir</button>
-</div>
-</div></div>
-</section>
-
-<section id="porcoes" class="categoria">
-
-<h2>🍟 Porções</h2>
-
-<div class="produtos">
-
-<div class="produto">
-<img src="batatafrita.jpg" alt="Batata Frita">
-<div class="info">
-<h3>Batata Frita</h3>
-<p class="preco">R$ 20,00</p>
-<p class="descricao">Batata frita crocante.</p>
-<button>Pedir</button>
-</div>
-</div>
-
-<div class="produto">
-<img src="3xsalada.jpg" alt="3 X-Salada">
-<div class="info">
-<h3>3 X-Salada + Batata</h3>
-<p class="preco">R$ 60,00</p>
-<p class="descricao">Combo com 3 X-Salada e batata frita.</p>
-<button>Pedir</button>
-</div>
-</div>
-
-<div class="produto">
-<img src="calabresafrita.jpg" alt="Calabresa Acebolada">
-<div class="info">
-<h3>Calabresa Acebolada</h3>
-<p class="preco">R$ 28,00</p>
-<p class="descricao">Calabresa acebolada acompanhada de batata frita.</p>
-<button>Pedir</button>
-</div>
-</div>
-
-<div class="produto">
-<img src="iscafrita.jpg" alt="Isca de Frango">
-<div class="info">
-<h3>Isca de Frango</h3>
-<p class="preco">R$ 30,00</p>
-<p class="descricao">Iscas de frango empanadas.</p>
-<button>Pedir</button>
-</div>
-</div>
+    <!-- ABA BEBIDAS -->
+    <div id="bebidas" class="categoria">
+        <h2>Bebidas</h2>
+        <div class="grid-produtos">
+            <div class="produto">
+                <img src="coca.jpg" alt="Coca">
+                <div class="info">
+                    <h3>Coca-Cola 350ml</h3>
+                    <p class="preco">R$ 6,00</p>
+                    <button class="btn-comprar" onclick="addToCart('Coca-Cola', 6.00)">Adicionar</button>
+                </div>
+            </div>
+            <div class="produto">
+                <img src="guaarana.jpg" alt="Guaraná">
+                <div class="info">
+                    <h3>Guaraná 350ml</h3>
+                    <p class="preco">R$ 6,00</p>
+                    <button class="btn-comprar" onclick="addToCart('Guaraná', 6.00)">Adicionar</button>
+                </div>
+            </div>
+             <div class="produto">
+                <img src="agua.jpg" alt="Água">
+                <div class="info">
+                    <h3>Água Mineral</h3>
+                    <p class="preco">R$ 3,50</p>
+                    <button class="btn-comprar" onclick="addToCart('Água', 3.50)">Adicionar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </div>
 
-</section><section id="bebidas" class="categoria">
+<!-- Carrinho Flutuante -->
+<div id="carrinho-float">🛒 <span id="total-items">0</span> itens | R$ <span id="total-val">0,00</span></div>
 
-<h2>🥤 Bebidas</h2>
+<script>
+    // Lógica das Abas
+    function openTab(tabName, btnElement) {
+        // Esconde todas as categorias
+        document.querySelectorAll('.categoria').forEach(el => el.classList.remove('active'));
+        // Remove active de todos os botões
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+        
+        // Mostra a categoria certa e ativa o botão
+        document.getElementById(tabName).classList.add('active');
+        btnElement.classList.add('active');
+    }
 
-<div class="produtos">
+    // Lógica do Carrinho Simples
+    let total = 0;
+    let count = 0;
 
-<div class="produto">
-<img src="coca350.jpg" alt="Coca-Cola">
-<div class="info">
-<h3>Coca-Cola 350ml</h3>
-<p class="preco">R$ 6,00</p>
-<p class="descricao">Lata 350ml gelada.</p>
-<button>Pedir</button>
-</div>
-</div>
+    function addToCart(name, price) {
+        total += price;
+        count++;
+        document.getElementById('total-items').innerText = count;
+        document.getElementById('total-val').innerText = total.toFixed(2).replace('.', ',');
+        document.getElementById('carrinho-float').style.display = 'block';
+        
+        // Feedback visual
+        alert(name + " adicionado!");
+    }
+</script>
 
-<div class="produto">
-<img src="guarana350.jpg" alt="Guaraná">
-<div class="info">
-<h3>Guaraná 350ml</h3>
-<p class="preco">R$ 6,00</p>
-<p class="descricao">Lata 350ml gelada.</p>
-<button>Pedir</button>
-</div>
-</div>
-
-<div class="produto">
-<img src="fanta350.jpg" alt="Fanta">
-<div class="info">
-<h3>Fanta 350ml</h3>
-<p class="preco">R$ 6,00</p>
-<p class="descricao">Lata 350ml gelada.</p>
-<button>Pedir</button>
-</div>
-</div>
-
-<div class="produto">
-<img src="agua.jpg" alt="Água">
-<div class="info">
-<h3>Água Mineral</h3>
-<p class="preco">R$ 3,50</p>
-<p class="
+</body>
+</html>
