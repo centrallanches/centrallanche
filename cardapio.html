@@ -10,39 +10,25 @@
             --cor-secundaria: #FFF;
             --cor-fundo: #F8F0E6;
             --cor-texto: #333;
-            --sombra: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: sans-serif;
             background-color: var(--cor-fundo);
             color: var(--cor-texto);
-            line-height: 1.6;
         }
 
         header {
-            background: linear-gradient(135deg, var(--cor-principal), #FF8C00);
+            background: var(--cor-principal);
             color: var(--cor-secundaria);
             padding: 2rem 1rem;
             text-align: center;
-            box-shadow: var(--sombra);
         }
 
-        header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        header p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
+        header h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        header p { font-size: 1.2rem; }
 
         .container {
             max-width: 1200px;
@@ -52,132 +38,80 @@
 
         .categoria {
             margin-bottom: 3rem;
-            background: var(--cor-secundaria);
+            background: #FFF;
             border-radius: 12px;
             padding: 2rem;
-            box-shadow: var(--sombra);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
         .categoria h2 {
             color: var(--cor-principal);
-            font-size: 1.8rem;
-            margin-bottom: 1.5rem;
             border-bottom: 2px solid var(--cor-principal);
             padding-bottom: 0.5rem;
-            text-align: left;
+            margin-bottom: 1.5rem;
         }
 
         .produtos {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 1.5rem;
-            justify-items: center;
         }
 
         .produto {
-            background: #f0f0f0;
+            background: #f9f9f9;
             border-radius: 8px;
             overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            width: 100%;
-            max-width: 250px;
-        }
-
-        .produto:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            text-align: center;
         }
 
         .produto img {
             width: 100%;
             height: 200px;
             object-fit: cover;
-            border-bottom: 1px solid #ddd;
         }
 
-        .produto-info {
-            padding: 1rem;
-        }
-
-        .produto-info h3 {
-            font-size: 1.1rem;
-            margin-bottom: 0.5rem;
-            text-align: center;
-        }
-
-        .produto-info p {
-            color: #FF6B00;
+        .produto-info { padding: 1rem; }
+        .produto-info h3 { margin-bottom: 0.5rem; }
+        .produto-info .preco {
+            color: var(--cor-principal);
             font-weight: bold;
             font-size: 1.2rem;
-            text-align: center;
             margin-bottom: 0.5rem;
         }
-
-        .descricao {
-            font-size: 0.9rem;
-            color: #666;
-            text-align: center;
-            margin-bottom: 1rem;
-        }
+        .descricao { font-size: 0.9rem; color: #666; margin-bottom: 1rem; }
 
         .btn-pedido {
-            display: block;
             width: 100%;
             background: var(--cor-principal);
-            color: var(--cor-secundaria);
+            color: #FFF;
             border: none;
-            padding: 0.6rem;
-            border-radius: 6px;
+            padding: 0.8rem;
             font-weight: bold;
             cursor: pointer;
-            transition: background 0.3s ease;
         }
 
-        .btn-pedido:hover {
-            background: #E65A00;
-        }
-
-        footer {
-            text-align: center;
-            padding: 1.5rem;
-            background: var(--cor-principal);
-            color: var(--cor-secundaria);
-            margin-top: 2rem;
-        }
-
-        @media (max-width: 768px) {
-            header h1 {
-                font-size: 2rem;
-            }
-
-            .produtos {
-                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-                gap: 1rem;
-            }
-
-            .produto {
-                max-width: none;
-            }
-        }
+        .btn-pedido:hover { background: #e05e00; }
     </style>
 </head>
 <body>
+
     <header>
-        <h1>🍽️ Central Lanches</h1>
-        <p>Faça seu pedido pelo WhatsApp</p>
+        <h1>Central Lanches</h1>
+        <p>Faça seu pedido aqui</p>
     </header>
 
     <div class="container">
         <section class="categoria">
-            <h2>🍔 LANCHES</h2>
+            <h2>Lanches</h2>
             <div class="produtos">
+                
                 <div class="produto">
                     <img src="xburguersimples.jpg" alt="X-Burguer">
                     <div class="produto-info">
                         <h3>X-Burguer</h3>
-                        <p>R$ 12,90</p>
-                        <p class="descricao">Pão, hambúrguer, queijo, alface, tomate, maionese e cebola.</p>
-                        <button class="btn-pedido">📲 Pedir</button>
+                        <p class="preco">R$ 12,90</p>
+                        <p class="descricao">Pão, carne, queijo.</p>
+                        <button class="btn-pedido">Pedir</button>
                     </div>
                 </div>
 
@@ -185,9 +119,9 @@
                     <img src="xsalada.jpg" alt="X-Salada">
                     <div class="produto-info">
                         <h3>X-Salada</h3>
-                        <p>R$ 14,50</p>
-                        <p class="descricao">Pão, hambúrguer, queijo, alface, tomate, cebola, picles e maionese.</p>
-                        <button class="btn-pedido">📲 Pedir</button>
+                        <p class="preco">R$ 14,50</p>
+                        <p class="descricao">Pão, carne, queijo, salada.</p>
+                        <button class="btn-pedido">Pedir</button>
                     </div>
                 </div>
 
@@ -195,9 +129,9 @@
                     <img src="xbacon.jpg" alt="X-Bacon">
                     <div class="produto-info">
                         <h3>X-Bacon</h3>
-                        <p>R$ 16,00</p>
-                        <p class="descricao">Pão, hambúrguer, queijo, bacon, alface, tomate e maionese.</p>
-                        <button class="btn-pedido">📲 Pedir</button>
+                        <p class="preco">R$ 16,00</p>
+                        <p class="descricao">Pão, carne, queijo, bacon.</p>
+                        <button class="btn-pedido">Pedir</button>
                     </div>
                 </div>
 
@@ -205,9 +139,9 @@
                     <img src="xduplo.jpg" alt="X-Duplo">
                     <div class="produto-info">
                         <h3>X-Duplo</h3>
-                        <p>R$ 19,90</p>
-                        <p class="descricao">Pão, 2 hambúrgueres, queijo, bacon, ovo, alface, tomate, cebola, picles, milho, ervilha e maionese.</p>
-                        <button class="btn-pedido">📲 Pedir</button>
+                        <p class="preco">R$ 19,90</p>
+                        <p class="descricao">Dois hambúrgueres, queijo duplo.</p>
+                        <button class="btn-pedido">Pedir</button>
                     </div>
                 </div>
 
@@ -215,9 +149,9 @@
                     <img src="xgalinha.jpg" alt="X-Galinha">
                     <div class="produto-info">
                         <h3>X-Galinha</h3>
-                        <p>R$ 15,00</p>
-                        <p class="descricao">Pão, filé de frango empanado, queijo, alface, tomate e maionese.</p>
-                        <button class="btn-pedido">📲 Pedir</button>
+                        <p class="preco">R$ 15,00</p>
+                        <p class="descricao">Filé de frango, queijo.</p>
+                        <button class="btn-pedido">Pedir</button>
                     </div>
                 </div>
 
@@ -225,9 +159,9 @@
                     <img src="xcalabresa.jpg" alt="X-Calabresa">
                     <div class="produto-info">
                         <h3>X-Calabresa</h3>
-                        <p>R$ 16,50</p>
-                        <p class="descricao">Pão, calabresa acebolada, queijo, alface, tomate e maionese.</p>
-                        <button class="btn-pedido">📲 Pedir</button>
+                        <p class="preco">R$ 16,50</p>
+                        <p class="descricao">Calabresa, queijo, cebola.</p>
+                        <button class="btn-pedido">Pedir</button>
                     </div>
                 </div>
 
@@ -235,24 +169,20 @@
                     <img src="xcoracao.jpg" alt="X-Coração">
                     <div class="produto-info">
                         <h3>X-Coração</h3>
-                        <p>R$ 17,00</p>
-                        <p class="descricao">Pão, coração de frango, queijo, alface, tomate e maionese.</p>
-                        <button class="btn-pedido">📲 Pedir</button>
+                        <p class="preco">R$ 17,00</p>
+                        <p class="descricao">Coração de frango, queijo.</p>
+                        <button class="btn-pedido">Pedir</button>
                     </div>
                 </div>
+
             </div>
         </section>
     </div>
 
-    <footer>
-        <p>© 2026 Central Lanches. Todos os direitos reservados.</p>
-    </footer>
-
     <script>
-        document.querySelectorAll('.btn-pedido').forEach(button => {
-            button.addEventListener('click', function() {
-                const produto = this.closest('.produto').querySelector('h3').textContent;
-                alert(`Pedido enviado! ${produto}`);
+        document.querySelectorAll('.btn-pedido').forEach(btn => {
+            btn.addEventListener('click', () => {
+                alert('Pedido registrado!');
             });
         });
     </script>
