@@ -1,116 +1,148 @@
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-body{
-    font-family:'Poppins',sans-serif;
-    background:#000;
-    color:#fff;
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #000;
+    color: #fff;
 }
 
-.hero{
-    width:100%;
-    min-height:100vh;
-    background:#000;
-    background-image:url("fundo.png");
-    background-size:cover;
-    background-position:center;
-    background-repeat:no-repeat;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    text-align:center;
-    padding:30px;
-    position:relative;
+/* --- Página Inicial (Hero) --- */
+.hero {
+    width: 100%;
+    min-height: 100vh;
+    background: #000;
+    background-image: url("fundo.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 30px;
+    position: relative;
 }
 
-.overlay{
-    position:absolute;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background:rgba(0,0,0,0.35);
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.35);
 }
 
-.conteudo{
-    position:relative;
-    z-index:2;
-    max-width:450px;
-    width:100%;
+.conteudo {
+    position: relative;
+    z-index: 2;
+    max-width: 450px;
+    width: 100%;
 }
 
-.logo{
+.logo {
     width: 120px;
-    max-width:85%;
-    margin-bottom:35px;
-    animation:flutuar 3s ease-in-out infinite;
-
-    h1{
-    font-family:'Anton',sans-serif;
-    font-size:22px;
-    letter-spacing:2px;
-    margin-bottom:35px;
-    }
-    
-    
-
-
-
-
-    
-     
-    
-
+    max-width: 85%;
+    margin-bottom: 35px;
+    animation: flutuar 3s ease-in-out infinite;
 }
 
-.botao{
-    display:inline-block;
-    width:100%;
-    padding:20px;
-    border:3px solid #f4b400;
-    border-radius:22px;
-    background:#111;
-    color:#fff;
-    text-decoration:none;
-    font-size:28px;
-    font-weight:bold;
-    transition:0.3s;
+.hero h1 {
+    font-family: 'Anton', sans-serif;
+    font-size: 22px;
+    letter-spacing: 2px;
+    margin-bottom: 35px;
 }
 
-.botao:hover{
-    background:#f4b400;
-    color:#000;
-    transform:scale(1.03);
+/* --- Botão do Cardápio na Home --- */
+.btn-cardapio {
+    display: inline-block;
+    width: 100%;
+    padding: 20px;
+    border: 3px solid #f4b400;
+    border-radius: 22px;
+    background: #111;
+    color: #fff;
+    text-decoration: none;
+    font-size: 28px;
+    font-weight: bold;
+    transition: 0.3s;
+    cursor: pointer;
 }
 
-@keyframes flutuar{
-    0%{
-        transform:translateY(0);
-    }
-    50%{
-        transform:translateY(-10px);
-    }
-    100%{
-        transform:translateY(0);
-    }
+.btn-cardapio:hover {
+    background: #f4b400;
+    color: #000;
+    transform: scale(1.03);
 }
 
-@media(max-width:768px){
-
-.logo{
-    width:230px;
+@keyframes flutuar {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0); }
 }
 
-h1{
-    font-size:32px;
+/* --- Estilos do Cardápio (Nova Página) --- */
+.menu-wrapper {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 25px;
+    background-color: #ffffff; /* Fundo branco pra destacar */
+    border: 4px solid #f4b400; /* Contorno Amarelo Grosso */
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(244, 180, 0, 0.4); /* Brilho amarelo */
+    color: #333; /* Texto escuro dentro da caixa */
 }
 
-.botao{
-    font-size:22px;
-    padding:18px;
+.section-title {
+    text-align: center;
+    font-family: 'Anton', sans-serif;
+    font-size: 2rem;
+    color: #000;
+    margin-bottom: 20px;
+    text-transform: uppercase;
 }
 
+.cards-container {
+    display: grid;
+    gap: 15px;
+}
+
+.menu-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.menu-card:last-child {
+    border-bottom: none;
+}
+
+.card-info h3 {
+    font-size: 1.1rem;
+    margin-bottom: 5px;
+    color: #000;
+}
+
+.card-info p {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.card-price {
+    font-weight: bold;
+    color: #d32f2f; /* Preço em vermelho */
+    font-size: 1.2rem;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .logo { width: 230px; }
+    .hero h1 { font-size: 32px; }
+    .btn-cardapio { font-size: 22px; padding: 18px; }
 }
