@@ -1,0 +1,15 @@
+<div class="produto">
+  <img src="imagens/x-burguer-duplo.png" alt="X Burguer Duplo">
+
+  <div class="info">
+    <h2>X Burguer Duplo</h2>
+
+    <p>
+      Pão tostado, hambúrguer artesanal 150g duplo,
+      queijo duplo, alface, tomate, milho,
+      ervilha e molho especial.
+    </p>
+
+    <span class="preco">R$ 29,90</span>
+  </div>
+</div>
