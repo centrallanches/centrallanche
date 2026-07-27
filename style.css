@@ -86,15 +86,60 @@ body {
 }
 
 /* --- Estilos do Cardápio (Nova Página) --- */
+/* Contorno do Cardápio (Fundo Preto) */
 .menu-wrapper {
     max-width: 600px;
     margin: 40px auto;
     padding: 25px;
-    background-color: #ffffff; /* Fundo branco pra destacar */
-    border: 4px solid #f4b400; /* Contorno Amarelo Grosso */
+    background-color: #111; /* Fundo preto */
+    border: 3px solid #f4b400; /* Borda amarela */
     border-radius: 20px;
-    box-shadow: 0 0 20px rgba(244, 180, 0, 0.4); /* Brilho amarelo */
-    color: #333; /* Texto escuro dentro da caixa */
+    box-shadow: 0 0 15px rgba(244, 180, 0, 0.2);
+    color: #fff; /* Texto branco */
+}
+
+.section-title {
+    text-align: center;
+    font-family: 'Anton', sans-serif;
+    font-size: 2rem;
+    color: #fff; /* Título branco */
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
+/* Ajuste dos itens no fundo preto */
+.menu-card {
+    display: flex;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #333; /* Linha divisória cinza escura */
+    gap: 15px;
+}
+
+.menu-card:last-child {
+    border-bottom: none;
+}
+
+.card-info h3 {
+    font-size: 1rem;
+    margin: 0 0 5px 0;
+    color: #fff; /* Nome do lanche branco */
+    font-weight: 600;
+}
+
+.card-info p {
+    font-size: 0.85rem;
+    color: #ccc; /* Descrição cinza claro */
+    margin: 0;
+}
+
+.card-price {
+    font-weight: bold;
+    color: #f4b400; /* Preço amarelo pra destacar */
+    font-size: 1.1rem;
+    white-space: nowrap;
+}
+
 }
 
 .section-title {
