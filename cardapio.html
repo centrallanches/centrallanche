@@ -6,16 +6,17 @@
     <title>Central Lanches - Cardápio</title>
     <style>
         :root {
-            --primary: #d32f2f;
-            --dark: #1a1a1a;
-            --light: #f5f5f5;
-            --gray: #333;
-            --success: #4CAF50;
+            --primary: #d32f2f; /* Vermelho */
+            --bg-body: #f4f4f4; /* Fundo claro */
+            --bg-card: #ffffff; /* Cartão branco */
+            --text-main: #333333;
+            --text-sec: #666666;
+            --border: #e0e0e0;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         
-        body { background-color: var(--dark); color: var(--light); padding-bottom: 80px; }
+        body { background-color: var(--bg-body); color: var(--text-main); padding-bottom: 80px; }
 
         header {
             background-color: var(--primary);
@@ -24,7 +25,7 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         header h1 { font-size: 1.5rem; font-weight: bold; color: white; }
 
@@ -34,58 +35,61 @@
             padding: 15px;
             overflow-x: auto;
             white-space: nowrap;
-            background: #222;
+            background: white;
+            border-bottom: 1px solid var(--border);
         }
         .cat-btn {
-            background: var(--gray);
-            color: white;
+            background: #eee;
+            color: #555;
             border: none;
             padding: 8px 16px;
             border-radius: 20px;
             cursor: pointer;
             font-weight: 600;
         }
-        .cat-btn.active { background: var(--primary); }
+        .cat-btn.active { background: var(--primary); color: white; }
 
         .grid-produtos {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
             gap: 15px;
             padding: 15px;
         }
 
         .card-produto {
-            background: #2a2a2a;
-            border-radius: 10px;
+            background: var(--bg-card);
+            border-radius: 12px;
             overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             display: flex;
             flex-direction: column;
-            transition: transform 0.2s;
         }
-        .card-produto:active { transform: scale(0.98); }
 
         .img-produto {
             width: 100%;
-            height: 120px;
+            height: 140px;
             object-fit: cover;
-            background: #444;
+            background: #ddd;
         }
 
-        .info-produto { padding: 10px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
-        .nome-produto { font-weight: bold; font-size: 0.9rem; margin-bottom: 5px; }
-        .preco-produto { color: #4CAF50; font-weight: bold; }
+        .info-produto { padding: 12px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .nome-produto { font-weight: bold; font-size: 1rem; margin-bottom: 5px; color: var(--text-main); }
+        .desc-produto { font-size: 0.8rem; color: var(--text-sec); margin-bottom: 8px; }
+        .preco-produto { color: var(--primary); font-weight: bold; font-size: 1.1rem; }
         
         .btn-add {
             background: var(--primary);
             color: white;
             border: none;
             width: 100%;
-            padding: 8px;
+            padding: 10px;
             margin-top: 10px;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
+            font-weight: bold;
         }
 
+        /* Carrinho Flutuante */
         .carrinho-float {
             position: fixed;
             bottom: 20px;
@@ -93,21 +97,23 @@
             width: 90%;
             background: var(--primary);
             color: white;
-            padding: 15px;
+            padding: 15px 20px;
             border-radius: 50px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            box-shadow: 0 4px 15px rgba(211, 47, 47, 0.4);
             cursor: pointer;
             z-index: 900;
             display: none;
+            font-weight: bold;
         }
 
+        /* Modals */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.6);
             display: none;
             justify-content: center;
             align-items: flex-end;
@@ -115,11 +121,11 @@
         }
         
         .modal-content {
-            background: #1e1e1e;
+            background: white;
             width: 100%;
             max-width: 500px;
             border-radius: 20px 20px 0 0;
-            padding: 20px;
+            padding: 25px;
             max-height: 90vh;
             overflow-y: auto;
             animation: slideUp 0.3s ease;
@@ -127,16 +133,29 @@
 
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .modal-header h2 { font-size: 1.3rem; }
+        .close-modal { font-size: 1.5rem; cursor: pointer; color: #999; }
+
         .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; color: #ccc; }
+        .form-group label { display: block; margin-bottom: 5px; color: var(--text-sec); font-size: 0.9rem; }
         .form-group input { 
-            width: 100%; padding: 10px; 
-            background: #333; border: 1px solid #444; 
-            color: white; border-radius: 5px; 
+            width: 100%; padding: 12px; 
+            background: #f9f9f9; border: 1px solid var(--border); 
+            color: var(--text-main); border-radius: 8px; 
+            outline: none;
+        }
+        .form-group input:focus { border-color: var(--primary); }
+
+        .resumo-pedido {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
         }
 
         .btn-finalizar {
-            background: var(--success);
+            background: var(--primary);
             color: white;
             width: 100%;
             padding: 15px;
@@ -144,20 +163,25 @@
             border-radius: 10px;
             font-size: 1.1rem;
             font-weight: bold;
-            margin-top: 20px;
             cursor: pointer;
         }
-        .btn-finalizar:disabled { background: #555; }
+        .btn-finalizar:disabled { background: #ccc; cursor: not-allowed; }
 
+        /* Modal PIX Específico */
+        .modal-pix-wrapper {
+            align-items: center; /* Centraliza verticalmente */
+        }
         .modal-pix-content {
-            background: #1e1e1e;
-            border-radius: 15px;
+            background: white;
+            border-radius: 20px;
             padding: 30px;
             text-align: center;
             width: 90%;
             max-width: 350px;
             position: relative;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
+        
         .qrcode-box {
             background: white;
             padding: 10px;
@@ -167,22 +191,16 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            border: 1px solid #eee;
             border-radius: 10px;
         }
         .qrcode-box img { width: 100%; height: 100%; object-fit: contain; }
         
         .status-pagamento {
             margin-top: 15px;
-            font-weight: bold;
+            font-weight: 600;
             color: #ff9800;
-        }
-
-        .close-modal {
-            position: absolute;
-            top: 10px; right: 15px;
-            color: #aaa;
-            font-size: 1.5rem;
-            cursor: pointer;
+            font-size: 0.9rem;
         }
     </style>
 </head>
@@ -200,7 +218,7 @@
     </div>
 
     <div class="grid-produtos" id="lista-produtos">
-        <!-- Produtos inseridos via JS -->
+        <!-- Produtos via JS -->
     </div>
 
     <div class="carrinho-float" id="btn-carrinho" onclick="abrirCarrinho()">
@@ -208,46 +226,53 @@
         <span id="total-float">R$ 0,00</span>
     </div>
 
+    <!-- Modal Carrinho -->
     <div class="modal-overlay" id="modal-carrinho">
         <div class="modal-content">
-            <span class="close-modal" onclick="fecharCarrinho()">&times;</span>
-            <h2>Seu Pedido</h2>
-            <div id="itens-carrinho" style="margin: 20px 0; border-bottom: 1px solid #333; padding-bottom: 10px;"></div>
+            <div class="modal-header">
+                <h2>Seu Pedido</h2>
+                <span class="close-modal" onclick="fecharCarrinho()">&times;</span>
+            </div>
+            
+            <div class="resumo-pedido" id="itens-carrinho">
+                <!-- Itens -->
+            </div>
             
             <div class="form-group">
-                <label>Nome:</label>
-                <input type="text" id="nome-cliente" placeholder="Seu nome">
+                <label>Nome Completo:</label>
+                <input type="text" id="nome-cliente" placeholder="Ex: João Silva">
             </div>
             <div class="form-group">
-                <label>Endereço:</label>
-                <input type="text" id="endereco-cliente" placeholder="Rua, Número">
+                <label>Endereço de Entrega:</label>
+                <input type="text" id="endereco-cliente" placeholder="Rua, Número, Bairro">
             </div>
 
-            <div style="display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: bold; margin-top: 20px;">
-                <span>Total:</span>
-                <span id="total-final">R$ 0,00</span>
+            <div style="display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: bold; margin: 20px 0;">
+                <span>Total a Pagar:</span>
+                <span id="total-final" style="color: var(--primary);">R$ 0,00</span>
             </div>
 
-            <button class="btn-finalizar" onclick="finalizarPedido()">Finalizar e Pagar</button>
+            <button class="btn-finalizar" onclick="finalizarPedido()">Finalizar e Pagar com PIX</button>
         </div>
     </div>
 
-    <div class="modal-overlay" id="modal-pix" style="align-items: center;">
+    <!-- Modal PIX -->
+    <div class="modal-overlay modal-pix-wrapper" id="modal-pix">
         <div class="modal-pix-content">
-            <span class="close-modal" onclick="fecharPix()">&times;</span>
-            <h3>Pagamento via PIX</h3>
-            <p style="color: #ccc; font-size: 0.9rem;">Escaneie o QR Code abaixo</p>
+            <span class="close-modal" style="position:absolute; top:15px; right:20px;" onclick="fecharPix()">&times;</span>
+            <h3>Pagamento PIX</h3>
+            <p style="color: #666; font-size: 0.9rem; margin-top:5px;">Abra o app do seu banco e escaneie</p>
             
             <div class="qrcode-box">
                 <img src="" alt="QR Code Pix" id="img-qr" style="display:none;">
-                <div id="loading-qr" style="color:black;">Gerando...</div>
+                <div id="loading-qr" style="color:#999;">Gerando código...</div>
             </div>
 
-            <p id="valor-pix" style="font-weight: bold; font-size: 1.2rem;"></p>
+            <p id="valor-pix" style="font-weight: bold; font-size: 1.3rem; color: var(--text-main);"></p>
             
-            <div id="status-pagamento" class="status-pagamento">Aguardando pagamento...</div>
+            <div id="status-pagamento" class="status-pagamento">Aguardando confirmação...</div>
             
-            <button onclick="fecharPix()" style="margin-top: 20px; background: transparent; border: 1px solid #555; color: #aaa; padding: 8px 20px; border-radius: 5px; width: 100%;">Fechar</button>
+            <button onclick="fecharPix()" style="margin-top: 25px; background: white; border: 1px solid #ccc; color: #666; padding: 10px 20px; border-radius: 8px; width: 100%; font-weight: 600;">Já paguei / Fechar</button>
         </div>
     </div>
 
@@ -279,9 +304,13 @@
                     <div class="card-produto">
                         <img src="${p.img}" class="img-produto" alt="${p.nome}">
                         <div class="info-produto">
-                            <div class="nome-produto">${p.nome}</div>
-                            <div class="preco-produto">R$ ${p.preco.toFixed(2)}</div>
-                            <button class="btn-add" onclick="addCarrinho(${p.id})">Adicionar</button>
+                            <div>
+                                <div class="nome-produto">${p.nome}</div>
+                            </div>
+                            <div>
+                                <div class="preco-produto">R$ ${p.preco.toFixed(2)}</div>
+                                <button class="btn-add" onclick="addCarrinho(${p.id})">Adicionar</button>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -309,9 +338,15 @@
             document.getElementById('btn-carrinho').style.display = carrinho.length > 0 ? 'flex' : 'none';
             
             const listaModal = document.getElementById('itens-carrinho');
-            listaModal.innerHTML = carrinho.map(i => `<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>${i.nome}</span><span>R$ ${i.preco.toFixed(2)}</span></div>`).join('');
-            listaModal.innerHTML += `<div style="border-top:1px dashed #555; margin-top:10px; padding-top:5px; display:flex; justify-content:space-between; color:#aaa;"><span>Taxa Entrega</span><span>R$ ${TAXA_ENTREGA.toFixed(2)}</span></div>`;
+            let html = carrinho.map(i => `
+                <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:0.95rem;">
+                    <span>${i.nome}</span>
+                    <span>R$ ${i.preco.toFixed(2)}</span>
+                </div>`).join('');
             
+            html += `<div style="border-top:1px dashed #ccc; margin-top:10px; padding-top:10px; display:flex; justify-content:space-between; color:#666;"><span>Taxa Entrega</span><span>R$ ${TAXA_ENTREGA.toFixed(2)}</span></div>`;
+            
+            listaModal.innerHTML = html;
             document.getElementById('total-final').innerText = `R$ ${total.toFixed(2)}`;
         }
 
@@ -324,13 +359,13 @@
             const endereco = document.getElementById('endereco-cliente').value;
 
             if(!nome || !endereco) {
-                alert("Preencha nome e endereço!");
+                alert("Por favor, preencha seu nome e endereço.");
                 return;
             }
 
             const btn = document.querySelector('.btn-finalizar');
             btn.disabled = true;
-            btn.textContent = "Gerando PIX...";
+            btn.textContent = "Processando...";
 
             const total = carrinho.reduce((acc, item) => acc + item.preco, 0) + TAXA_ENTREGA;
             const pedidoId = Date.now();
@@ -342,24 +377,18 @@
 
                 let qrCodeContent = "";
 
-                // Tenta encontrar o código PIX em diferentes campos comuns da API NovaPay/HardPay
-                if (dataPix.qr_code_string) {
-                    qrCodeContent = dataPix.qr_code_string;
-                } else if (dataPix.emv) {
-                    qrCodeContent = dataPix.emv;
-                } else if (dataPix.qr_code) {
-                     qrCodeContent = dataPix.qr_code;
-                } else {
-                    // Se a API retornar um objeto complexo, tenta achar algo útil
-                    qrCodeContent = JSON.stringify(dataPix); 
-                }
+                // Lógica robusta para achar o código PIX
+                if (dataPix.qr_code_string) qrCodeContent = dataPix.qr_code_string;
+                else if (dataPix.emv) qrCodeContent = dataPix.emv;
+                else if (dataPix.qr_code) qrCodeContent = dataPix.qr_code;
+                else if (dataPix.data && dataPix.data.qr_code) qrCodeContent = dataPix.data.qr_code; // Estrutura aninhada comum
 
                 if(qrCodeContent && qrCodeContent.length > 10) {
                     fecharCarrinho();
                     document.getElementById('modal-pix').style.display = 'flex';
                     document.getElementById('valor-pix').innerText = `R$ ${total.toFixed(2)}`;
                     
-                    // Gera imagem do QR Code baseada no texto (Copia e Cola)
+                    // Gera imagem do QR Code
                     const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrCodeContent)}`;
                     const imgEl = document.getElementById('img-qr');
                     imgEl.src = qrUrl;
@@ -368,15 +397,15 @@
 
                     iniciarMonitoramentoPagamento();
                 } else {
-                    throw new Error("API não retornou código PIX válido. Verifique o Console (F12).");
+                    throw new Error("Não foi possível gerar o QR Code. Verifique o console.");
                 }
 
             } catch (error) {
                 console.error(error);
-                alert("Erro no pagamento: " + error.message);
+                alert("Erro ao gerar PIX: " + error.message);
             } finally {
                 btn.disabled = false;
-                btn.textContent = "Finalizar e Pagar";
+                btn.textContent = "Finalizar e Pagar com PIX";
             }
         }
 
@@ -390,18 +419,18 @@
                 },
                 body: JSON.stringify({
                     amount: Math.round(valor * 100), 
-                    description: `Pedido Central Lanches - ID: ${pedidoId}`,
+                    description: `Pedido Central Lanches - ${pedidoId}`,
                     payment_method: "PIX",
                     customer: { 
                         name: document.getElementById('nome-cliente').value,
-                        document: "00000000000" 
+                        document: "00000000000" // CPF fictício para teste
                     } 
                 })
             });
 
             if (!response.ok) {
                 const errText = await response.text();
-                throw new Error(`API Error ${response.status}: ${errText}`);
+                throw new Error(`Erro ${response.status}`);
             }
 
             return await response.json();
@@ -409,21 +438,22 @@
 
         function iniciarMonitoramentoPagamento() {
             const statusEl = document.getElementById('status-pagamento');
-            
-            const checkInterval = setInterval(() => {
-                statusEl.textContent = "Pagamento identificado! Pedido em preparo.";
+            setTimeout(() => {
+                statusEl.textContent = "Pagamento Confirmado! ✅";
                 statusEl.style.color = "#4CAF50";
-                clearInterval(checkInterval);
-            }, 10000);
+            }, 10000); // Simula confirmação em 10s
         }
 
         function fecharPix() {
             document.getElementById('modal-pix').style.display = 'none';
-            // Reinicia UI do modal para próximo uso
+            // Reset visual
             document.getElementById('img-qr').style.display = 'none';
             document.getElementById('loading-qr').style.display = 'block';
-            document.getElementById('status-pagamento').textContent = "Aguardando pagamento...";
+            document.getElementById('status-pagamento').textContent = "Aguardando confirmação...";
             document.getElementById('status-pagamento').style.color = "#ff9800";
+            
+            // Opcional: Limpar carrinho após fechar
+            // carrinho = []; atualizarCarrinhoUI();
         }
 
         window.onclick = function(event) {
