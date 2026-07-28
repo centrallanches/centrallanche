@@ -91,7 +91,7 @@
         .info h3 { font-size:1rem; margin-bottom:5px; height:40px; overflow:hidden; }
         .desc { font-size:0.8rem; color:#777; margin-bottom:8px; height:40px; overflow:hidden; }
         .preco { color:#ff6b00; font-weight:bold; font-size:1.1rem; margin-bottom:10px; }
-        
+
         .btn-comprar {
             width:100%; background:#ff6b00; color:#fff; border:none;
             padding:8px; border-radius:6px; font-weight:bold; cursor:pointer;
@@ -108,7 +108,7 @@
         }
         #carrinho-info { flex: 1; }
         .cart-btn {
-            border: none; padding: 8px 15px; 
+            border: none; padding: 8px 15px;
             border-radius: 5px; color: white; font-weight: bold; cursor: pointer;
             font-size: 0.9rem;
         }
@@ -124,7 +124,7 @@
             max-height: 90vh; overflow-y: auto;
         }
         .checkout-content h2 { color: #ff6b00; margin-bottom: 15px; }
-        
+
         .item-carrinho {
             display: flex; justify-content: space-between; align-items: center;
             border-bottom: 1px solid #eee; padding: 10px 0;
@@ -132,7 +132,7 @@
         .item-info { flex: 1; }
         .item-nome { font-weight: bold; font-size: 0.9rem; }
         .item-preco { font-size: 0.8rem; color: #777; }
-        
+
         .item-controles { display: flex; align-items: center; gap: 10px; }
         .btn-qtd {
             background: #eee; border: none; width: 25px; height: 25px;
@@ -163,7 +163,6 @@
     </style>
 </head>
 <body>
-
 <header>
     <h1>Central Lanches</h1>
     <p>Selecione a categoria abaixo</p>
@@ -176,7 +175,6 @@
 </div>
 
 <div class="container">
-
     <!-- ABA LANÇHES -->
     <div id="lanches" class="categoria active">
         <h2>Lanches</h2>
@@ -229,7 +227,7 @@
                     <button class="btn-comprar" onclick="addToCart('X-Duplo', 19.90)">Adicionar</button>
                 </div>
             </div>
-             <div class="produto">
+            <div class="produto">
                 <div class="img-container">
                     <img src="IMG_20260727_195613.jpg" alt="X-Galinha">
                     <div class="btn-remove-item hidden" onclick="removeFromCart('X-Galinha')">✕</div>
@@ -329,7 +327,6 @@
             </div>
         </div>
     </div>
-
 </div>
 
 <!-- Carrinho Flutuante -->
@@ -347,13 +344,9 @@
 <div id="modal-checkout">
     <div class="checkout-content">
         <h2>Seu Pedido</h2>
-        
-        <!-- Lista de itens com controle -->
-        <div id="lista-itens-carrinho">
-            <!-- Inserido via JS -->
-        </div>
+        <div id="lista-itens-carrinho"></div>
 
-        <div class="form-group" style="margin-top: 20px;">
+        <div class="form-group">
             <label>Seu Nome:</label>
             <input type="text" id="nome-cliente" placeholder="Nome completo">
         </div>
@@ -364,8 +357,13 @@
         </div>
 
         <div class="form-group">
-            <label>Endereço de Entrega:</label>
-            <input type="text" id="endereco-cliente" placeholder="Rua, Número, Bairro">
+            <label>Endereço:</label>
+            <input type="text" id="endereco-cliente" placeholder="Ex: Centro, Rua das Flores">
+        </div>
+
+        <div class="form-group">
+            <label>Rua:</label>
+            <input type="text" id="rua-cliente" placeholder="Complemento: Número e nome da rua">
         </div>
 
         <div class="form-group">
@@ -450,15 +448,12 @@
     function updateCartDisplay() {
         let total = 0;
         let count = 0;
-        
         for(let item in cart) {
             total += cart[item].price * cart[item].qtd;
             count += cart[item].qtd;
         }
-        
         document.getElementById('total-items').innerText = count;
         document.getElementById('total-val').innerText = total.toFixed(2).replace('.', ',');
-        
         const floatCart = document.getElementById('carrinho-float');
         if(count > 0) {
             floatCart.style.display = 'flex';
@@ -472,12 +467,10 @@
         const container = document.getElementById('lista-itens-carrinho');
         container.innerHTML = '';
         let subtotal = 0;
-
         for(let item in cart) {
             const data = cart[item];
             const itemTotal = data.price * data.qtd;
             subtotal += itemTotal;
-
             const div = document.createElement('div');
             div.className = 'item-carrinho';
             div.innerHTML = `
@@ -493,7 +486,6 @@
             `;
             container.appendChild(div);
         }
-
         document.getElementById('subtotal-val').innerText = subtotal.toFixed(2).replace('.', ',');
         document.getElementById('total-final-val').innerText = (subtotal + TAXA_ENTREGA).toFixed(2).replace('.', ',');
     }
@@ -510,9 +502,10 @@
     function finalizarPedidoLocal() {
         const nome = document.getElementById('nome-cliente').value;
         const endereco = document.getElementById('endereco-cliente').value;
-        
-        if(!nome || !endereco) {
-            alert("Por favor, preencha seu nome e endereço.");
+        const rua = document.getElementById('rua-cliente').value;
+
+        if(!nome || !endereco || !rua) {
+            alert("Preencha nome, endereço e complemento da rua.");
             return;
         }
 
@@ -520,18 +513,18 @@
         for(let item in cart) totalFinal += cart[item].price * cart[item].qtd;
         totalFinal += TAXA_ENTREGA;
 
-        alert(`Pedido Confirmado!\n\nCliente: ${nome}\nTotal a Pagar: R$ ${totalFinal.toFixed(2).replace('.', ',')}\n\nAguardando processamento...`);
-        
+        alert(`Pedido Confirmado!\n\nCliente: ${nome}\nEndereço: ${endereco}\nRua: ${rua}\nTotal: R$ ${totalFinal.toFixed(2).replace('.', ',')} (Taxa de entrega inclusa)`);
+
         cart = {};
         updateCartDisplay();
         updateRemoveButtons();
         fecharCheckout();
         document.getElementById('nome-cliente').value = '';
         document.getElementById('endereco-cliente').value = '';
+        document.getElementById('rua-cliente').value = '';
         document.getElementById('telefone-cliente').value = '';
         document.getElementById('obs-pedido').value = '';
     }
 </script>
-
 </body>
 </html>
