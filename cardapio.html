@@ -71,6 +71,37 @@
         background: #ff6b00; border: none; padding: 5px 15px; 
         border-radius: 5px; color: white; font-weight: bold; cursor: pointer;
     }
+
+    /* Modal Checkout */
+    #modal-checkout {
+        display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center;
+    }
+    .checkout-content {
+        background: #fff; padding: 20px; border-radius: 10px; width: 90%; max-width: 400px;
+        max-height: 90vh; overflow-y: auto;
+    }
+    .checkout-content h2 { color: #ff6b00; margin-bottom: 15px; }
+    .form-group { margin-bottom: 15px; }
+    .form-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 0.9rem; }
+    .form-group input, .form-group textarea, .form-group select {
+        width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem;
+    }
+    .resumo-pedido {
+        background: #f9f9f9; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-size: 0.9rem;
+    }
+    .total-final {
+        font-size: 1.2rem; font-weight: bold; color: #333; text-align: right; margin-top: 10px;
+        border-top: 1px solid #eee; padding-top: 10px;
+    }
+    .btn-confirmar {
+        width: 100%; background: #28a745; color: #fff; border: none; padding: 12px;
+        border-radius: 6px; font-weight: bold; font-size: 1rem; cursor: pointer; margin-top: 10px;
+    }
+    .btn-fechar {
+        width: 100%; background: #ccc; color: #333; border: none; padding: 10px;
+        border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 5px;
+    }
 </style>
 </head>
 <body>
@@ -147,7 +178,7 @@
                 </div>
             </div>
             <div class="produto">
-                <img src="file_00000000fae0820e8a281a844d0e354d.png" alt="X-Coração">
+                <img src="file_00000000fae0820e8a281a844d0ee8a281a844d0e354d.png" alt="X-Coração">
                 <div class="info">
                     <h3>X-Coração</h3>
                     <p class="desc">Pão, coração de frango, queijo, alface e molho.</p>
@@ -213,7 +244,56 @@
 <!-- Carrinho Flutuante -->
 <div id="carrinho-float" style="display:none;">
     <span>🛒 <span id="total-items">0</span> itens | R$ <span id="total-val">0,00</span></span>
-    <button onclick="finalizarPedido()">Finalizar</button>
+    <button onclick="abrirCheckout()">Finalizar</button>
+</div>
+
+<!-- Modal de Checkout -->
+<div id="modal-checkout">
+    <div class="checkout-content">
+        <h2>Dados de Entrega</h2>
+        
+        <div class="resumo-pedido" id="resumo-itens">
+            <!-- Itens serão inseridos aqui via JS -->
+        </div>
+
+        <div class="form-group">
+            <label>Seu Nome:</label>
+            <input type="text" id="nome-cliente" placeholder="Nome completo">
+        </div>
+
+        <div class="form-group">
+            <label>Telefone para Contato:</label>
+            <input type="tel" id="telefone-cliente" placeholder="(00) 00000-0000">
+        </div>
+
+        <div class="form-group">
+            <label>Endereço Completo:</label>
+            <input type="text" id="endereco-cliente" placeholder="Rua, Número, Bairro">
+        </div>
+
+        <div class="form-group">
+            <label>Observações:</label>
+            <textarea id="obs-pedido" rows="2" placeholder="Ex: Sem milho, troco para 50..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Forma de Pagamento:</label>
+            <select id="forma-pagamento">
+                <option value="pix">PIX</option>
+                <option value="cartao">Cartão na Entrega</option>
+                <option value="dinheiro">Dinheiro</option>
+            </select>
+        </div>
+
+        <div class="total-final">
+            Subtotal: R$ <span id="subtotal-val">0,00</span><br>
+            Taxa de Entrega: R$ 7,00<br>
+            <strong>Total: R$ <span id="total-final-val">0,00</span></strong>
+        </div>
+
+        <button class="btn-confirmar" onclick="finalizarPedidoLocal()">Confirmar Pedido</button>
+        <button class="btn-fechar" onclick="fecharCheckout()">Cancelar</button>
+    </div>
 </div>
 
 <script>
@@ -227,11 +307,12 @@
     let total = 0;
     let count = 0;
     let pedido = [];
+    const TAXA_ENTREGA = 7.00;
 
     function addToCart(name, price) {
         total += price;
         count++;
-        pedido.push(name);
+        pedido.push({name: name, price: price});
         
         document.getElementById('total-items').innerText = count;
         document.getElementById('total-val').innerText = total.toFixed(2).replace('.', ',');
@@ -242,12 +323,50 @@
         }
     }
 
-    function finalizarPedido() {
+    function abrirCheckout() {
         if(pedido.length === 0) return;
-        let resumo = "Pedido:\n";
-        pedido.forEach(item => resumo += "- " + item + "\n");
-        resumo += "\nTotal: R$ " + total.toFixed(2).replace('.', ',');
-        alert(resumo);
+        
+        const modal = document.getElementById('modal-checkout');
+        const resumoDiv = document.getElementById('resumo-itens');
+        
+        // Montar resumo
+        let resumoHTML = "<strong>Itens:</strong><br>";
+        pedido.forEach(item => {
+            resumoHTML += `- ${item.name}: R$ ${item.price.toFixed(2).replace('.', ',')}<br>`;
+        });
+        resumoDiv.innerHTML = resumoHTML;
+
+        // Atualizar totais
+        document.getElementById('subtotal-val').innerText = total.toFixed(2).replace('.', ',');
+        document.getElementById('total-final-val').innerText = (total + TAXA_ENTREGA).toFixed(2).replace('.', ',');
+
+        modal.style.display = 'flex';
+    }
+
+    function fecharCheckout() {
+        document.getElementById('modal-checkout').style.display = 'none';
+    }
+
+    function finalizarPedidoLocal() {
+        const nome = document.getElementById('nome-cliente').value;
+        const endereco = document.getElementById('endereco-cliente').value;
+        
+        if(!nome || !endereco) {
+            alert("Preencha nome e endereço para continuar.");
+            return;
+        }
+
+        // Simulação de envio/local
+        alert(`Pedido Confirmado!\n\nCliente: ${nome}\nTotal: R$ ${(total + TAXA_ENTREGA).toFixed(2).replace('.', ',')}\n\nAguardando pagamento...`);
+        
+        // Limpar carrinho
+        pedido = [];
+        total = 0;
+        count = 0;
+        document.getElementById('total-items').innerText = 0;
+        document.getElementById('total-val').innerText = "0,00";
+        document.getElementById('carrinho-float').style.display = 'none';
+        fecharCheckout();
     }
 </script>
 
