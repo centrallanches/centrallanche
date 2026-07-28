@@ -1,239 +1,303 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cardápio - Central Lanches</title>
-<style>
-    * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', sans-serif; }
-    body { background:#f4f4f4; padding-bottom: 80px; }
-    
-    header { background:#ff6b00; color:#fff; padding:30px 20px; text-align:center; }
-    header h1 { font-size:2rem; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cardápio - Central Lanches</title>
+    <style>
+        :root {
+            --primary-color: #d32f2f; /* Vermelho Lanche */
+            --secondary-color: #ffca28; /* Amarelo Mostarda */
+            --text-color: #333;
+            --bg-color: #f4f4f4;
+            --card-bg: #fff;
+        }
 
-    .tabs {
-        display:flex; justify-content:center; gap:10px; padding:15px;
-        background:#fff; position:sticky; top:0; z-index:100;
-        box-shadow:0 2px 10px rgba(0,0,0,0.1); overflow-x: auto;
-    }
-    .tab-btn {
-        background:#eee; border:none; padding:10px 25px;
-        border-radius:25px; font-weight:bold; color:#555; cursor:pointer;
-        transition:0.3s; font-size:1rem; white-space: nowrap;
-    }
-    .tab-btn.active { background:#ff6b00; color:#fff; transform:scale(1.05); }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-    .container { max-width:1000px; margin:20px auto; padding:0 15px; }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding-bottom: 20px;
+        }
 
-    .categoria { display:none; animation:fadeIn 0.5s; }
-    .categoria.active { display:grid; }
+        /* Header Fixo */
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
 
-    @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+        header h1 {
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
 
-    .categoria h2 {
-        color:#ff6b00; margin-bottom:20px; text-transform:uppercase;
-        border-bottom:2px solid #ff6b00; display:inline-block;
-    }
+        /* Navegação de Categorias */
+        .category-nav {
+            background-color: #fff;
+            padding: 10px;
+            text-align: center;
+            white-space: nowrap;
+            overflow-x: auto;
+            border-bottom: 1px solid #ddd;
+            position: sticky;
+            top: 60px; /* Ajuste conforme altura do header */
+            z-index: 999;
+        }
 
-    .grid-produtos {
-        display:grid; grid-template-columns:repeat(auto-fill, minmax(160px, 1fr));
-        gap:15px;
-    }
+        .category-nav a {
+            display: inline-block;
+            padding: 8px 15px;
+            margin: 0 5px;
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: bold;
+            border-radius: 20px;
+            background-color: #eee;
+            transition: 0.3s;
+        }
 
-    .produto {
-        background:#fff; border-radius:12px; overflow:hidden;
-        box-shadow:0 2px 8px rgba(0,0,0,0.1); text-align:center;
-        transition:transform 0.2s;
-    }
-    .produto:hover { transform:translateY(-3px); }
+        .category-nav a:hover, .category-nav a.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
 
-    .produto img { width:100%; height:140px; object-fit:cover; background:#eee; }
-    
-    .info { padding:12px; }
-    .info h3 { font-size:1rem; margin-bottom:5px; height:40px; overflow:hidden; }
-    .desc { font-size:0.8rem; color:#777; margin-bottom:8px; height:40px; overflow:hidden; }
-    .preco { color:#ff6b00; font-weight:bold; font-size:1.1rem; margin-bottom:10px; }
-    
-    .btn-comprar {
-        width:100%; background:#ff6b00; color:#fff; border:none;
-        padding:8px; border-radius:6px; font-weight:bold; cursor:pointer;
-    }
-    .btn-comprar:active { background:#e05e00; }
+        /* Container do Menu */
+        .menu-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
 
-    #carrinho-float {
-        position:fixed; bottom:20px; right:20px; left: 20px;
-        background:#333; color:#fff; padding:15px;
-        border-radius:10px; box-shadow:0 4px 15px rgba(0,0,0,0.3);
-        display:none; font-weight:bold; z-index:200;
-        display: flex; justify-content: space-between; align-items: center;
-    }
-    #carrinho-float button {
-        background: #ff6b00; border: none; padding: 5px 15px; 
-        border-radius: 5px; color: white; font-weight: bold; cursor: pointer;
-    }
-</style>
+        /* Seções */
+        .menu-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        /* Grid de Itens */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        /* Card do Item */
+        .menu-item-card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .menu-item-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .item-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            background-color: #ddd; /* Cor de fundo se imagem falhar */
+        }
+
+        .item-details {
+            padding: 10px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .item-name {
+            font-weight: bold;
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+
+        .item-desc {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+
+        .item-price {
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 1.1rem;
+            text-align: right;
+        }
+
+        /* Responsividade */
+        @media (max-width: 480px) {
+            .menu-grid {
+                grid-template-columns: 1fr 1fr; /* 2 colunas no celular */
+                gap: 10px;
+            }
+            
+            .item-image {
+                height: 120px;
+            }
+
+            .item-name {
+                font-size: 0.9rem;
+            }
+            
+            .item-desc {
+                font-size: 0.7rem;
+            }
+        }
+    </style>
 </head>
 <body>
 
-<header>
-    <h1>Central Lanches</h1>
-    <p>Selecione a categoria abaixo</p>
-</header>
+    <header>
+        <h1>Central Lanches</h1>
+    </header>
 
-<div class="tabs">
-    <button class="tab-btn active" onclick="openTab('lanches', this)">🍔 Lanches</button>
-    <button class="tab-btn" onclick="openTab('porcoes', this)">🍟 Porções</button>
-    <button class="tab-btn" onclick="openTab('bebidas', this)">🥤 Bebidas</button>
-</div>
-
-<div class="container">
-
-    <!-- ABA LANÇHES -->
-    <div id="lanches" class="categoria active">
-        <h2>Lanches</h2>
-        <div class="grid-produtos">
-            <div class="produto">
-                <img src="file_00000000d884820e9cdcac2b475cf5e1.png" alt="X-Burguer">
-                <div class="info">
-                    <h3>X-Burguer Simples</h3>
-                    <p class="desc">Pão, hambúrguer, queijo, alface, tomate e maionese.</p>
-                    <p class="preco">R$ 12,90</p>
-                    <button class="btn-comprar" onclick="addToCart('X-Burguer', 12.90)">Adicionar</button>
-                </div>
-            </div>
-            <div class="produto">
-                <img src="file_000000004dc4820e9df0a32aec3caa2a.png" alt="X-Salada">
-                <div class="info">
-                    <h3>X-Salada</h3>
-                    <p class="desc">Pão, hambúrguer, queijo, presunto, alface e tomate.</p>
-                    <p class="preco">R$ 14,50</p>
-                    <button class="btn-comprar" onclick="addToCart('X-Salada', 14.50)">Adicionar</button>
-                </div>
-            </div>
-            <div class="produto">
-                <img src="file_0000000064b4820ea9817e11f7a69a10.png" alt="X-Bacon">
-                <div class="info">
-                    <h3>X-Bacon</h3>
-                    <p class="desc">Pão, hambúrguer, queijo, bacon crocante e maionese.</p>
-                    <p class="preco">R$ 16,00</p>
-                    <button class="btn-comprar" onclick="addToCart('X-Bacon', 16.00)">Adicionar</button>
-                </div>
-            </div>
-            <div class="produto">
-                <img src="file_00000000dad8820eb69dd51a1939f319.png" alt="X-Duplo">
-                <div class="info">
-                    <h3>X-Burguer Duplo</h3>
-                    <p class="desc">Dois hambúrgueres, duplo queijo, alface e molho especial.</p>
-                    <p class="preco">R$ 19,90</p>
-                    <button class="btn-comprar" onclick="addToCart('X-Duplo', 19.90)">Adicionar</button>
-                </div>
-            </div>
-             <div class="produto">
-                <img src="IMG_20260727_195613.jpg" alt="X-Galinha">
-                <div class="info">
-                    <h3>X-Galinha</h3>
-                    <p class="desc">Pão, frango desfiado, milho, queijo e maionese.</p>
-                    <p class="preco">R$ 15,00</p>
-                    <button class="btn-comprar" onclick="addToCart('X-Galinha', 15.00)">Adicionar</button>
-                </div>
-            </div>
-            <div class="produto">
-                <img src="file_000000008334820e9aad389a97da2e19.png" alt="X-Calabresa">
-                <div class="info">
-                    <h3>X-Calabresa</h3>
-                    <p class="desc">Pão, calabresa fatiada, queijo, cebola e molho.</p>
-                    <p class="preco">R$ 16,50</p>
-                    <button class="btn-comprar" onclick="addToCart('X-Calabresa', 16.50)">Adicionar</button>
-                </div>
-            </div>
-            <div class="produto">
-                <img src="file_00000000fae0820e8a281a844d0e354d.png" alt="X-Coração">
-                <div class="info">
-                    <h3>X-Coração</h3>
-                    <p class="desc">Pão, coração de frango, queijo, alface e molho.</p>
-                    <p class="preco">R$ 17,00</p>
-                    <button class="btn-comprar" onclick="addToCart('X-Coração', 17.00)">Adicionar</button>
-                </div>
-            </div>
-        </div>
+    <!-- Navegação Rápida -->
+    <div class="category-nav">
+        <a href="#burgers">Burgers</a>
+        <a href="#especiais">Especiais</a>
+        <a href="#bebidas">Bebidas</a>
+        <a href="#combos">Combos</a>
     </div>
 
-    <!-- ABA PORÇÕES -->
-    <div id="porcoes" class="categoria">
-        <h2>Porções</h2>
-        <div class="grid-produtos">
-            <div class="produto">
-                <!-- Nome exato enviado -->
-                <img src="aa0a70f23ae959187abcae825286dce7.jpg" alt="Batata Frita">
-                <div class="info">
-                    <h3>Batata Frita</h3>
-                    <p class="desc">Porção grande de batatas fritas crocantes.</p>
-                    <p class="preco">R$ 20,00</p>
-                    <button class="btn-comprar" onclick="addToCart('Batata Frita', 20.00)">Adicionar</button>
+    <div class="menu-container">
+
+        <!-- Seção Burgers -->
+        <div id="burgers" class="menu-section">
+            <h2 class="section-title">Burgers</h2>
+            <div class="menu-grid">
+                
+                <div class="menu-item-card">
+                    <img src="xburguer.jpg" alt="X-Burguer" class="item-image">
+                    <div class="item-details">
+                        <div class="item-name">X-Burguer</div>
+                        <div class="item-desc">Pão, carne, queijo e molho especial.</div>
+                        <div class="item-price">R$ 15,00</div>
+                    </div>
                 </div>
+
+                <div class="menu-item-card">
+                    <img src="xsalada.jpg" alt="X-Salada" class="item-image">
+                    <div class="item-details">
+                        <div class="item-name">X-Salada</div>
+                        <div class="item-desc">Pão, carne, queijo, alface, tomate e maionese.</div>
+                        <div class="item-price">R$ 18,00</div>
+                    </div>
+                </div>
+
             </div>
         </div>
-    </div>
 
-    <!-- ABA BEBIDAS -->
-    <div id="bebidas" class="categoria">
-        <h2>Bebidas</h2>
-        <div class="grid-produtos">
-            <div class="produto">
-                <!-- Nome exato enviado com parênteses -->
-                <img src="9114190ef9ef3f88b326b80c7ae4ccb6 (1).jpg" alt="Coca Cola">
-                <div class="info">
-                    <h3>Coca Cola 350 ml</h3>
-                    <p class="desc">Lata gelada.</p>
-                    <p class="preco">R$ 6,00</p>
-                    <button class="btn-comprar" onclick="addToCart('Coca Cola', 6.00)">Adicionar</button>
+        <!-- Seção Especiais -->
+        <div id="especiais" class="menu-section">
+            <h2 class="section-title">Especiais</h2>
+            <div class="menu-grid">
+                
+                <div class="menu-item-card">
+                    <img src="file-mignon.jpg" alt="Filé Mignon" class="item-image">
+                    <div class="item-details">
+                        <div class="item-name">Filé Mignon</div>
+                        <div class="item-desc">Pão, filé mignon grelhado, queijo e molho.</div>
+                        <div class="item-price">R$ 25,00</div>
+                    </div>
                 </div>
+
+                <div class="menu-item-card">
+                    <img src="imbu.jpg" alt="Imbu" class="item-image">
+                    <div class="item-details">
+                        <div class="item-name">Imbu</div>
+                        <div class="item-desc">Sabor regional único.</div>
+                        <div class="item-price">R$ 20,00</div>
+                    </div>
+                </div>
+
             </div>
         </div>
+
+        <!-- Seção Bebidas -->
+        <div id="bebidas" class="menu-section">
+            <h2 class="section-title">Bebidas</h2>
+            <div class="menu-grid">
+                
+                <div class="menu-item-card">
+                    <img src="coca350.jpg" alt="Coca-Cola 350ml" class="item-image">
+                    <div class="item-details">
+                        <div class="item-name">Coca-Cola 350ml</div>
+                        <div class="item-desc">Lata gelada.</div>
+                        <div class="item-price">R$ 6,00</div>
+                    </div>
+                </div>
+
+                <!-- NOVO ITEM: Coca-Cola 2L -->
+                <div class="menu-item-card">
+                    <img src="coca2l.jpg" alt="Coca-Cola 2L" class="item-image">
+                    <div class="item-details">
+                        <div class="item-name">Coca-Cola 2L</div>
+                        <div class="item-desc">Garrafa 2 litros para compartilhar.</div>
+                        <div class="item-price">R$ 12,00</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Seção Combos -->
+        <div id="combos" class="menu-section">
+            <h2 class="section-title">Combos</h2>
+            <div class="menu-grid">
+                
+                <!-- NOVO ITEM: Combo 3 X-Salada -->
+                <div class="menu-item-card">
+                    <img src="combo3.jpg" alt="3 X-Salada + Batata e Calabresa" class="item-image">
+                    <div class="item-details">
+                        <div class="item-name">3 X-Salada + Batata e Calabresa</div>
+                        <div class="item-desc">Porção especial para grupos.</div>
+                        <div class="item-price">R$ 60,00</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
     </div>
 
-</div>
-
-<!-- Carrinho Flutuante -->
-<div id="carrinho-float" style="display:none;">
-    <span>🛒 <span id="total-items">0</span> itens | R$ <span id="total-val">0,00</span></span>
-    <button onclick="finalizarPedido()">Finalizar</button>
-</div>
-
-<script>
-    function openTab(tabName, btnElement) {
-        document.querySelectorAll('.categoria').forEach(el => el.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-        document.getElementById(tabName).classList.add('active');
-        btnElement.classList.add('active');
-    }
-
-    let total = 0;
-    let count = 0;
-    let pedido = [];
-
-    function addToCart(name, price) {
-        total += price;
-        count++;
-        pedido.push(name);
-        
-        document.getElementById('total-items').innerText = count;
-        document.getElementById('total-val').innerText = total.toFixed(2).replace('.', ',');
-        
-        const floatCart = document.getElementById('carrinho-float');
-        if(floatCart.style.display === 'none') {
-            floatCart.style.display = 'flex';
-        }
-    }
-
-    function finalizarPedido() {
-        if(pedido.length === 0) return;
-        let resumo = "Pedido:\n";
-        pedido.forEach(item => resumo += "- " + item + "\n");
-        resumo += "\nTotal: R$ " + total.toFixed(2).replace('.', ',');
-        alert(resumo);
-    }
-</script>
-
+    <script>
+        // Scroll suave para as âncoras
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
 </body>
 </html>
