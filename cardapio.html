@@ -6,7 +6,7 @@
     <title>Central Lanches - Cardápio</title>
     <style>
         :root {
-            --primary: #d32f2f; /* Vermelho Lanche */
+            --primary: #d32f2f;
             --dark: #1a1a1a;
             --light: #f5f5f5;
             --gray: #333;
@@ -17,7 +17,6 @@
         
         body { background-color: var(--dark); color: var(--light); padding-bottom: 80px; }
 
-        /* Header */
         header {
             background-color: var(--primary);
             padding: 15px;
@@ -29,7 +28,6 @@
         }
         header h1 { font-size: 1.5rem; font-weight: bold; color: white; }
 
-        /* Categorias */
         .categorias {
             display: flex;
             gap: 10px;
@@ -49,7 +47,6 @@
         }
         .cat-btn.active { background: var(--primary); }
 
-        /* Grid de Produtos */
         .grid-produtos {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -71,7 +68,7 @@
             width: 100%;
             height: 120px;
             object-fit: cover;
-            background: #444; /* Placeholder cor */
+            background: #444;
         }
 
         .info-produto { padding: 10px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
@@ -89,7 +86,6 @@
             cursor: pointer;
         }
 
-        /* Carrinho Flutuante */
         .carrinho-float {
             position: fixed;
             bottom: 20px;
@@ -105,17 +101,16 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.4);
             cursor: pointer;
             z-index: 900;
-            display: none; /* Escondido se vazio */
+            display: none;
         }
 
-        /* Modal Carrinho / Checkout */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.8);
             display: none;
             justify-content: center;
-            align-items: flex-end; /* Mobile: vem de baixo */
+            align-items: flex-end;
             z-index: 1000;
         }
         
@@ -154,7 +149,6 @@
         }
         .btn-finalizar:disabled { background: #555; }
 
-        /* Modal PIX */
         .modal-pix-content {
             background: #1e1e1e;
             border-radius: 15px;
@@ -180,7 +174,7 @@
         .status-pagamento {
             margin-top: 15px;
             font-weight: bold;
-            color: #ff9800; /* Laranja aguardando */
+            color: #ff9800;
         }
 
         .close-modal {
@@ -190,7 +184,6 @@
             font-size: 1.5rem;
             cursor: pointer;
         }
-
     </style>
 </head>
 <body>
@@ -210,20 +203,16 @@
         <!-- Produtos inseridos via JS -->
     </div>
 
-    <!-- Botão Carrinho Flutuante -->
     <div class="carrinho-float" id="btn-carrinho" onclick="abrirCarrinho()">
         <span>🛒 Ver Carrinho</span>
         <span id="total-float">R$ 0,00</span>
     </div>
 
-    <!-- Modal Carrinho/Checkout -->
     <div class="modal-overlay" id="modal-carrinho">
         <div class="modal-content">
             <span class="close-modal" onclick="fecharCarrinho()">&times;</span>
             <h2>Seu Pedido</h2>
-            <div id="itens-carrinho" style="margin: 20px 0; border-bottom: 1px solid #333; padding-bottom: 10px;">
-                <!-- Itens aqui -->
-            </div>
+            <div id="itens-carrinho" style="margin: 20px 0; border-bottom: 1px solid #333; padding-bottom: 10px;"></div>
             
             <div class="form-group">
                 <label>Nome:</label>
@@ -243,7 +232,6 @@
         </div>
     </div>
 
-    <!-- Modal PIX -->
     <div class="modal-overlay" id="modal-pix" style="align-items: center;">
         <div class="modal-pix-content">
             <span class="close-modal" onclick="fecharPix()">&times;</span>
@@ -251,8 +239,8 @@
             <p style="color: #ccc; font-size: 0.9rem;">Escaneie o QR Code abaixo</p>
             
             <div class="qrcode-box">
-                <!-- Imagem placeholder de QR Code. Em produção, virá da API -->
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=CentralLanchesTeste" alt="QR Code Pix" id="img-qr">
+                <img src="" alt="QR Code Pix" id="img-qr" style="display:none;">
+                <div id="loading-qr" style="color:black;">Gerando...</div>
             </div>
 
             <p id="valor-pix" style="font-weight: bold; font-size: 1.2rem;"></p>
@@ -269,7 +257,7 @@
         const ANOVA_CLIENT_SECRET = "814e5a2ce114c8f1983f0432b1cb112dde51c79947a75f9816a55aa46953f5ce";
         const TAXA_ENTREGA = 7.00;
 
-        // --- DADOS (Substitua as URLs das imagens pelos seus arquivos no GitHub) ---
+        // --- DADOS (Substitua as URLs pelas do seu GitHub) ---
         const produtos = [
             { id: 1, nome: "X-Bacon", preco: 18.00, cat: "lanches", img: "https://via.placeholder.com/150/d32f2f/fff?text=X-Bacon" },
             { id: 2, nome: "X-Salada", preco: 15.00, cat: "lanches", img: "https://via.placeholder.com/150/d32f2f/fff?text=X-Salada" },
@@ -279,7 +267,6 @@
 
         let carrinho = [];
 
-        // --- INICIALIZAÇÃO ---
         window.onload = () => {
             renderizarProdutos(produtos);
         };
@@ -309,7 +296,6 @@
             else renderizarProdutos(produtos.filter(p => p.cat === categoria));
         }
 
-        // --- LÓGICA DO CARRINHO ---
         function addCarrinho(id) {
             const item = produtos.find(p => p.id === id);
             carrinho.push(item);
@@ -322,7 +308,6 @@
             document.getElementById('total-float').innerText = `R$ ${total.toFixed(2)}`;
             document.getElementById('btn-carrinho').style.display = carrinho.length > 0 ? 'flex' : 'none';
             
-            // Atualiza lista no modal
             const listaModal = document.getElementById('itens-carrinho');
             listaModal.innerHTML = carrinho.map(i => `<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>${i.nome}</span><span>R$ ${i.preco.toFixed(2)}</span></div>`).join('');
             listaModal.innerHTML += `<div style="border-top:1px dashed #555; margin-top:10px; padding-top:5px; display:flex; justify-content:space-between; color:#aaa;"><span>Taxa Entrega</span><span>R$ ${TAXA_ENTREGA.toFixed(2)}</span></div>`;
@@ -348,30 +333,46 @@
             btn.textContent = "Gerando PIX...";
 
             const total = carrinho.reduce((acc, item) => acc + item.preco, 0) + TAXA_ENTREGA;
-            const pedidoId = Date.now(); // ID simples baseado em tempo
+            const pedidoId = Date.now();
 
             try {
                 const dataPix = await gerarPixAnovaPay(total, pedidoId);
                 
-                if(dataPix && dataPix.qr_code) { // Ajuste conforme o retorno real da API
-                    // Sucesso: Abre Modal PIX
+                console.log("Resposta API:", dataPix);
+
+                let qrCodeContent = "";
+
+                // Tenta encontrar o código PIX em diferentes campos comuns da API NovaPay/HardPay
+                if (dataPix.qr_code_string) {
+                    qrCodeContent = dataPix.qr_code_string;
+                } else if (dataPix.emv) {
+                    qrCodeContent = dataPix.emv;
+                } else if (dataPix.qr_code) {
+                     qrCodeContent = dataPix.qr_code;
+                } else {
+                    // Se a API retornar um objeto complexo, tenta achar algo útil
+                    qrCodeContent = JSON.stringify(dataPix); 
+                }
+
+                if(qrCodeContent && qrCodeContent.length > 10) {
                     fecharCarrinho();
                     document.getElementById('modal-pix').style.display = 'flex';
                     document.getElementById('valor-pix').innerText = `R$ ${total.toFixed(2)}`;
                     
-                    // Tenta atualizar a imagem do QR Code se a API retornar URL ou Base64
-                    // Se a API retornar string base64: src="data:image/png;base64,..."
-                    // Se retornar URL: src="https://..."
-                    // Por enquanto, mantemos o placeholder ou usamos o retorno da API
-                    
+                    // Gera imagem do QR Code baseada no texto (Copia e Cola)
+                    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrCodeContent)}`;
+                    const imgEl = document.getElementById('img-qr');
+                    imgEl.src = qrUrl;
+                    imgEl.style.display = 'block';
+                    document.getElementById('loading-qr').style.display = 'none';
+
                     iniciarMonitoramentoPagamento();
                 } else {
-                    throw new Error("Resposta inválida da API");
+                    throw new Error("API não retornou código PIX válido. Verifique o Console (F12).");
                 }
 
             } catch (error) {
                 console.error(error);
-                // ALERTA TÉCNICO PARA VOCÊ VER O ERRO NO CELULAR
                 alert("Erro no pagamento: " + error.message);
             } finally {
                 btn.disabled = false;
@@ -380,8 +381,6 @@
         }
 
         async function gerarPixAnovaPay(valor, pedidoId) {
-            // Nota: Chamar API direta do frontend pode dar erro de CORS.
-            // Se der erro de CORS, você precisará de um backend proxy ou configurar CORS na NovaPay.
             const response = await fetch("https://api.novapay.com/charges", {
                 method: "POST",
                 headers: {
@@ -390,9 +389,13 @@
                     "cs": ANOVA_CLIENT_SECRET
                 },
                 body: JSON.stringify({
-                    amount: Math.round(valor * 100), // API geralmente exige centavos (inteiro)
+                    amount: Math.round(valor * 100), 
                     description: `Pedido Central Lanches - ID: ${pedidoId}`,
-                    customer: { name: document.getElementById('nome-cliente').value } 
+                    payment_method: "PIX",
+                    customer: { 
+                        name: document.getElementById('nome-cliente').value,
+                        document: "00000000000" 
+                    } 
                 })
             });
 
@@ -407,10 +410,7 @@
         function iniciarMonitoramentoPagamento() {
             const statusEl = document.getElementById('status-pagamento');
             
-            // Simulação de verificação (em produção, use webhook ou polling real na API)
             const checkInterval = setInterval(() => {
-                // Aqui você chamaria uma rota de "status do pedido"
-                // Como não temos backend, simulamos sucesso após 10s
                 statusEl.textContent = "Pagamento identificado! Pedido em preparo.";
                 statusEl.style.color = "#4CAF50";
                 clearInterval(checkInterval);
@@ -419,13 +419,13 @@
 
         function fecharPix() {
             document.getElementById('modal-pix').style.display = 'none';
-            // Opcional: Limpar carrinho após fechar
-            // carrinho = [];
-            // atualizarCarrinhoUI();
-            // window.location.reload(); // Removido para não resetar a experiência
+            // Reinicia UI do modal para próximo uso
+            document.getElementById('img-qr').style.display = 'none';
+            document.getElementById('loading-qr').style.display = 'block';
+            document.getElementById('status-pagamento').textContent = "Aguardando pagamento...";
+            document.getElementById('status-pagamento').style.color = "#ff9800";
         }
 
-        // Fechar modal ao clicar fora
         window.onclick = function(event) {
             if (event.target == document.getElementById('modal-carrinho')) fecharCarrinho();
         }
