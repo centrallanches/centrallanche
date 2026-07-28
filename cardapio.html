@@ -82,39 +82,20 @@
         max-height: 90vh; overflow-y: auto;
     }
     .checkout-content h2 { color: #ff6b00; margin-bottom: 15px; }
-    
-    /* Estilo da lista de itens no carrinho */
-    .item-carrinho {
-        display: flex; justify-content: space-between; align-items: center;
-        border-bottom: 1px solid #eee; padding: 10px 0;
-    }
-    .item-info { flex: 1; }
-    .item-nome { font-weight: bold; font-size: 0.9rem; }
-    .item-preco { font-size: 0.8rem; color: #777; }
-    
-    .item-controles {
-        display: flex; align-items: center; gap: 10px;
-    }
-    .btn-qtd {
-        background: #eee; border: none; width: 25px; height: 25px;
-        border-radius: 50%; font-weight: bold; cursor: pointer;
-        display: flex; align-items: center; justify-content: center;
-    }
-    .btn-qtd.remove { background: #ffcccc; color: #d00; }
-    .btn-qtd.add { background: #ccffcc; color: #008000; }
-
     .form-group { margin-bottom: 15px; }
     .form-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 0.9rem; }
-    .form-group input, .form-group textarea, .form-group select {
+    .form-group input, .form-group textarea {
         width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem;
     }
-    
+    .resumo-pedido {
+        background: #f9f9f9; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-size: 0.9rem;
+    }
     .total-final {
         font-size: 1.2rem; font-weight: bold; color: #333; text-align: right; margin-top: 10px;
         border-top: 1px solid #eee; padding-top: 10px;
     }
     .btn-confirmar {
-        width: 100%; background: #28a745; color: #fff; border: none; padding: 12px;
+        width: 100%; background: #25D366; color: #fff; border: none; padding: 12px;
         border-radius: 6px; font-weight: bold; font-size: 1rem; cursor: pointer; margin-top: 10px;
     }
     .btn-fechar {
@@ -269,40 +250,25 @@
 <!-- Modal de Checkout -->
 <div id="modal-checkout">
     <div class="checkout-content">
-        <h2>Seu Pedido</h2>
+        <h2>Finalizar Pedido</h2>
         
-        <!-- Lista de itens com controle -->
-        <div id="lista-itens-carrinho">
-            <!-- Inserido via JS -->
+        <div class="resumo-pedido" id="resumo-itens">
+            <!-- Itens serão inseridos aqui via JS -->
         </div>
 
-        <div class="form-group" style="margin-top: 20px;">
+        <div class="form-group">
+            <label>Observações do Pedido:</label>
+            <textarea id="obs-pedido" rows="3" placeholder="Ex: Tirar ervilha, milho, ponto da carne..."></textarea>
+        </div>
+
+        <div class="form-group">
             <label>Seu Nome:</label>
-            <input type="text" id="nome-cliente" placeholder="Nome completo">
+            <input type="text" id="nome-cliente" placeholder="Digite seu nome">
         </div>
 
         <div class="form-group">
-            <label>Telefone/WhatsApp:</label>
-            <input type="tel" id="telefone-cliente" placeholder="(00) 00000-0000">
-        </div>
-
-        <div class="form-group">
-            <label>Endereço de Entrega:</label>
-            <input type="text" id="endereco-cliente" placeholder="Rua, Número, Bairro">
-        </div>
-
-        <div class="form-group">
-            <label>Observações:</label>
-            <textarea id="obs-pedido" rows="2" placeholder="Ex: Sem cebola, troco para 50..."></textarea>
-        </div>
-
-        <div class="form-group">
-            <label>Forma de Pagamento:</label>
-            <select id="forma-pagamento">
-                <option value="pix">PIX</option>
-                <option value="cartao">Cartão na Entrega</option>
-                <option value="dinheiro">Dinheiro</option>
-            </select>
+            <label>Rua / Endereço:</label>
+            <input type="text" id="endereco-cliente" placeholder="Rua, número, bairro">
         </div>
 
         <div class="total-final">
@@ -311,8 +277,8 @@
             <strong>Total: R$ <span id="total-final-val">0,00</span></strong>
         </div>
 
-        <button class="btn-confirmar" onclick="finalizarPedidoLocal()">Confirmar Pedido</button>
-        <button class="btn-fechar" onclick="fecharCheckout()">Continuar Comprando</button>
+        <button class="btn-confirmar" onclick="enviarPedido()">Enviar Pedido (WhatsApp)</button>
+        <button class="btn-fechar" onclick="fecharCheckout()">Cancelar</button>
     </div>
 </div>
 
@@ -324,114 +290,81 @@
         btnElement.classList.add('active');
     }
 
-    // Estrutura do carrinho: { 'Nome do Item': { price: 10, qtd: 2 } }
-    let cart = {};
+    let total = 0;
+    let count = 0;
+    let pedido = [];
     const TAXA_ENTREGA = 7.00;
 
     function addToCart(name, price) {
-        if(cart[name]) {
-            cart[name].qtd++;
-        } else {
-            cart[name] = { price: price, qtd: 1 };
-        }
-        updateCartDisplay();
-    }
-
-    function removeFromCart(name) {
-        if(cart[name]) {
-            if(cart[name].qtd > 1) {
-                cart[name].qtd--;
-            } else {
-                delete cart[name];
-            }
-        }
-        updateCartDisplay();
-        renderCheckoutItems(); // Atualiza a lista do modal se estiver aberto
-    }
-
-    function updateCartDisplay() {
-        let total = 0;
-        let count = 0;
-        
-        for(let item in cart) {
-            total += cart[item].price * cart[item].qtd;
-            count += cart[item].qtd;
-        }
+        total += price;
+        count++;
+        pedido.push({name: name, price: price});
         
         document.getElementById('total-items').innerText = count;
         document.getElementById('total-val').innerText = total.toFixed(2).replace('.', ',');
         
         const floatCart = document.getElementById('carrinho-float');
-        if(count > 0) {
+        if(floatCart.style.display === 'none') {
             floatCart.style.display = 'flex';
-        } else {
-            floatCart.style.display = 'none';
-            fecharCheckout(); // Fecha modal se carrinho esvaziar
         }
-    }
-
-    function renderCheckoutItems() {
-        const container = document.getElementById('lista-itens-carrinho');
-        container.innerHTML = '';
-        let subtotal = 0;
-
-        for(let item in cart) {
-            const data = cart[item];
-            const itemTotal = data.price * data.qtd;
-            subtotal += itemTotal;
-
-            const div = document.createElement('div');
-            div.className = 'item-carrinho';
-            div.innerHTML = `
-                <div class="item-info">
-                    <div class="item-nome">${item}</div>
-                    <div class="item-preco">R$ ${data.price.toFixed(2).replace('.', ',')} x ${data.qtd} = R$ ${itemTotal.toFixed(2).replace('.', ',')}</div>
-                </div>
-                <div class="item-controles">
-                    <button class="btn-qtd remove" onclick="removeFromCart('${item}')">-</button>
-                    <span>${data.qtd}</span>
-                    <button class="btn-qtd add" onclick="addToCart('${item}', ${data.price})">+</button>
-                </div>
-            `;
-            container.appendChild(div);
-        }
-
-        document.getElementById('subtotal-val').innerText = subtotal.toFixed(2).replace('.', ',');
-        document.getElementById('total-final-val').innerText = (subtotal + TAXA_ENTREGA).toFixed(2).replace('.', ',');
     }
 
     function abrirCheckout() {
-        renderCheckoutItems();
-        document.getElementById('modal-checkout').style.display = 'flex';
+        if(pedido.length === 0) return;
+        
+        const modal = document.getElementById('modal-checkout');
+        const resumoDiv = document.getElementById('resumo-itens');
+        
+        // Montar resumo
+        let resumoHTML = "<strong>Itens:</strong><br>";
+        pedido.forEach(item => {
+            resumoHTML += `- ${item.name}: R$ ${item.price.toFixed(2).replace('.', ',')}<br>`;
+        });
+        resumoDiv.innerHTML = resumoHTML;
+
+        // Atualizar totais
+        document.getElementById('subtotal-val').innerText = total.toFixed(2).replace('.', ',');
+        document.getElementById('total-final-val').innerText = (total + TAXA_ENTREGA).toFixed(2).replace('.', ',');
+
+        modal.style.display = 'flex';
     }
 
     function fecharCheckout() {
         document.getElementById('modal-checkout').style.display = 'none';
     }
 
-    function finalizarPedidoLocal() {
+    function enviarPedido() {
         const nome = document.getElementById('nome-cliente').value;
         const endereco = document.getElementById('endereco-cliente').value;
-        
+        const obs = document.getElementById('obs-pedido').value;
+
         if(!nome || !endereco) {
-            alert("Por favor, preencha seu nome e endereço.");
+            alert("Por favor, preencha nome e endereço.");
             return;
         }
 
-        let totalFinal = 0;
-        for(let item in cart) totalFinal += cart[item].price * cart[item].qtd;
-        totalFinal += TAXA_ENTREGA;
-
-        alert(`Pedido Confirmado!\n\nCliente: ${nome}\nTotal a Pagar: R$ ${totalFinal.toFixed(2).replace('.', ',')}\n\nAguardando processamento...`);
+        let mensagem = `*NOVO PEDIDO - CENTRAL LANCHES*\n\n`;
+        mensagem += `*Cliente:* ${nome}\n`;
+        mensagem += `*Endereço:* ${endereco}\n\n`;
+        mensagem += `*ITENS:*\n`;
         
-        // Resetar
-        cart = {};
-        updateCartDisplay();
-        fecharCheckout();
-        document.getElementById('nome-cliente').value = '';
-        document.getElementById('endereco-cliente').value = '';
-        document.getElementById('telefone-cliente').value = '';
-        document.getElementById('obs-pedido').value = '';
+        pedido.forEach(item => {
+            mensagem += `- ${item.name} (R$ ${item.price.toFixed(2).replace('.', ',')})\n`;
+        });
+
+        mensagem += `\n*Observações:* ${obs || 'Nenhuma'}\n`;
+        mensagem += `*Subtotal:* R$ ${total.toFixed(2).replace('.', ',')}\n`;
+        mensagem += `*Taxa de Entrega:* R$ ${TAXA_ENTREGA.toFixed(2).replace('.', ',')}\n`;
+        mensagem += `*TOTAL FINAL:* R$ ${(total + TAXA_ENTREGA).toFixed(2).replace('.', ',')}`;
+
+        // Substitua pelo número do WhatsApp da lanchonete
+        const numeroWhatsApp = "55SEUNUMEROAQUI"; 
+        
+        const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensagem)}`;
+        window.open(url, '_blank');
+        
+        // Opcional: Limpar carrinho após envio
+        // pedido = []; total = 0; count = 0; location.reload();
     }
 </script>
 
