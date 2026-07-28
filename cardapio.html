@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cardápio - Central Lanches</title>
 <style>
-* { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', sans-serif; }
+ { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', sans-serif; }
 body { background:#f4f4f4; padding-bottom: 80px; }
 
 header { background:#ff6b00; color:#fff; padding:30px 20px; text-align:center; }
@@ -44,11 +44,10 @@ gap:15px;
 background:#fff; border-radius:12px; overflow:hidden;
 box-shadow:0 2px 8px rgba(0,0,0,0.1); text-align:center;
 transition:transform 0.2s;
-position: relative; /* Necessário para posicionar o X */
+position: relative;
 }
 .produto:hover { transform:translateY(-3px); }
 
-/* Imagem Container */
 .img-container {
 position: relative;
 width: 100%;
@@ -63,7 +62,6 @@ background:#eee;
 display: block;
 }
 
-/* Botão X de Remover */
 .btn-remove-item {
 position: absolute;
 top: 8px;
@@ -87,7 +85,6 @@ z-index: 10;
 background: #d00;
 color: #fff;
 }
-/* Esconde o X se o item não estiver no carrinho */
 .hidden { display: none!important; }
 
 .info { padding:12px; }
@@ -101,7 +98,6 @@ padding:8px; border-radius:6px; font-weight:bold; cursor:pointer;
 }
 .btn-comprar:active { background:#e05e00; }
 
-/* Carrinho Flutuante Ajustado */
 #carrinho-float {
 position:fixed; bottom:20px; right:20px; left: 20px;
 background:#333; color:#fff; padding:15px;
@@ -119,7 +115,6 @@ font-size: 0.9rem;
 .btn-limpar { background: #dc3545; }
 .btn-finalizar { background: #ff6b00; }
 
-/* Modal Checkout */
 #modal-checkout {
 display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
 background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center;
@@ -219,42 +214,6 @@ border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 5px;
 <h3>X-Bacon</h3>
 <p class="desc">Pão, hambúrguer, queijo, bacon crocante e maionese.</p>
 <p class="preco">R$ 16,00</p>
-<button class="btn-comprar" onclick="addToCart('X-Bacon', 16.00)">Adicionar</button>
-</div>
-</div>
-<div class="produto">
-<div class="img-container">
-<img src="file_00000000dad8820eb69dd51a1939f319.png" alt="X-Duplo">
-<div class="btn-remove-item hidden" onclick="removeFromCart('X-Duplo')">✕</div>
-</div>
-<div class="info">
-<h3>X-Burguer Duplo</h3>
-<p class="desc">Dois hambúrgueres, duplo queijo, alface e molho especial.</p>
-<p class="preco">R$ 19,90</p>
-<button class="btn-comprar" onclick="addToCart('X-Duplo', 19.90)">Adicionar</button>
-</div>
-</div>
-<div class="produto">
-<div class="img-container">
-<img src="IMG_20260727_195613.jpg" alt="X-Galinha">
-<div class="btn-remove-item hidden" onclick="removeFromCart('X-Galinha')">✕</div>
-</div>
-<div class="info">
-<h3>X-Galinha</h3>
-<p class="desc">Pão, frango desfiado, milho, queijo e maionese.</p>
-<p class="preco">R$ 15,00</p>
-<button class="btn-comprar" onclick="addToCart('X-Galinha', 15.00)">Adicionar</button>
-</div>
-</div>
-<div class="produto">
-<div class="img-container">
-<img src="file_000000008334820e9aad389a97da2e19.png" alt="X-Calabresa">
-<div class="btn-remove-item hidden" onclick="removeFromCart('X-Calabresa')">✕</div>
-</div>
-<div class="info">
-<h3>X-Calabresa</h3>
-<p class="desc">Pão, calabresa fatiada, queijo, cebola e molho.</p>
-<p class="preco">R$ 16,50</p>
 <button class="btn-comprar" onclick="addToCart('X-Calabresa', 16.50)">Adicionar</button>
 </div>
 </div>
@@ -340,210 +299,4 @@ border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 5px;
 <!-- Carrinho Flutuante -->
 <div id="carrinho-float" style="display:none;">
 <div id="carrinho-info">
-🛒 <span id="total-items">0</span> itens | R$ <span id="total-val">0,00</span>
-</div>
-<div style="display:flex; gap:10px;">
-<button class="cart-btn btn-limpar" onclick="limparCarrinho()">X</button>
-<button class="cart-btn btn-finalizar" onclick="abrirCheckout()">Finalizar</button>
-</div>
-</div>
-
-<!-- Modal de Checkout -->
-<div id="modal-checkout">
-<div class="checkout-content">
-<h2>Seu Pedido</h2>
-
-<!-- Lista de itens com controle -->
-<div id="lista-itens-carrinho">
-<!-- Inserido via JS -->
-</div>
-
-<div class="form-group" style="margin-top: 20px;">
-<label>Seu Nome:</label>
-<input type="text" id="nome-cliente" placeholder="Nome completo">
-</div>
-
-<div class="form-group">
-<label>Telefone/WhatsApp:</label>
-<input type="tel" id="telefone-cliente" placeholder="(00) 00000-0000">
-</div>
-
-<div class="form-group">
-<label>Endereço de Entrega:</label>
-<input type="text" id="endereco-cliente" placeholder="Rua, Número, Bairro">
-</div>
-
-<div class="form-group">
-<label>Observações:</label>
-<textarea id="obs-pedido" rows="2" placeholder="Ex: Sem cebola, troco para 50..."></textarea>
-</div>
-
-<div class="form-group">
-<label>Forma de Pagamento:</label>
-<select id="forma-pagamento">
-<option value="pix">PIX</option>
-<option value="cartao">Cartão na Entrega</option>
-<option value="dinheiro">Dinheiro</option>
-</select>
-</div>
-
-<div class="total-final">
-Subtotal: R$ <span id="subtotal-val">0,00</span><br>
-Taxa de Entrega: R$ 7,00<br>
-<strong>Total: R$ <span id="total-final-val">0,00</span></strong>
-</div>
-
-<button class="btn-confirmar" onclick="finalizarPedidoLocal()">Confirmar Pedido</button>
-<button class="btn-fechar" onclick="fecharCheckout()">Continuar Comprando</button>
-</div>
-</div>
-
-<script>
-function openTab(tabName, btnElement) {
-document.querySelectorAll('.categoria').forEach(el => el.classList.remove('active'));
-document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-document.getElementById(tabName).classList.add('active');
-btnElement.classList.add('active');
-}
-
-// Estrutura do carrinho: { 'Nome do Item': { price: 10, qtd: 2 } }
-let cart = {};
-const TAXA_ENTREGA = 7.00;
-
-function addToCart(name, price) {
-if(cart[name]) {
-cart[name].qtd++;
-} else {
-cart[name] = { price: price, qtd: 1 };
-}
-updateCartDisplay();
-updateRemoveButtons();
-}
-
-function removeFromCart(name) {
-if(cart[name]) {
-if(cart[name].qtd > 1) {
-cart[name].qtd--;
-} else {
-delete cart[name];
-}
-}
-updateCartDisplay();
-updateRemoveButtons();
-renderCheckoutItems(); // Atualiza a lista do modal se estiver aberto
-}
-
-function limparCarrinho() {
-if(confirm("Tem certeza que deseja esvaziar o carrinho?")) {
-cart = {};
-updateCartDisplay();
-updateRemoveButtons();
-fecharCheckout();
-}
-}
-
-function updateRemoveButtons() {
-// Mostra ou esconde os X's baseados no carrinho
-const buttons = document.querySelectorAll('.btn-remove-item');
-buttons.forEach(btn => {
-// O onclick tem o formato: removeFromCart('Nome')
-// Precisamos extrair o nome para checar
-const itemName = btn.getAttribute('onclick').match(/'([^']+)'/);
-if (cart[itemName] && cart[itemName].qtd > 0) {
-btn.classList.remove('hidden');
-// Se tiver mais de 1, mostra a quantidade no X
-btn.innerText = cart[itemName].qtd > 1? cart[itemName].qtd: '✕';
-} else {
-btn.classList.add('hidden');
-}
-});
-}
-
-function updateCartDisplay() {
-let total = 0;
-let count = 0;
-
-for(let item in cart) {
-total += cart[item].price * cart[item].qtd;
-count += cart[item].qtd;
-}
-
-document.getElementById('total-items').innerText = count;
-document.getElementById('total-val').innerText = total.toFixed(2).replace('.', ',');
-
-const floatCart = document.getElementById('carrinho-float');
-if(count > 0) {
-floatCart.style.display = 'flex';
-} else {
-floatCart.style.display = 'none';
-fecharCheckout();
-}
-}
-
-function renderCheckoutItems() {
-const container = document.getElementById('lista-itens-carrinho');
-container.innerHTML = '';
-let subtotal = 0;
-
-for(let item in cart) {
-const data = cart[item];
-const itemTotal = data.price * data.qtd;
-subtotal += itemTotal;
-
-const div = document.createElement('div');
-div.className = 'item-carrinho';
-div.innerHTML = `
-<div class="item-info">
-<div class="item-nome">${item}</div>
-<div class="item-preco">R$ ${data.price.toFixed(2).replace('.', ',')} x ${data.qtd} = R$ ${itemTotal.toFixed(2).replace('.', ',')}</div>
-</div>
-<div class="item-controles">
-<button class="btn-qtd remove" onclick="removeFromCart('${item}')">-</button>
-<span>${data.qtd}</span>
-<button class="btn-qtd add" onclick="addToCart('${item}', ${data.price})">+</button>
-</div>
-`;
-container.appendChild(div);
-}
-
-document.getElementById('subtotal-val').innerText = subtotal.toFixed(2).replace('.', ',');
-document.getElementById('total-final-val').innerText = (subtotal + TAXA_ENTREGA).toFixed(2).replace('.', ',');
-}
-
-function abrirCheckout() {
-renderCheckoutItems();
-document.getElementById('modal-checkout').style.display = 'flex';
-}
-
-function fecharCheckout() {
-document.getElementById('modal-checkout').style.display = 'none';
-}
-
-function finalizarPedidoLocal() {
-const nome = document.getElementById('nome-cliente').value;
-const endereco = document.getElementById('endereco-cliente').value;
-
-if(!nome ||!endereco) {
-alert("Por favor, preencha seu nome e endereço.");
-return;
-}
-
-let totalFinal = 0;
-for(let item in cart) totalFinal += cart[item].price * cart[item].qtd;
-totalFinal += TAXA_ENTREGA;
-
-alert(`Pedido Confirmado!\n\nCliente: ${nome}\nTotal a Pagar: R$ ${totalFinal.toFixed(2).replace('.', ',')}\n\nAguardando processamento...`);
-
-cart = {};
-updateCartDisplay();
-updateRemoveButtons();
-fecharCheckout();
-document.getElementById('nome-cliente').value = '';
-document.getElementById('endereco-cliente').value = '';
-document.getElementById('telefone-cliente').value = '';
-document.getElementById('obs-pedido').value = '';
-}
-</script>
-
-</body>
-</html>
+🛒 <span id="total-items">0
