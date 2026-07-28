@@ -152,6 +152,12 @@
             font-size: 1.2rem; font-weight: bold; color: #333; text-align: right; margin-top: 10px;
             border-top: 1px solid #eee; padding-top: 10px;
         }
+        
+        .calculando-entrega {
+            font-size: 0.9rem; color: #ff6b00; text-align: center; margin-top: 5px;
+            font-style: italic; display: none;
+        }
+
         .btn-confirmar {
             width: 100%; background: #28a745; color: #fff; border: none; padding: 12px;
             border-radius: 6px; font-weight: bold; font-size: 1rem; cursor: pointer; margin-top: 10px;
@@ -175,7 +181,7 @@
 </div>
 
 <div class="container">
-    <!-- ABA LANÇHES -->
+    <!-- ABA LANCHES -->
     <div id="lanches" class="categoria active">
         <h2>Lanches</h2>
         <div class="grid-produtos">
@@ -357,13 +363,13 @@
         </div>
 
         <div class="form-group">
-            <label>Endereço:</label>
-            <input type="text" id="endereco-cliente" placeholder="Ex: Centro, Rua das Flores">
+            <label>Endereço (Bairro/Rua):</label>
+            <input type="text" id="endereco-cliente" placeholder="Ex: Centro, Rua das Flores" oninput="simularRota()">
         </div>
 
         <div class="form-group">
-            <label>Rua:</label>
-            <input type="text" id="rua-cliente" placeholder="Complemento: Número e nome da rua">
+            <label>Número da Residência:</label>
+            <input type="text" id="numero-residencia" placeholder="Ex: 123, Apto 10" oninput="simularRota()">
         </div>
 
         <div class="form-group">
@@ -380,9 +386,11 @@
             </select>
         </div>
 
+        <div class="calculando-entrega" id="msg-rota">📍 Calculando rota de entrega...</div>
+
         <div class="total-final">
             Subtotal: R$ <span id="subtotal-val">0,00</span><br>
-            Taxa de Entrega: R$ 7,00<br>
+            <span id="texto-entrega" style="display:none;">Taxa de Entrega: R$ <span id="valor-entrega">0,00</span></span><br>
             <strong>Total: R$ <span id="total-final-val">0,00</span></strong>
         </div>
 
@@ -400,7 +408,8 @@
     }
 
     let cart = {};
-    const TAXA_ENTREGA = 7.00;
+    const TAXA_ENTREGA_FIXA = 7.00;
+    let taxaAtual = 0;
 
     function addToCart(name, price) {
         if(cart[name]) {
@@ -463,6 +472,32 @@
         }
     }
 
+    // Simulação de cálculo de rota
+    function simularRota() {
+        const endereco = document.getElementById('endereco-cliente').value;
+        const numero = document.getElementById('numero-residencia').value;
+        const msgRota = document.getElementById('msg-rota');
+        const textoEntrega = document.getElementById('texto-entrega');
+        const valorEntregaSpan = document.getElementById('valor-entrega');
+        const totalFinalSpan = document.getElementById('total-final-val');
+        
+        // Só calcula se tiver preenchido algo
+        if (endereco.length > 3 || numero.length > 0) {
+            msgRota.style.display = 'block';
+            textoEntrega.style.display = 'none';
+            taxaAtual = 0; // Zera temporariamente
+            
+            // Simula delay de API de mapas
+            setTimeout(() => {
+                msgRota.style.display = 'none';
+                textoEntrega.style.display = 'inline';
+                taxaAtual = TAXA_ENTREGA_FIXA;
+                valorEntregaSpan.innerText = taxaAtual.toFixed(2).replace('.', ',');
+                atualizarTotalFinalModal();
+            }, 1500);
+        }
+    }
+
     function renderCheckoutItems() {
         const container = document.getElementById('lista-itens-carrinho');
         container.innerHTML = '';
@@ -487,12 +522,25 @@
             container.appendChild(div);
         }
         document.getElementById('subtotal-val').innerText = subtotal.toFixed(2).replace('.', ',');
-        document.getElementById('total-final-val').innerText = (subtotal + TAXA_ENTREGA).toFixed(2).replace('.', ',');
+        atualizarTotalFinalModal();
+    }
+
+    function atualizarTotalFinalModal() {
+        let subtotal = 0;
+        for(let item in cart) subtotal += cart[item].price * cart[item].qtd;
+        
+        const totalComTaxa = subtotal + taxaAtual;
+        document.getElementById('total-final-val').innerText = totalComTaxa.toFixed(2).replace('.', ',');
     }
 
     function abrirCheckout() {
         renderCheckoutItems();
         document.getElementById('modal-checkout').style.display = 'flex';
+        // Reseta visual da rota ao abrir
+        document.getElementById('msg-rota').style.display = 'none';
+        document.getElementById('texto-entrega').style.display = 'none';
+        taxaAtual = 0;
+        atualizarTotalFinalModal();
     }
 
     function fecharCheckout() {
@@ -502,18 +550,23 @@
     function finalizarPedidoLocal() {
         const nome = document.getElementById('nome-cliente').value;
         const endereco = document.getElementById('endereco-cliente').value;
-        const rua = document.getElementById('rua-cliente').value;
+        const numero = document.getElementById('numero-residencia').value;
 
-        if(!nome || !endereco || !rua) {
-            alert("Preencha nome, endereço e complemento da rua.");
+        if(!nome || !endereco || !numero) {
+            alert("Preencha nome, endereço e número da residência.");
+            return;
+        }
+
+        if(taxaAtual === 0) {
+            alert("Aguarde o cálculo da rota de entrega...");
             return;
         }
 
         let totalFinal = 0;
         for(let item in cart) totalFinal += cart[item].price * cart[item].qtd;
-        totalFinal += TAXA_ENTREGA;
+        totalFinal += taxaAtual;
 
-        alert(`Pedido Confirmado!\n\nCliente: ${nome}\nEndereço: ${endereco}\nRua: ${rua}\nTotal: R$ ${totalFinal.toFixed(2).replace('.', ',')} (Taxa de entrega inclusa)`);
+        alert(`Pedido Confirmado!\n\nCliente: ${nome}\nEndereço: ${endereco}, Nº ${numero}\nTaxa de Entrega: R$ ${taxaAtual.toFixed(2).replace('.', ',')}\nTotal: R$ ${totalFinal.toFixed(2).replace('.', ',')}`);
 
         cart = {};
         updateCartDisplay();
@@ -521,7 +574,7 @@
         fecharCheckout();
         document.getElementById('nome-cliente').value = '';
         document.getElementById('endereco-cliente').value = '';
-        document.getElementById('rua-cliente').value = '';
+        document.getElementById('numero-residencia').value = '';
         document.getElementById('telefone-cliente').value = '';
         document.getElementById('obs-pedido').value = '';
     }
