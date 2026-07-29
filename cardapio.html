@@ -442,38 +442,37 @@
   // --- INTEGRAÇÃO NOVAPAY (URLS OFICIAIS) ---
   async function criarCobranca(valorTotal, descricao) {
     const CLIENTE_ID = '9d799d33ca573a9c018e0ced6645f582308a64d6c5ac42512f680728518c69b2';
-    const IPA = 'sandbox'; // Altere para sua IPA real se tiver uma de produção
+    const IPA = 'sandbox'; 
     const valorCentavos = Math.round(valorTotal * 100);
     
-    // URLs oficiais para teste
-    const urls = [
-      `https://api.orendapay.com.br/v1/pix?client_id=${CLIENTE_ID}&amount=${valorCentavos}`,
-      `https://api.novapay-sandbox.com.br/v1/qrcode?token=${CLIENTE_ID}&amount=${valorCentavos}`
-    ];
+    // URL Oficial de Teste (Orenda Pay / NovaPay)
+    const urlApi = `https://api.orendapay.com.br/v1/pix?client_id=${CLIENTE_ID}&amount=${valorCentavos}`;
 
-    let sucesso = false;
-
-    for (const url of urls) {
-      try {
-        console.log(`Tentando URL: ${url}`);
-        // Usando corsproxy.io para evitar bloqueio de CORS no navegador
-        const resposta = await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`);
-        const dados = await resposta.json();
-        
-        if (dados.qrCode || dados.qrcode || dados.copiaCola) {
-          mostrarPix(dados.qrCode || dados.qrcode, dados.copiaCola || "Código gerado");
-          sucesso = true;
-          console.log("SUCESSO! Endpoint correto:", url);
-          break;
-        }
-      } catch (e) {
-        console.log(`Falha na URL: ${url}`);
+    try {
+      console.log("Tentando gerar Pix na URL:", urlApi);
+      
+      // Usando corsproxy.io para evitar bloqueio de CORS no navegador
+      const resposta = await fetch(`https://corsproxy.io/?${encodeURIComponent(urlApi)}`);
+      
+      if (!resposta.ok) {
+        throw new Error(`Erro na API: ${resposta.status}`);
       }
-    }
 
-    if (!sucesso) {
-      mostrarPix("https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=ERRO-API", "Tente novamente. API não respondeu.");
-      alert("Nenhuma URL da NovaPay funcionou. Verifique o Console (F12).");
+      const dados = await resposta.json();
+      console.log("Resposta da API:", dados);
+      
+      if (dados.qrCode || dados.pixCode || dados.copiaCola) {
+        mostrarPix(dados.qrCode || dados.pixCode, dados.copiaCola || "Código gerado");
+        console.log("Pix gerado com sucesso!");
+      } else {
+        // Se a API retornar erro dentro do JSON
+        throw new Error(dados.message || "API não retornou QR Code");
+      }
+
+    } catch (e) {
+      console.error("Falha na geração:", e);
+      // Gera um QR Code de erro para você ver no console
+      mostrarPix("https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=ERRO-API-CHECK-CONSOLE", "Erro: " + e.message);
     }
   }
 
