@@ -277,7 +277,7 @@
     </div>
     <div class="form-group">
       <label>Forma de Pagamento:</label>
-      <input type="text" value="PIX" readonly style="background: #eee; color: #555;">
+      <input type="text" value="PIX" readonly style="background: #eee; color: #555; font-weight: bold;">
     </div>
     <div class="total-final">
       Subtotal: R$ <span id="subtotal-val">0,00</span><br>
@@ -444,9 +444,9 @@
     const CLIENTE_ID = '9d799d33ca573a9c018e0ced6645f582308a64d6c5ac42512f680728518c69b2';
     const valorCentavos = Math.round(valorTotal * 100);
 
-    // Usa proxy oficial edge-cors para bypass de CORS no sandbox
+    // Usa proxy corsproxy.io para bypass de CORS no sandbox
     const targetUrl = `https://sandbox.orendapay.com.br/pix/qrcode/gerar/${CLIENTE_ID}?valor=${valorCentavos}&descricao=${encodeURIComponent(descricao)}`;
-    const proxyUrl = `https://edge-cors.top/?url=${encodeURIComponent(targetUrl)}`;
+    const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`;
 
     try {
       console.log("Tentando gerar Pix via proxy...");
