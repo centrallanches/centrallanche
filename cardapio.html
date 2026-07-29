@@ -561,13 +561,23 @@
         document.getElementById('modal-checkout').style.display = 'none';
     }
 
-        async function finalizarPedido() {
-        const nome = document.getElementById('nome-cliente').value;
-        const endereco = document.getElementById('endereco-cliente').value;
-        const numero = document.getElementById('numero-residencia').value;
-        const telefone = document.getElementById('telefone-cliente').value;
-        const obs = document.getElementById('obs-pedido').value;
-        const formaPagamento = document.getElementById('forma-pagamento').value;
+        const data = await response.json();
+
+if (!response.ok) {
+    alert(data.error || "Erro no pagamento");
+    return;
+}
+
+// A Anova pode retornar o código em 'payload', 'qr_code' ou dentro de um objeto 'pix'
+const pixCode = data.payload || data.qr_code || data.pix?.copiar_colar || data.charge?.pix?.code;
+
+if (pixCode) {
+    abrirModalPix(pixCode, subtotal + 5.00);
+} else {
+    alert("Erro: Código PIX não gerado. Verifique o console.");
+    console.log("Resposta da API:", data);
+}
+
 
         if (!nome || !telefone || !endereco || !numero) {
             alert("Preencha todos os campos obrigatórios (Nome, Telefone, Endereço e Número).");
