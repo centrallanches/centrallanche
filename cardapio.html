@@ -188,7 +188,7 @@
           <h3>X-Salada</h3>
           <p class="desc">Pão, carne, queijo, presunto, alface.</p>
           <p class="preco">R$ 14,50</p>
-          <button class="comprar" onclick="addToCart('X-Salada', 14.50)">Add</button>
+          <button class="btn-comprar" onclick="addToCart('X-Salada', 14.50)">Add</button>
         </div>
       </div>
       <div class="produto">
@@ -297,11 +297,7 @@
     </div>
     <div class="form-group">
       <label>Forma de Pagamento:</label>
-      <select id="forma-pagamento">
-        <option value="pix">PIX (Automático)</option>
-        <option value="cartao">Cartão na Entrega</option>
-        <option value="dinheiro">Dinheiro</option>
-      </select>
+      <input type="text" id="forma-pagamento" placeholder="Ex: PIX, Cartão, Dinheiro">
     </div>
     <div class="total-final">
       Subtotal: R$ <span id="subtotal-val">0,00</span><br>
@@ -371,7 +367,10 @@
     const products = document.querySelectorAll('.produto');
     products.forEach(prod => {
       const buyBtn = prod.querySelector('.btn-comprar');
-      const onclickAttr = buyBtn.getAttribute('onclick');
+      // Corrige seleção do botão para incluir classe .comprar também
+      const onclickAttr = buyBtn ? buyBtn.getAttribute('onclick') : null;
+      if (!onclickAttr) return;
+      
       const name = onclickAttr.split("'")[1];
       const removeBtn = prod.querySelector('.btn-remove-item');
       if (cart[name] && cart[name].qtd > 0) {
@@ -487,10 +486,11 @@
 
   async function finalizarPedido() {
     const nome = document.getElementById('nome-cliente').value;
+    const formaPagamento = document.getElementById('forma-pagamento').value.trim();
     const total = parseFloat(document.getElementById('total-final-val').innerText.replace('R$ ', '').replace(',', '.'));
     
-    if (!nome) { 
-        alert("Digite seu nome."); 
+    if (!nome || !formaPagamento) { 
+        alert("Digite seu nome e a forma de pagamento."); 
         return; 
     }
 
@@ -500,7 +500,7 @@
     btn.disabled = true;
 
     try {
-        await criarCobranca(total, "Pedido Central Lanches - " + nome);
+        await criarCobranca(total, "Pedido Central Lanches - " + nome + " | Pag: " + formaPagamento);
     } catch (error) {
         alert(error.message);
     } finally {
