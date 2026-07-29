@@ -188,7 +188,7 @@ margin: 15px 0; border-radius: 5px; font-family: monospace;
 <h3>X-Salada</h3>
 <p class="desc">Pão, carne, queijo, presunto, alface.</p>
 <p class="preco">R$ 14,50</p>
-<button class="btn-comprar" onclick="addToCart('X-Salada', 14.50)">Add</button>
+<button class="comprar" onclick="addToCart('X-Salada', 14.50)">Add</button>
 </div>
 </div>
 <div class="produto">
@@ -458,9 +458,10 @@ navigator.clipboard.writeText(copyText);
 alert("Código PIX copiado!");
 }
 
-// --- INTEGRAÇÃO ANOVAPAY (COM PROXY) ---
+// --- INTEGRAÇÃO ANOVAPAY (COM PROXY CORS) ---
 async function criarCobranca(valor, descricao) {
-const proxyUrl = "https://api.allorigins.win/get?url=";
+// Usando corsproxy.io para contornar bloqueio de CORS no navegador
+const proxyUrl = "https://corsproxy.io/?";
 const targetApi = "https://api.anovapay.com.br/v1/charges";
 
 const payload = JSON.stringify({
@@ -469,6 +470,7 @@ description: descricao,
 payment_method: "pix"
 });
 
+// Encode da URL final para o proxy entender
 const finalUrl = proxyUrl + encodeURIComponent(targetApi);
 
 try {
@@ -482,21 +484,25 @@ headers: {
 body: payload
 });
 
-if (!response.ok) throw new Error(`Falha na conexão: ${response.status}`);
+if (!response.ok) {
+const errorText = await response.text();
+throw new Error(`Erro na API: ${response.status} - ${errorText}`);
+}
 
-const result = await response.json();
-const data = JSON.parse(result.contents);
+// O corsproxy.io retorna o JSON direto
+const data = await response.json();
 
 if (data.checkout_url) {
 window.location.href = data.checkout_url;
 } else if (data.qr_code_image || data.qr_code) {
 mostrarPix(data.qr_code_image || data.qr_code, data.pix_code || data.qr_code);
 } else {
-throw new Error("A API não retornou um link de pagamento.");
+console.log("Resposta da API:", data);
+throw new Error("A API não retornou um link ou QR Code válido.");
 }
 } catch (error) {
-console.error(error);
-throw new Error("Erro ao conectar com o pagamento. Verifique sua internet.");
+console.error("Erro detalhado:", error);
+throw new Error("Falha na conexão com o pagamento. Tente novamente em alguns segundos.");
 }
 }
 
