@@ -324,6 +324,7 @@
 </div>
 
 <script>
+  // --- LÓGICA DO CARRINHO ---
   function openTab(tabName, btnElement) {
     document.querySelectorAll('.categoria').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
@@ -445,6 +446,37 @@
     alert("Código PIX copiado!");
   }
 
+  // --- INTEGRAÇÃO ANOVAPAY ---
+  const ANOVA_CONFIG = {
+      clientId: "cms0q5i6j000elp019xciyps3",
+      clientSecret: "e56d84d7f23cb682b20e980281e8f51fce70de7b7cff63a933e1ce5a3e17f30b",
+      apiUrl: "https://api.anovapay.com.br/charges"
+  };
+
+  async function criarCobranca(valor, descricao) {
+      const response = await fetch(ANOVA_CONFIG.apiUrl, {
+          method: 'POST',
+          headers: {
+              'ci': ANOVA_CONFIG.clientId,
+              'cs': ANOVA_CONFIG.clientSecret,
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+              amount: Math.round(valor * 100),
+              description: descricao
+          })
+      });
+
+      const data = await response.json();
+
+      if (data.checkout_url) {
+          window.location.href = data.checkout_url;
+      } else {
+          console.log('Resposta API:', data);
+          alert('Erro: verifique o console (F12)');
+      }
+  }
+
   async function finalizarPedido() {
     const nome = document.getElementById('nome-cliente').value;
     const total = parseFloat(document.getElementById('total-final-val').innerText.replace('R$ ', '').replace(',', '.'));
@@ -452,21 +484,14 @@
 
     const btn = document.getElementById('btn-confirmar');
     const textoOriginal = btn.innerText;
-    btn.innerText = "Gerando Pix..."; btn.disabled = true;
+    btn.innerText = "Gerando Pagamento..."; btn.disabled = true;
 
     try {
-      const response = await fetch('/api/gerar-pix', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ total: total, nome: nome })
-      });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const data = await response.json();
-      if (data.qr_code && data.pix_copy_paste) mostrarPix(data.qr_code, data.pix_copy_paste);
-      else alert("Dados inválidos: " + JSON.stringify(data));
+      // Chama a função de pagamento do Anova
+      await criarCobranca(total, "Pedido Central Lanches - " + nome);
     } catch (error) {
       console.error(error);
-      alert("Erro de conexão ou timeout.");
+      alert("Erro ao conectar com o gateway.");
     } finally {
       btn.innerText = textoOriginal; btn.disabled = false;
     }
