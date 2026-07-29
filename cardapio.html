@@ -148,7 +148,8 @@
       background: #eee; padding: 10px; word-break: break-all; font-size: 0.8rem;
       margin: 15px 0; border-radius: 5px; font-family: monospace;
     }
-    .btn-copy { background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px; margin-bottom: 10px; width: 100%; }
+    .btn-copy { background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px; margin-bottom: 10px; width: 100%; cursor: pointer;}
+    .btn-copy:active { transform: scale(0.98); }
   </style>
 </head>
 <body>
@@ -447,58 +448,71 @@
     alert("Código PIX copiado!");
   }
 
-  // --- INTEGRAÇÃO ANOVAPAY COM PROXY ---
+  // --- INTEGRAÇÃO ANOVAPAY (NOVA) ---
   const ANOVA_CONFIG = {
       clientId: "cms0q5i6j000elp019xciyps3",
       clientSecret: "e56d84d7f23cb682b20e980281e8f51fce70de7b7cff63a933e1ce5a3e17f30b",
-      apiUrl: "https://api.anovapay.com.br/charges"
+      apiUrl: "https://api.anovapay.com.br/v1/charges"
   };
 
   async function criarCobranca(valor, descricao) {
-      // Usando um proxy para evitar bloqueio de CORS no navegador
-      const proxyUrl = "https://corsproxy.io/?";
-      const targetUrl = ANOVA_CONFIG.apiUrl;
-      
-      const response = await fetch(proxyUrl + encodeURIComponent(targetUrl), {
-          method: 'POST',
-          headers: {
-              'ci': ANOVA_CONFIG.clientId,
-              'cs': ANOVA_CONFIG.clientSecret,
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-              amount: Math.round(valor * 100),
-              description: descricao
-          })
-      });
+      try {
+          const response = await fetch(ANOVA_CONFIG.apiUrl, {
+              method: 'POST',
+              headers: {
+                  'ci': ANOVA_CONFIG.clientId,
+                  'cs': ANOVA_CONFIG.clientSecret,
+                  'Content-Type': 'application/json',
+                  'Accept': 'application/json'
+              },
+              body: JSON.stringify({
+                  amount: Math.round(valor * 100),
+                  description: descricao,
+                  payment_method: "pix"
+              })
+          });
 
-      const data = await response.json();
+          if (!response.ok) {
+              const errText = await response.text();
+              throw new Error(`Erro ${response.status}: ${errText}`);
+          }
 
-      if (data.checkout_url) {
-          window.location.href = data.checkout_url;
-      } else {
-          console.error('Erro AnovaPay:', data);
-          alert('Erro ao gerar pagamento: ' + (data.message || 'Verifique o console'));
+          const data = await response.json();
+
+          if (data.checkout_url) {
+              window.location.href = data.checkout_url;
+          } else if (data.qr_code || data.qr_code_image) {
+              mostrarPix(data.qr_code_image || data.qr_code, data.qr_code || data.pix_code);
+          } else {
+              throw new Error('Resposta da API sem URL ou QR Code.');
+          }
+      } catch (error) {
+          console.error("Erro Anova:", error);
+          throw error;
       }
   }
 
   async function finalizarPedido() {
     const nome = document.getElementById('nome-cliente').value;
     const total = parseFloat(document.getElementById('total-final-val').innerText.replace('R$ ', '').replace(',', '.'));
-    if (!nome) { alert("Digite seu nome."); return; }
+    
+    if (!nome) { 
+        alert("Digite seu nome."); 
+        return; 
+    }
 
     const btn = document.getElementById('btn-confirmar');
     const textoOriginal = btn.innerText;
-    btn.innerText = "Gerando Pagamento..."; btn.disabled = true;
+    btn.innerText = "Gerando Pagamento..."; 
+    btn.disabled = true;
 
     try {
-      // Chama a função de pagamento do Anova
-      await criarCobranca(total, "Pedido Central Lanches - " + nome);
+        await criarCobranca(total, "Pedido Central Lanches - " + nome);
     } catch (error) {
-      console.error(error);
-      alert("Erro ao conectar com o gateway.");
+        alert(error.message);
     } finally {
-      btn.innerText = textoOriginal; btn.disabled = false;
+        btn.innerText = textoOriginal; 
+        btn.disabled = false;
     }
   }
 </script>
