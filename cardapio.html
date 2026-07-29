@@ -7,7 +7,7 @@
     <style>
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', sans-serif; }
         body { background:#f4f4f4; padding-bottom: 80px; }
-
+        
         header { background:#ff6b00; color:#fff; padding:30px 20px; text-align:center; }
         header h1 { font-size:2rem; }
 
@@ -54,14 +54,14 @@
             height: 140px;
         }
 
-        .produto img {
-            width:100%;
-            height:100%;
-            object-fit:cover;
-            background:#eee;
+        .produto img { 
+            width:100%; 
+            height:100%; 
+            object-fit:cover; 
+            background:#eee; 
             display: block;
         }
-
+        
         .btn-remove-item {
             position: absolute;
             top: 8px;
@@ -91,7 +91,7 @@
         .info h3 { font-size:1rem; margin-bottom:5px; height:40px; overflow:hidden; }
         .desc { font-size:0.8rem; color:#777; margin-bottom:8px; height:40px; overflow:hidden; }
         .preco { color:#ff6b00; font-weight:bold; font-size:1.1rem; margin-bottom:10px; }
-
+        
         .btn-comprar {
             width:100%; background:#ff6b00; color:#fff; border:none;
             padding:8px; border-radius:6px; font-weight:bold; cursor:pointer;
@@ -108,7 +108,7 @@
         }
         #carrinho-info { flex: 1; }
         .cart-btn {
-            border: none; padding: 8px 15px;
+            border: none; padding: 8px 15px; 
             border-radius: 5px; color: white; font-weight: bold; cursor: pointer;
             font-size: 0.9rem;
         }
@@ -124,7 +124,7 @@
             max-height: 90vh; overflow-y: auto;
         }
         .checkout-content h2 { color: #ff6b00; margin-bottom: 15px; }
-
+        
         .item-carrinho {
             display: flex; justify-content: space-between; align-items: center;
             border-bottom: 1px solid #eee; padding: 10px 0;
@@ -132,7 +132,7 @@
         .item-info { flex: 1; }
         .item-nome { font-weight: bold; font-size: 0.9rem; }
         .item-preco { font-size: 0.8rem; color: #777; }
-
+        
         .item-controles { display: flex; align-items: center; gap: 10px; }
         .btn-qtd {
             background: #eee; border: none; width: 25px; height: 25px;
@@ -147,17 +147,11 @@
         .form-group input, .form-group textarea, .form-group select {
             width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem;
         }
-
+        
         .total-final {
             font-size: 1.2rem; font-weight: bold; color: #333; text-align: right; margin-top: 10px;
             border-top: 1px solid #eee; padding-top: 10px;
         }
-
-        .calculando-entrega {
-            font-size: 0.9rem; color: #ff6b00; text-align: center; margin-top: 5px;
-            font-style: italic; display: none;
-        }
-
         .btn-confirmar {
             width: 100%; background: #28a745; color: #fff; border: none; padding: 12px;
             border-radius: 6px; font-weight: bold; font-size: 1rem; cursor: pointer; margin-top: 10px;
@@ -166,34 +160,10 @@
             width: 100%; background: #ccc; color: #333; border: none; padding: 10px;
             border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 5px;
         }
-
-        /* MODAL PIX */
-        #modal-pix {
-            display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-            background:rgba(0,0,0,0.8); z-index:1001; justify-content:center; align-items:center;
-        }
-        .pix-modal-content {
-            background:#fff; padding:30px; border-radius:12px; text-align:center; width:320px;
-            box-shadow:0 5px 20px rgba(0,0,0,0.4);
-        }
-        #img-qr-modal {
-            width:200px; height:200px; margin:15px auto;
-            border:solid 1px #ddd;
-        }
-        #btn-copiar-pix {
-            background:#25D366; color:#fff; border:none;
-            padding:10px 30px; border-radius:6px; font-weight:bold; cursor:pointer;
-            margin:10px 0;
-        }
-        #valor-pix-modal {
-            font-size:1.4rem; font-weight:bold; color:#ff6b00;
-        }
-        #status-pix {
-            margin-top:10px; font-size:0.9rem; font-style:italic;
-        }
     </style>
 </head>
 <body>
+
 <header>
     <h1>Central Lanches</h1>
     <p>Selecione a categoria abaixo</p>
@@ -206,7 +176,8 @@
 </div>
 
 <div class="container">
-    <!-- ABA LANCHES -->
+
+    <!-- ABA LANÇHES -->
     <div id="lanches" class="categoria active">
         <h2>Lanches</h2>
         <div class="grid-produtos">
@@ -258,7 +229,7 @@
                     <button class="btn-comprar" onclick="addToCart('X-Duplo', 19.90)">Adicionar</button>
                 </div>
             </div>
-            <div class="produto">
+             <div class="produto">
                 <div class="img-container">
                     <img src="IMG_20260727_195613.jpg" alt="X-Galinha">
                     <div class="btn-remove-item hidden" onclick="removeFromCart('X-Galinha')">✕</div>
@@ -358,6 +329,7 @@
             </div>
         </div>
     </div>
+
 </div>
 
 <!-- Carrinho Flutuante -->
@@ -375,9 +347,13 @@
 <div id="modal-checkout">
     <div class="checkout-content">
         <h2>Seu Pedido</h2>
-        <div id="lista-itens-carrinho"></div>
+        
+        <!-- Lista de itens com controle -->
+        <div id="lista-itens-carrinho">
+            <!-- Inserido via JS -->
+        </div>
 
-        <div class="form-group">
+        <div class="form-group" style="margin-top: 20px;">
             <label>Seu Nome:</label>
             <input type="text" id="nome-cliente" placeholder="Nome completo">
         </div>
@@ -388,13 +364,8 @@
         </div>
 
         <div class="form-group">
-            <label>Endereço (Bairro/Rua):</label>
-            <input type="text" id="endereco-cliente" placeholder="Ex: Centro, Rua das Flores" oninput="simularRota()">
-        </div>
-
-        <div class="form-group">
-            <label>Número da Residência:</label>
-            <input type="text" id="numero-residencia" placeholder="Ex: 123, Apto 10" oninput="simularRota()">
+            <label>Endereço de Entrega:</label>
+            <input type="text" id="endereco-cliente" placeholder="Rua, Número, Bairro">
         </div>
 
         <div class="form-group">
@@ -411,31 +382,14 @@
             </select>
         </div>
 
-        <div class="calculando-entrega" id="msg-rota">📍 Calculando rota de entrega...</div>
-
         <div class="total-final">
             Subtotal: R$ <span id="subtotal-val">0,00</span><br>
-            <span id="texto-entrega" style="display:none;">Taxa de Entrega: R$ <span id="valor-entrega">0,00</span></span><br>
+            Taxa de Entrega: R$ 7,00<br>
             <strong>Total: R$ <span id="total-final-val">0,00</span></strong>
         </div>
 
-        <button class="btn-confirmar" onclick="finalizarPedido()">Confirmar Pedido</button>
+        <button class="btn-confirmar" onclick="finalizarPedidoLocal()">Confirmar Pedido</button>
         <button class="btn-fechar" onclick="fecharCheckout()">Continuar Comprando</button>
-    </div>
-</div>
-
-<!-- MODAL PIX - ADICIONADO -->
-<div id="modal-pix">
-    <div class="pix-modal-content">
-        <h2>Pague com PIX</h2>
-        <p>Valor total do pedido:</p>
-        <p id="valor-pix-modal" style="font-size:1.4rem; margin:5px 0;">R$ 0,00</p>
-        <p style="margin-bottom:10px;">Efetue o pagamento com o QR Code ou o código abaixo:</p>
-        <img id="img-qr-modal" src="" alt="QR Code PIX">
-        <p id="status-pix" style="margin-top:10px; font-size:0.9rem;">Copie o código ou escaneie o QR Code para pagar.</p>
-        <button id="btn-copiar-pix" onclick="copiarPix()">Copiar Informações PIX</button>
-        <br>
-        <button class="btn-fechar" onclick="fecharModalPix()" style="margin-top:15px;">Fechar</button>
     </div>
 </div>
 
@@ -448,28 +402,41 @@
     }
 
     let cart = {};
-    const TAXA_ENTREGA_FIXA = 7.00;
-    let taxaAtual = 0;
+    const TAXA_ENTREGA = 7.00;
 
     function addToCart(name, price) {
-        if(cart[name]) cart[name].qtd++; else cart[name] = { price, qtd: 1 };
-        updateCartDisplay(); updateRemoveButtons();
+        if(cart[name]) {
+            cart[name].qtd++;
+        } else {
+            cart[name] = { price: price, qtd: 1 };
+        }
+        updateCartDisplay();
+        updateRemoveButtons();
     }
 
     function removeFromCart(name) {
         if(cart[name]) {
-            if(cart[name].qtd > 1) cart[name].qtd--;
-            else delete cart[name];
+            if(cart[name].qtd > 1) {
+                cart[name].qtd--;
+            } else {
+                delete cart[name];
+            }
         }
-        updateCartDisplay(); updateRemoveButtons(); renderCheckoutItems();
+        updateCartDisplay();
+        updateRemoveButtons();
+        renderCheckoutItems();
     }
 
     function limparCarrinho() {
-        cart = {}; updateCartDisplay(); updateRemoveButtons(); fecharCheckout();
+        cart = {};
+        updateCartDisplay();
+        updateRemoveButtons();
+        fecharCheckout();
     }
 
     function updateRemoveButtons() {
-        document.querySelectorAll('.btn-remove-item').forEach(btn => {
+        const buttons = document.querySelectorAll('.btn-remove-item');
+        buttons.forEach(btn => {
             const itemName = btn.getAttribute('onclick').match(/'([^']+)'/)[1];
             if (cart[itemName] && cart[itemName].qtd > 0) {
                 btn.classList.remove('hidden');
@@ -481,36 +448,23 @@
     }
 
     function updateCartDisplay() {
-        let total = 0, count = 0;
-        for(const item in cart) {
+        let total = 0;
+        let count = 0;
+        
+        for(let item in cart) {
             total += cart[item].price * cart[item].qtd;
             count += cart[item].qtd;
         }
+        
         document.getElementById('total-items').innerText = count;
         document.getElementById('total-val').innerText = total.toFixed(2).replace('.', ',');
+        
         const floatCart = document.getElementById('carrinho-float');
-        floatCart.style.display = count > 0 ? 'flex' : 'none';
-        if (count === 0) fecharCheckout();
-    }
-
-    function simularRota() {
-        const endereco = document.getElementById('endereco-cliente').value;
-        const numero = document.getElementById('numero-residencia').value;
-        const msgRota = document.getElementById('msg-rota');
-        const textoEntrega = document.getElementById('texto-entrega');
-        const valorEntregaSpan = document.getElementById('valor-entrega');
-
-        if (endereco.length > 3 || numero.length > 0) {
-            msgRota.style.display = 'block';
-            textoEntrega.style.display = 'none';
-            taxaAtual = 0;
-            setTimeout(() => {
-                msgRota.style.display = 'none';
-                textoEntrega.style.display = 'inline';
-                taxaAtual = TAXA_ENTREGA_FIXA;
-                valorEntregaSpan.innerText = taxaAtual.toFixed(2).replace('.', ',');
-                atualizarTotalFinalModal();
-            }, 1500);
+        if(count > 0) {
+            floatCart.style.display = 'flex';
+        } else {
+            floatCart.style.display = 'none';
+            fecharCheckout();
         }
     }
 
@@ -518,10 +472,12 @@
         const container = document.getElementById('lista-itens-carrinho');
         container.innerHTML = '';
         let subtotal = 0;
-        for(const item in cart) {
+
+        for(let item in cart) {
             const data = cart[item];
             const itemTotal = data.price * data.qtd;
             subtotal += itemTotal;
+
             const div = document.createElement('div');
             div.className = 'item-carrinho';
             div.innerHTML = `
@@ -537,202 +493,45 @@
             `;
             container.appendChild(div);
         }
-        document.getElementById('subtotal-val').innerText = subtotal.toFixed(2).replace('.', ',');
-        atualizarTotalFinalModal();
-    }
 
-    function atualizarTotalFinalModal() {
-        let subtotal = 0;
-        for(const item in cart) subtotal += cart[item].price * cart[item].qtd;
-        const totalComTaxa = subtotal + taxaAtual;
-        document.getElementById('total-final-val').innerText = totalComTaxa.toFixed(2).replace('.', ',');
+        document.getElementById('subtotal-val').innerText = subtotal.toFixed(2).replace('.', ',');
+        document.getElementById('total-final-val').innerText = (subtotal + TAXA_ENTREGA).toFixed(2).replace('.', ',');
     }
 
     function abrirCheckout() {
         renderCheckoutItems();
         document.getElementById('modal-checkout').style.display = 'flex';
-        document.getElementById('msg-rota').style.display = 'none';
-        document.getElementById('texto-entrega').style.display = 'none';
-        taxaAtual = 0;
-        atualizarTotalFinalModal();
     }
 
     function fecharCheckout() {
         document.getElementById('modal-checkout').style.display = 'none';
     }
 
-        const data = await response.json();
-
-if (!response.ok) {
-    alert(data.error || "Erro no pagamento");
-    return;
-}
-
-// A Anova pode retornar o código em 'payload', 'qr_code' ou dentro de um objeto 'pix'
-const pixCode = data.payload || data.qr_code || data.pix?.copiar_colar || data.charge?.pix?.code;
-
-if (pixCode) {
-    abrirModalPix(pixCode, subtotal + 5.00);
-} else {
-    alert("Erro: Código PIX não gerado. Verifique o console.");
-    console.log("Resposta da API:", data);
-}
-
-
-        if (!nome || !telefone || !endereco || !numero) {
-            alert("Preencha todos os campos obrigatórios (Nome, Telefone, Endereço e Número).");
+    function finalizarPedidoLocal() {
+        const nome = document.getElementById('nome-cliente').value;
+        const endereco = document.getElementById('endereco-cliente').value;
+        
+        if(!nome || !endereco) {
+            alert("Por favor, preencha seu nome e endereço.");
             return;
         }
 
-        if (Object.keys(cart).length === 0) {
-            alert("Seu carrinho está vazio.");
-            return;
-        }
+        let totalFinal = 0;
+        for(let item in cart) totalFinal += cart[item].price * cart[item].qtd;
+        totalFinal += TAXA_ENTREGA;
 
-        // Calcula subtotal
-        let subtotal = 0;
-        for (let item in cart) {
-            subtotal += cart[item].preco * cart[item].qtd;
-        }
-
-        // Taxa de entrega fixa (ajuste conforme sua lógica de rota se necessário)
-        const taxaEntrega = TAXA_ENTREGA_FIXA; 
-        const total = subtotal + taxaEntrega;
-
-        const btn = document.querySelector('.btn-confirmar');
-        const textoOriginal = btn.innerText;
-        btn.disabled = true;
-        btn.innerText = "Processando...";
-        btn.style.opacity = "0.7";
-
-        try {
-            // Se for PIX, chama o backend
-            if (formaPagamento === 'pix') {
-                // URL da sua API na Vercel (SUBSTITUA PELO SEU DOMÍNIO REAL)
-                const apiUrl = "https://seu-projeto.vercel.app/api/pagamento"; 
-
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        total: total,
-                        cliente: {
-                            nome: nome,
-                            telefone: telefone,
-                            endereco: `${endereco}, ${numero}`,
-                            observacao: obs
-                        },
-                        itens: cart // Opcional: enviar itens para registro no backend
-                    })
-                });
-
-                if (!response.ok) {
-                    const errData = await response.json();
-                    throw new Error(errData.error || "Erro ao gerar pagamento");
-                }
-
-                const data = await response.json();
-                // Adapta conforme o retorno da sua API (qr_code, payload, emv, etc)
-                const pixCode = data.qr_code || data.payload || data.emv;
-
-                if (!pixCode) throw new Error("Código PIX não gerado");
-
-                abrirModalPix(pixCode, total);
-
-            } else {
-                // Se for dinheiro ou cartão, apenas finaliza o pedido (ex: envia para WhatsApp)
-                alert(`Pedido confirmado! Valor: R$ ${total.toFixed(2)}. Forma: ${formaPagamento.toUpperCase()}`);
-                fecharCheckout();
-                limparCarrinho();
-            }
-
-        } catch (error) {
-            console.error("Erro no pagamento:", error);
-            alert(`Falha: ${error.message}`);
-        } finally {
-            btn.disabled = false;
-            btn.innerText = textoOriginal;
-            btn.style.opacity = "1";
-        }
-    }
-
-
-        if(!nome || !endereco || !numero) {
-            alert("Preencha nome, endereço e número da residência");
-            return;
-        }
-
-        if(taxaAtual === 0) {
-            alert("Calculando rota de entrega...");
-            return;
-        }
-
-        const btn = document.querySelector('.btn-confirmar');
-        const textoOriginal = btn.innerText;
-        btn.disabled = true;
-        btn.innerText = "⏳ Processando...";
-        btn.style.opacity = "0.7";
-
-        try {
-            let subtotal = 0;
-            for(const item in cart) subtotal += cart[item].price * cart[item].qtd;
-            const total = subtotal + taxaAtual;
-            const pedidoId = Date.now();
-
-            const response = await fetch("https://central-backend-kkhv.onrender.com/criar-pagamento", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    valor: total,
-                    descricao: `Pedido Central Lanches - ${pedidoId}`,
-                    cliente: { nome, endereco: `${endereco}, ${numero}` }
-                })
-            });
-
-            const errorData = {};
-            if(!response.ok) {
-                try { Object.assign(errorData, await response.json()); } catch {}
-                throw new Error(errorData.message || `Servidor retornou ${response.status}`);
-            }
-
-            const data = await response.json();
-            const pixCode = data.qr_code || data.payload || data.emv;
-
-            if(!pixCode) throw new Error("Código PIX não gerado");
-
-            abrirModalPix(pixCode, total);
-
-        } catch (error) {
-            console.error("Erro no pagamento:", error);
-            alert(`Falha: ${error.message}`);
-        } finally {
-            btn.disabled = false;
-            btn.innerText = textoOriginal;
-            btn.style.opacity = "1";
-        }
-    }
-
-    function fecharModalPix() {
-        document.getElementById('modal-pix').style.display = 'none';
-    }
-
-    function abrirModalPix(qrCodeString, valorTotal) {
-        const modal = document.getElementById('modal-pix');
-        const imgQR = document.getElementById('img-qr-modal');
-        const valorEl = document.getElementById('valor-pix-modal');
-        modal.style.display = 'flex';
-        valorEl.innerText = `R$ ${valorTotal.toFixed(2).replace('.', ',')}`;
-        imgQR.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrCodeString)}`;
-        imgQR.setAttribute('data-pix', qrCodeString);
-    }
-
-    function copiarPix() {
-        const pix = document.getElementById('img-qr-modal').getAttribute('data-pix');
-        navigator.clipboard.writeText(pix);
-        alert("Código PIX copiado para área de transferência.");
+        alert(`Pedido Confirmado!\n\nCliente: ${nome}\nTotal a Pagar: R$ ${totalFinal.toFixed(2).replace('.', ',')}\n\nAguardando processamento...`);
+        
+        cart = {};
+        updateCartDisplay();
+        updateRemoveButtons();
+        fecharCheckout();
+        document.getElementById('nome-cliente').value = '';
+        document.getElementById('endereco-cliente').value = '';
+        document.getElementById('telefone-cliente').value = '';
+        document.getElementById('obs-pedido').value = '';
     }
 </script>
+
 </body>
 </html>
