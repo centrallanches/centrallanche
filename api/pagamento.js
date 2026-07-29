@@ -10,47 +10,47 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Dados incompletos' });
     }
 
-    const API_KEY = process.env.ANOVA_API_KEY;
-    if (!API_KEY) {
-      throw new Error('Chave da API não configurada');
+    const CLIENT_ID = process.env.ANOVA_CLIENT_ID;
+    const CLIENT_SECRET = process.env.ANOVA_CLIENT_SECRET;
+
+    if (!CLIENT_ID || !CLIENT_SECRET) {
+      throw new Error('Credenciais da Anova não configuradas');
     }
 
-    // Tente esta URL. Se falhar, troque para /v1/transactions ou /pix
-    const API_URL = 'https://api.anovapay.com/v1/charges'; 
-
-    const body = {
-      amount: Math.round(total * 100),
-      description: `Pedido Central Lanches`,
-      payment_method: 'pix',
-      customer: {
-        name: cliente.nome,
-        email: cliente.email || 'cliente@email.com',
-        document: cliente.cpf || '00000000000' // CPF fictício se não tiver
-      }
-    };
+    const API_URL = 'https://api.anovapay.com.br/charges';
 
     const response = await fetch(API_URL, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${API_KEY}`,
+        'ci': CLIENT_ID,
+        'cs': CLIENT_SECRET,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(body)
+      body: JSON.stringify({
+        amount: Math.round(total * 100), // Confirme se a Anova quer centavos ou reais. Se errar, tire o * 100
+        description: `Pedido Central Lanches - ${cliente.nome}`,
+        payment_method: 'pix',
+        customer: {
+          name: cliente.nome,
+          email: cliente.email || 'cliente@centrallanches.com',
+          document: cliente.cpf || '00000000000' // CPF fictício se não tiver
+        }
+      })
     });
 
     const data = await response.json();
 
     if (!response.ok) {
       console.error('Erro Anova:', data);
-      throw new Error(data.message || 'Erro ao criar cobrança');
+      throw new Error(data.message || 'Falha na API de pagamento');
     }
 
-    // Tenta encontrar o código PIX em vários lugares possíveis da resposta
-    const pixCode = data.pix?.qr_code || data.payload || data.qr_code || data.charge?.pix?.qr_code;
+    // Tentativa de encontrar o QR Code/Copia e Cola na resposta
+    const pixCode = data.payload || data.qr_code || data.pix?.copiar_colar || data.charge?.pix?.code;
 
     if (!pixCode) {
-      console.error('Resposta da API:', data);
-      throw new Error('Código PIX não encontrado na resposta');
+      console.error('Resposta completa:', JSON.stringify(data));
+      throw new Error('Código PIX não gerado');
     }
 
     res.status(200).json({ payload: pixCode });
