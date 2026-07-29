@@ -1,6 +1,6 @@
 // api/gerar-pix.js
 export default async function handler(req, res) {
-  // Permite CORS para o frontend acessar
+  // Configura CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -19,43 +19,43 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Dados incompletos' });
   }
 
-  // Usa as variáveis corretas da Anova Pay configuradas na Vercel
-  const clientId = process.env.ANOVA_CLIENT_ID;
-  const clientSecret = process.env.ANOVA_CLIENT_SECRET;
-
-  if (!clientId || !clientSecret) {
-    console.error('Variáveis ANOVA_CLIENT_ID ou ANOVA_CLIENT_SECRET faltando');
+  const apiKey = process.env.ELITE_PAY_API_KEY;
+  
+  if (!apiKey) {
+    console.error('Variável ELITE_PAY_API_KEY não encontrada');
     return res.status(500).json({ error: 'Configuração do servidor inválida' });
   }
 
   try {
-    // Endpoint correto da Anova Pay para criar cobrança
-    const response = await fetch('https://api.anovapay.com.br/charges', {
+    // Endpoint da Elite Pay (ajuste conforme a documentação oficial deles)
+    // Geralmente é algo como /v1/charges ou /pix/create
+    const response = await fetch('https://api.elitepay.com.br/v1/charges', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'ci': clientId,
-        'cs': clientSecret
+        'Authorization': `Bearer ${apiKey}` // Ou 'x-api-key', verifique a doc da Elite
       },
       body: JSON.stringify({
-        amount: Math.round(total * 100), // Anova geralmente usa centavos
+        amount: Math.round(total * 100), // Valor em centavos
         description: `Pedido Central Lanches - ${nome}`,
-        payment_method: 'pix' // Especifica o método de pagamento
+        payment_method: 'pix',
+        customer: {
+          name: nome
+        }
       })
     });
 
     const data = await response.json();
 
     if (!response.ok) {
-      console.error('Erro Anova Pay:', data);
+      console.error('Erro Elite Pay:', data);
       return res.status(response.status).json({ error: data.message || 'Erro ao gerar PIX' });
     }
 
-    // Retorna o QR Code e o CopyPaste para o frontend
-    // Ajuste os campos 'qr_code' e 'pix_copy_paste' conforme o retorno real da Anova
+    // Ajuste os campos de retorno conforme a resposta da Elite Pay
     return res.status(200).json({
       qr_code: data.qr_code || data.qr_code_base64,
-      pix_copy_paste: data.pix_copy_paste || data.emv
+      pix_copy_paste: data.pix_copy_paste || data.emv || data.payload
     });
 
   } catch (error) {
