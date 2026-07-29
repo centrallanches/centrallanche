@@ -154,6 +154,7 @@ justify-content: center; align-items: center; padding: 20px;
 }
 .pix-content {
 background: #fff; padding: 25px; border-radius: 10px; width: 100%; max-width: 350px; text-align: center;
+max-height: 95vh; overflow-y: auto;
 }
 .pix-code {
 background: #eee; padding: 10px; word-break: break-all; font-size: 0.8rem;
@@ -183,13 +184,13 @@ margin: 15px 0; border-radius: 5px; font-family: monospace;
 <div class="produto">
 <div class="img-container">
 <img src="file_00000000d884820e9cdcac2b475cf5e1.png" alt="X-Burguer">
-<div class="btn-remove-item hidden" onclick="removeFromCart('X-Burguer')">✕</div>
+<div class="btn-remove-item hidden" onclick="removeFromCart('X-Burguer Simples')">✕</div>
 </div>
 <div class="info">
 <h3>X-Burguer Simples</h3>
 <p class="desc">Pão, hambúrguer, queijo e maionese.</p>
 <p class="preco">R$ 12,90</p>
-<button class="btn-comprar" onclick="addToCart('X-Burguer', 12.90)">Add</button>
+<button class="btn-comprar" onclick="addToCart('X-Burguer Simples', 12.90)">Add</button>
 </div>
 </div>
 <div class="produto">
@@ -269,13 +270,13 @@ margin: 15px 0; border-radius: 5px; font-family: monospace;
 <div class="produto">
 <div class="img-container">
 <img src="9114190ef9ef3f88b326b80c7ae4ccb6 (1).jpg" alt="Coca Cola">
-<div class="btn-remove-item hidden" onclick="removeFromCart('Coca Cola')">✕</div>
+<div class="btn-remove-item hidden" onclick="removeFromCart('Coca Cola 350 ml')">✕</div>
 </div>
 <div class="info">
 <h3>Coca Cola 350 ml</h3>
 <p class="desc">Lata gelada.</p>
 <p class="preco">R$ 6,00</p>
-<button class="btn-comprar" onclick="addToCart('Coca Cola', 6.00)">Add</button>
+<button class="btn-comprar" onclick="addToCart('Coca Cola 350 ml', 6.00)">Add</button>
 </div>
 </div>
 </div>
@@ -387,16 +388,22 @@ fecharCheckout();
 }
 
 function updateRemoveButtons() {
-const buttons = document.querySelectorAll('.btn-remove-item');
-buttons.forEach(btn => {
-const itemName = btn.getAttribute('onclick').match(/'([^']+)'/);
-if (cart[itemName] && cart[itemName].qtd > 0) {
-btn.classList.remove('hidden');
-btn.innerText = cart[itemName].qtd > 1? cart[itemName].qtd: '✕';
-} else {
-btn.classList.add('hidden');
-}
-});
+  const products = document.querySelectorAll('.produto');
+  products.forEach(prod => {
+    // Pega o nome exato que está no onclick do botão de compra
+    const buyBtn = prod.querySelector('.btn-comprar');
+    const onclickAttr = buyBtn.getAttribute('onclick');
+    // Extrai o nome de dentro das aspas simples: addToCart('Nome', ...)
+    const name = onclickAttr.split("'")[1];
+    
+    const removeBtn = prod.querySelector('.btn-remove-item');
+    if (cart[name] && cart[name].qtd > 0) {
+      removeBtn.classList.remove('hidden');
+      removeBtn.innerText = cart[name].qtd > 1 ? cart[name].qtd : '✕';
+    } else {
+      removeBtn.classList.add('hidden');
+    }
+  });
 }
 
 function updateCartDisplay() {
@@ -421,7 +428,7 @@ let subtotal = 0;
 
 for(let item in cart) {
 const data = cart[item];
-const itemTotal = data.price  data.qtd;
+const itemTotal = data.price * data.qtd;
 subtotal += itemTotal;
 
 const div = document.createElement('div');
