@@ -366,9 +366,7 @@
   function updateRemoveButtons() {
     const products = document.querySelectorAll('.produto');
     products.forEach(prod => {
-      const buyBtn = prod.querySelector('.btn-comprar');
-      // Corrige seleção do botão para incluir classe .comprar também
-      const onclickAttr = buyBtn ? buyBtn.getAttribute('onclick') : null;
+      const onclickAttr = prod.querySelector('.btn-comprar').getAttribute('onclick');
       if (!onclickAttr) return;
       
       const name = onclickAttr.split("'")[1];
@@ -438,8 +436,13 @@
       img.width = 200;
       img.height = 200;
       container.appendChild(img);
-    }else {
-      container.innerHTML = `<div style="font-size:0.8rem; color:#777">QR Code em texto</div>`;
+    } else {
+      // Caso a API retorne o código em texto ou base64 sem prefixo
+      const img = document.createElement('img');
+      img.src = "data:image/png;base64," + qrCodeUrl; 
+      img.width = 200;
+      img.height = 200;
+      container.appendChild(img);
     }
     document.getElementById('pix-copy-paste').innerText = codigoCopy;
     document.getElementById('modal-pix').style.display = 'flex';
@@ -457,30 +460,39 @@
     alert("Código PIX copiado!");
   }
 
-  // --- INTEGRAÇÃO ANOVAPAY (COM WORKER) ---
-  async function criarCobranca(valor, descricao) {
-    const workerUrl = "https://centralanche.fjfjfjfjfjf.workers.dev";
+  // --- INTEGRAÇÃO NOVAPAY (DIRETA) ---
+  async function criarCobranca(valorTotal, descricao) {
+    // CONFIGURAÇÃO DAS CREDENCIAIS
+    const CLIENTE_ID = 'f6c9a5efd726adc6aef155c0984b1f900db792be99f641aa598992edf03cd7e2';
+    const IPA = 'COLOQUE_SUA_IPA_AQUI'; // <--- 
+9d799d33ca573a9c018e0ced6645f582308a64d6c5ac42512f680728518c69b2
+    // Conversão para centavos
+    const valorCentavos = Math.round(valorTotal * 100);
+
+    // URL da API (Sandbox). Para produção, troque para https://api.novapay.com.br/pix/qrcode
+    const urlPix = `https://api.novapay-sandbox.com.br/pix/qrcode?cliente_id=${CLIENTE_ID}&ipa=${IPA}&valor=${valorCentavos}&descricao=${encodeURIComponent(descricao)}`;
 
     try {
-        const response = await fetch(workerUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                amount: Math.round(valor * 100),
-                description: descricao
-            })
-        });
+      const resposta = await fetch(urlPix);
+      const dados = await resposta.json();
 
-        const data = await response.json();
-        if (data.checkout_url) {
-            window.location.href = data.checkout_url;
-        } else {
-            console.error('Erro no Worker:', data);
-            alert('Erro ao processar pagamento. Cheque o console.');
-        }
-    } catch (error) {
-        console.error('Erro de conexão:', error);
-        alert('Sem conexão. Tente novamente.');
+      // Ajuste conforme a resposta real da API da NovaPay
+      // Geralmente retorna: { qrCode: "...", copiaCola: "..." } ou similar
+      if (dados.qrCode || dados.qrcode) {
+         const qr = dados.qrCode || dados.qrcode;
+         const copia = dados.copiaCola || dados.copia_cola || "Código não disponível";
+         mostrarPix(qr, copia);
+      } else if (dados.error) {
+         console.error('Erro NovaPay:', dados);
+         alert('Erro ao gerar Pix: ' + (dados.message || 'Verifique as credenciais'));
+      } else {
+         console.log('Resposta NovaPay:', dados);
+         alert('Resposta inesperada da API. Verifique o console.');
+      }
+
+    } catch (erro) {
+      console.error('Erro de conexão:', erro);
+      alert('Falha na conexão com o gateway de pagamento.');
     }
   }
 
@@ -488,19 +500,19 @@
     const nome = document.getElementById('nome-cliente').value;
     const formaPagamento = document.getElementById('forma-pagamento').value.trim();
     const total = parseFloat(document.getElementById('total-final-val').innerText.replace('R$ ', '').replace(',', '.'));
-    
-    if (!nome || !formaPagamento) { 
-        alert("Digite seu nome e a forma de pagamento."); 
+
+    if (!nome || !formaPagamento || !total) { 
+        alert("Preencha seu nome, forma de pagamento e verifique o carrinho."); 
         return; 
     }
 
     const btn = document.getElementById('btn-confirmar');
     const textoOriginal = btn.innerText;
-    btn.innerText = "Gerando Pagamento..."; 
+    btn.innerText = "Gerando Pix..."; 
     btn.disabled = true;
 
     try {
-        await criarCobranca(total, "Pedido Central Lanches - " + nome + " | Pag: " + formaPagamento);
+        await criarCobranca(total, "Pedido Central Lanches - " + nome);
     } catch (error) {
         alert(error.message);
     } finally {
