@@ -561,10 +561,93 @@
         document.getElementById('modal-checkout').style.display = 'none';
     }
 
-    async function finalizarPedido() {
+        async function finalizarPedido() {
         const nome = document.getElementById('nome-cliente').value;
         const endereco = document.getElementById('endereco-cliente').value;
         const numero = document.getElementById('numero-residencia').value;
+        const telefone = document.getElementById('telefone-cliente').value;
+        const obs = document.getElementById('obs-pedido').value;
+        const formaPagamento = document.getElementById('forma-pagamento').value;
+
+        if (!nome || !telefone || !endereco || !numero) {
+            alert("Preencha todos os campos obrigatórios (Nome, Telefone, Endereço e Número).");
+            return;
+        }
+
+        if (Object.keys(cart).length === 0) {
+            alert("Seu carrinho está vazio.");
+            return;
+        }
+
+        // Calcula subtotal
+        let subtotal = 0;
+        for (let item in cart) {
+            subtotal += cart[item].preco * cart[item].qtd;
+        }
+
+        // Taxa de entrega fixa (ajuste conforme sua lógica de rota se necessário)
+        const taxaEntrega = TAXA_ENTREGA_FIXA; 
+        const total = subtotal + taxaEntrega;
+
+        const btn = document.querySelector('.btn-confirmar');
+        const textoOriginal = btn.innerText;
+        btn.disabled = true;
+        btn.innerText = "Processando...";
+        btn.style.opacity = "0.7";
+
+        try {
+            // Se for PIX, chama o backend
+            if (formaPagamento === 'pix') {
+                // URL da sua API na Vercel (SUBSTITUA PELO SEU DOMÍNIO REAL)
+                const apiUrl = "https://seu-projeto.vercel.app/api/pagamento"; 
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        total: total,
+                        cliente: {
+                            nome: nome,
+                            telefone: telefone,
+                            endereco: `${endereco}, ${numero}`,
+                            observacao: obs
+                        },
+                        itens: cart // Opcional: enviar itens para registro no backend
+                    })
+                });
+
+                if (!response.ok) {
+                    const errData = await response.json();
+                    throw new Error(errData.error || "Erro ao gerar pagamento");
+                }
+
+                const data = await response.json();
+                // Adapta conforme o retorno da sua API (qr_code, payload, emv, etc)
+                const pixCode = data.qr_code || data.payload || data.emv;
+
+                if (!pixCode) throw new Error("Código PIX não gerado");
+
+                abrirModalPix(pixCode, total);
+
+            } else {
+                // Se for dinheiro ou cartão, apenas finaliza o pedido (ex: envia para WhatsApp)
+                alert(`Pedido confirmado! Valor: R$ ${total.toFixed(2)}. Forma: ${formaPagamento.toUpperCase()}`);
+                fecharCheckout();
+                limparCarrinho();
+            }
+
+        } catch (error) {
+            console.error("Erro no pagamento:", error);
+            alert(`Falha: ${error.message}`);
+        } finally {
+            btn.disabled = false;
+            btn.innerText = textoOriginal;
+            btn.style.opacity = "1";
+        }
+    }
+
 
         if(!nome || !endereco || !numero) {
             alert("Preencha nome, endereço e número da residência");
