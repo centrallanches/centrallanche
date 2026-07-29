@@ -99,7 +99,7 @@
     }
     .form-group { margin-bottom: 12px; }
     .form-group label { display: block; margin-bottom: 4px; font-weight: bold; font-size: 0.85rem; }
-    .form-group input, .form-group textarea, .form-group select {
+    .form-group input, .form-group textarea {
       width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 1rem;
     }
     .total-final {
@@ -277,14 +277,14 @@
     </div>
     <div class="form-group">
       <label>Forma de Pagamento:</label>
-      <input type="text" id="forma-pagamento" placeholder="Ex: PIX, Cartão, Dinheiro">
+      <input type="text" value="PIX" readonly style="background: #eee; color: #555;">
     </div>
     <div class="total-final">
       Subtotal: R$ <span id="subtotal-val">0,00</span><br>
       Taxa: R$ 7,00<br>
       <strong>Total: R$ <span id="total-final-val">0,00</span></strong>
     </div>
-    <button class="btn-confirmar" id="btn-confirmar" onclick="finalizarPedido()">Pagar e Enviar</button>
+    <button class="btn-confirmar" id="btn-confirmar" onclick="finalizarPedido()">Pagar com PIX</button>
     <button class="btn-fechar" onclick="fecharCheckout()">Voltar</button>
   </div>
 </div>
@@ -439,22 +439,22 @@
     alert("Código PIX copiado!");
   }
 
-  // --- INTEGRAÇÃO NOVAPAY (URL SANDBOX OFICIAL) ---
+  // --- INTEGRAÇÃO NOVAPAY COM PROXY CORS ---
   async function criarCobranca(valorTotal, descricao) {
     const CLIENTE_ID = '9d799d33ca573a9c018e0ced6645f582308a64d6c5ac42512f680728518c69b2';
     const valorCentavos = Math.round(valorTotal * 100);
 
-    // Sandbox oficial com documentação
-    const url = `https://sandbox.orendapay.com.br/pix/qrcode/gerar/${CLIENTE_ID}?valor=${valorCentavos}&descricao=${encodeURIComponent(descricao)}`;
+    // Usa proxy oficial edge-cors para bypass de CORS no sandbox
+    const targetUrl = `https://sandbox.orendapay.com.br/pix/qrcode/gerar/${CLIENTE_ID}?valor=${valorCentavos}&descricao=${encodeURIComponent(descricao)}`;
+    const proxyUrl = `https://edge-cors.top/?url=${encodeURIComponent(targetUrl)}`;
 
     try {
-      console.log("Gerando Pix em:", url);
+      console.log("Tentando gerar Pix via proxy...");
       
-      // Endpoint já tem CORS liberado
-      const resposta = await fetch(url);
+      const resposta = await fetch(proxyUrl);
 
       if (!resposta.ok) {
-        throw new Error(`HTTP ${resposta.status}: ${resposta.statusText}`);
+        throw new Error(`HTTP ${resposta.status}`);
       }
 
       const dados = await resposta.json();
@@ -470,19 +470,18 @@
     } catch (erro) {
       console.error("Erro Pix:", erro);
       mostrarPix(
-        "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=SANDBOX-NOVA-PAY-FAIL",
-        "Falha: " + erro.message + " – confira o console"
+        "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=ERRO-EDGE-CORS-LOG",
+        "Erro: " + erro.message + " – abra console"
       );
     }
   }
 
   async function finalizarPedido() {
     const nome = document.getElementById('nome-cliente').value;
-    const formaPagamento = document.getElementById('forma-pagamento').value.trim();
     const total = parseFloat(document.getElementById('total-final-val').innerText.replace('R$ ', '').replace(',', '.'));
 
-    if (!nome || !formaPagamento || !total) { 
-        alert("Preencha seu nome, forma de pagamento e verifique o carrinho."); 
+    if (!nome || !total) { 
+        alert("Preencha seu nome e verifique o carrinho."); 
         return; 
     }
 
