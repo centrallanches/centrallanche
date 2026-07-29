@@ -450,11 +450,58 @@
         document.getElementById('modal-checkout').style.display = 'none';
     }
 
-    async function finalizarPedido() {
+        async function finalizarPedido() {
         const nome = document.getElementById('nome-cliente').value;
         const telefone = document.getElementById('telefone-cliente').value;
         const endereco = document.getElementById('endereco-cliente').value;
         const formaPagamento = document.getElementById('forma-pagamento').value;
+
+        if(!nome || !telefone || !endereco) {
+            alert("Preencha todos os dados de entrega.");
+            return;
+        }
+
+        let subtotal = 0;
+        for(let item in cart) subtotal += cart[item].price * cart[item].qtd;
+        const total = subtotal + TAXA_ENTREGA;
+
+        if(formaPagamento === 'pix') {
+            // Gera Pix direto na AnovaPay
+            try {
+                const response = await fetch('https://api.anovapay.com.br/charges', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer cc1fb9f755f42dee769767b7a335afde243890689c0ee43ab78acb0c58c8f5a4'
+                    },
+                    body: JSON.stringify({
+                        value: parseFloat(total.toFixed(2)),
+                        description: `Pedido Central Lanches - ${nome}`
+                    })
+                });
+
+                if (!response.ok) throw new Error('Erro na API');
+                const data = await response.json();
+                
+                // Ajuste aqui se o nome do campo for diferente (ex: data.qr_code)
+                mostrarPix(data.qrCode, data.copyPaste); 
+            } catch (e) {
+                alert("Erro ao gerar Pix. Tente novamente.");
+                console.error(e);
+            }
+        } else {
+            alert(`Pedido enviado!\nTotal: R$ ${total.toFixed(2)}\nPagamento: ${formaPagamento}`);
+            limparCarrinho();
+            fecharCheckout();
+        }
+    }
+
+    function mostrarPix(qrBase64, copyCode) {
+        document.getElementById('pix-copy-paste').innerText = copyCode;
+        document.getElementById('qr-code-container').innerHTML = `<img src="data:image/png;base64,${qrBase64}" style="width:200px;">`;
+        document.getElementById('modal-pix').style.display = 'flex';
+    }
+
 
         if(!nome || !telefone || !endereco) {
             alert("Preencha todos os dados de entrega.");
