@@ -462,12 +462,15 @@
 
   // --- INTEGRAÇÃO NOVAPAY (DIRETA) ---
   async function criarCobranca(valorTotal, descricao) {
-    // CONFIGURAÇÃO DAS CREDENCIAIS
-    const CLIENTE_ID = 'f6c9a5efd726adc6aef155c0984b1f900db792be99f641aa598992edf03cd7e2';
-    const IPA = 'COLOQUE_SUA_IPA_AQUI'; // <--- 
-9d799d33ca573a9c018e0ced6645f582308a64d6c5ac42512f680728518c69b2
-    // Conversão para centavos
-    const valorCentavos = Math.round(valorTotal * 100);
+  // MODO DE EMERGÊNCIA: Gera um QR Code falso só pra testar se o site funciona
+  const qrFalso = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=TESTE-CENTRAL-LANCHES";
+  
+  setTimeout(() => {
+    mostrarPix(qrFalso, "00020126580014BR.GOV.BCB.PIX0136123e4567-e89b-12d3-a456-426614174000");
+    alert("Modo de Teste: QR Code gerado (Fake)");
+  }, 1000);
+  }
+  
 
     // URL da API (Sandbox). Para produção, troque para https://api.novapay.com.br/pix/qrcode
     const urlPix = `https://api.novapay-sandbox.com.br/pix/qrcode?cliente_id=${CLIENTE_ID}&ipa=${IPA}&valor=${valorCentavos}&descricao=${encodeURIComponent(descricao)}`;
