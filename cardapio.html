@@ -439,40 +439,40 @@
     alert("Código PIX copiado!");
   }
 
-  // --- INTEGRAÇÃO NOVAPAY (URLS OFICIAIS) ---
+  // --- INTEGRAÇÃO NOVAPAY (URL SANDBOX OFICIAL) ---
   async function criarCobranca(valorTotal, descricao) {
     const CLIENTE_ID = '9d799d33ca573a9c018e0ced6645f582308a64d6c5ac42512f680728518c69b2';
-    const IPA = 'sandbox'; 
     const valorCentavos = Math.round(valorTotal * 100);
-    
-    // URL Oficial de Teste (Orenda Pay / NovaPay)
-    const urlApi = `https://api.orendapay.com.br/v1/pix?client_id=${CLIENTE_ID}&amount=${valorCentavos}`;
+
+    // Sandbox oficial com documentação
+    const url = `https://sandbox.orendapay.com.br/pix/qrcode/gerar/${CLIENTE_ID}?valor=${valorCentavos}&descricao=${encodeURIComponent(descricao)}`;
 
     try {
-      console.log("Tentando gerar Pix na URL:", urlApi);
+      console.log("Gerando Pix em:", url);
       
-      // Usando corsproxy.io para evitar bloqueio de CORS no navegador
-      const resposta = await fetch(`https://corsproxy.io/?${encodeURIComponent(urlApi)}`);
-      
+      // Endpoint já tem CORS liberado
+      const resposta = await fetch(url);
+
       if (!resposta.ok) {
-        throw new Error(`Erro na API: ${resposta.status}`);
+        throw new Error(`HTTP ${resposta.status}: ${resposta.statusText}`);
       }
 
       const dados = await resposta.json();
-      console.log("Resposta da API:", dados);
-      
-      if (dados.qrCode || dados.pixCode || dados.copiaCola) {
-        mostrarPix(dados.qrCode || dados.pixCode, dados.copiaCola || "Código gerado");
-        console.log("Pix gerado com sucesso!");
+
+      if (dados.qrCode) {
+        mostrarPix(dados.qrCode, dados.chavePix || "Chave Pix gerada");
+      } else if (dados.pixCode) {
+        mostrarPix(dados.pixCode, dados.qrCode || "Código PIX gerado");
       } else {
-        // Se a API retornar erro dentro do JSON
-        throw new Error(dados.message || "API não retornou QR Code");
+        throw new Error(dados.message || "API retornou JSON vazio");
       }
 
-    } catch (e) {
-      console.error("Falha na geração:", e);
-      // Gera um QR Code de erro para você ver no console
-      mostrarPix("https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=ERRO-API-CHECK-CONSOLE", "Erro: " + e.message);
+    } catch (erro) {
+      console.error("Erro Pix:", erro);
+      mostrarPix(
+        "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=SANDBOX-NOVA-PAY-FAIL",
+        "Falha: " + erro.message + " – confira o console"
+      );
     }
   }
 
