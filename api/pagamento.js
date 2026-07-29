@@ -5,35 +5,35 @@ export default async function handler(req, res) {
 
   try {
     const { total, cliente } = req.body;
-
-    if (!total || !cliente) {
-      return res.status(400).json({ error: 'Dados incompletos' });
-    }
-
+    
+    // Use as variáveis de ambiente da Vercel para segurança
     const CLIENT_ID = process.env.ANOVA_CLIENT_ID;
     const CLIENT_SECRET = process.env.ANOVA_CLIENT_SECRET;
 
-    if (!CLIENT_ID || !CLIENT_SECRET) {
-      throw new Error('Credenciais da Anova não configuradas');
+    if (!CLIENT_SECRET) {
+      throw new Error('Client Secret não configurado no servidor');
     }
 
-    const API_URL = 'https://api.anovapay.com.br/charges';
+    // Endpoint exato da sua documentação (Imagem 3)
+    const API_URL = 'https://api.anovapay.com.br/charges'; 
 
     const response = await fetch(API_URL, {
       method: 'POST',
       headers: {
-        'ci': CLIENT_ID,
-        'cs': CLIENT_SECRET,
+        // Autenticação via Bearer (Imagem 3)
+        'Authorization': `Bearer ${CLIENT_SECRET}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        amount: Math.round(total * 100), // Confirme se a Anova quer centavos ou reais. Se errar, tire o * 100
-        description: `Pedido Central Lanches - ${cliente.nome}`,
+        amount: Math.round(total * 100), // Valor em centavos
+        currency: 'BRL',
         payment_method: 'pix',
+        description: `Pedido Central Lanches - ${cliente.nome}`,
+        // Dados do cliente (opcional, mas recomendado para rastreio)
         customer: {
           name: cliente.nome,
-          email: cliente.email || 'cliente@centrallanches.com',
-          document: cliente.cpf || '00000000000' // CPF fictício se não tiver
+          email: 'contato@centrallanches.com', // Pode ser fixo se não tiver email do usuário
+          document: cliente.telefone.replace(/\D/g, '') // Usa telefone limpo
         }
       })
     });
@@ -42,21 +42,21 @@ export default async function handler(req, res) {
 
     if (!response.ok) {
       console.error('Erro Anova:', data);
-      throw new Error(data.message || 'Falha na API de pagamento');
+      throw new Error(data.message || 'Falha ao gerar cobrança');
     }
 
-    // Tentativa de encontrar o QR Code/Copia e Cola na resposta
-    const pixCode = data.payload || data.qr_code || data.pix?.copiar_colar || data.charge?.pix?.code;
-
+    // Ajuste aqui: verifique no console.log(data) qual campo volta o código PIX
+    // Geralmente é data.pix_code, data.qr_code ou data.payload
+    const pixCode = data.pix_code || data.qr_code || data.payload;
+    
     if (!pixCode) {
-      console.error('Resposta completa:', JSON.stringify(data));
-      throw new Error('Código PIX não gerado');
+      throw new Error('API retornou sucesso, mas sem código PIX. Verifique o log.');
     }
 
-    res.status(200).json({ payload: pixCode });
+    return res.status(200).json({ payload: pixCode });
 
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: error.message });
+    console.error('Erro no backend:', error);
+    return res.status(500).json({ error: error.message });
   }
 }
