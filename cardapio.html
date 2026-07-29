@@ -437,7 +437,6 @@
       img.height = 200;
       container.appendChild(img);
     } else {
-      // Caso a API retorne o código em texto ou base64 sem prefixo
       const img = document.createElement('img');
       img.src = "data:image/png;base64," + qrCodeUrl; 
       img.width = 200;
@@ -460,42 +459,43 @@
     alert("Código PIX copiado!");
   }
 
-  // --- INTEGRAÇÃO NOVAPAY (DIRETA) ---
+  // --- INTEGRAÇÃO NOVAPAY (TESTE AUTOMÁTICO) ---
   async function criarCobranca(valorTotal, descricao) {
-  // MODO DE EMERGÊNCIA: Gera um QR Code falso só pra testar se o site funciona
-  const qrFalso = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=TESTE-CENTRAL-LANCHES";
-  
-  setTimeout(() => {
-    mostrarPix(qrFalso, "00020126580014BR.GOV.BCB.PIX0136123e4567-e89b-12d3-a456-426614174000");
-    alert("Modo de Teste: QR Code gerado (Fake)");
-  }, 1000);
-  }
-  
+    const CLIENTE_ID = '9d799d33ca573a9c018e0ced6645f582308a64d6c5ac42512f680728518c69b2';
+    const valorCentavos = Math.round(valorTotal * 100);
+    const descricaoEncoded = encodeURIComponent(descricao);
 
-    // URL da API (Sandbox). Para produção, troque para https://api.novapay.com.br/pix/qrcode
-    const urlPix = `https://api.novapay-sandbox.com.br/pix/qrcode?cliente_id=${CLIENTE_ID}&ipa=${IPA}&valor=${valorCentavos}&descricao=${encodeURIComponent(descricao)}`;
+    // Lista de URLs possíveis para testar
+    const urls = [
+      `https://api.novapay.com.br/v1/pix?client_id=${CLIENTE_ID}&amount=${valorCentavos}&description=${descricaoEncoded}`,
+      `https://sandbox.novapay.com.br/v1/pix/generate?apiKey=${CLIENTE_ID}&value=${valorCentavos}&desc=${descricaoEncoded}`,
+      `https://api.novapay-sandbox.com.br/v1/qrcode?token=${CLIENTE_ID}&amount=${valorCentavos}`
+    ];
 
-    try {
-      const resposta = await fetch(urlPix);
-      const dados = await resposta.json();
+    let sucesso = false;
 
-      // Ajuste conforme a resposta real da API da NovaPay
-      // Geralmente retorna: { qrCode: "...", copiaCola: "..." } ou similar
-      if (dados.qrCode || dados.qrcode) {
-         const qr = dados.qrCode || dados.qrcode;
-         const copia = dados.copiaCola || dados.copia_cola || "Código não disponível";
-         mostrarPix(qr, copia);
-      } else if (dados.error) {
-         console.error('Erro NovaPay:', dados);
-         alert('Erro ao gerar Pix: ' + (dados.message || 'Verifique as credenciais'));
-      } else {
-         console.log('Resposta NovaPay:', dados);
-         alert('Resposta inesperada da API. Verifique o console.');
+    for (const url of urls) {
+      try {
+        console.log(`Tentando URL: ${url}`);
+        // Usando proxy para evitar erro de CORS no navegador
+        const resposta = await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`);
+        const dados = await resposta.json();
+        
+        // Se a API responder com algo que parece um Pix
+        if (dados.qrCode || dados.qrcode || dados.copiaCola) {
+          mostrarPix(dados.qrCode || dados.qrcode, dados.copiaCola || "Código gerado");
+          sucesso = true;
+          console.log("SUCESSO! Endpoint correto:", url);
+          break;
+        }
+      } catch (e) {
+        console.log(`Falha na URL: ${url}`);
       }
+    }
 
-    } catch (erro) {
-      console.error('Erro de conexão:', erro);
-      alert('Falha na conexão com o gateway de pagamento.');
+    if (!sucesso) {
+      mostrarPix("https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=ERRO-API", "Tente novamente. API não respondeu.");
+      alert("Nenhuma URL da NovaPay funcionou. Verifique o Console (F12).");
     }
   }
 
