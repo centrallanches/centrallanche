@@ -458,16 +458,31 @@
     alert("Código PIX copiado!");
   }
 
-  // --- INTEGRAÇÃO ANOVAPAY (SIMULAÇÃO PARA TESTE) ---
+  // --- INTEGRAÇÃO ANOVAPAY (COM WORKER) ---
   async function criarCobranca(valor, descricao) {
-      // Simulação para teste de interface (não cobra nada)
-      const fakeQr = "https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg";
-      const fakeCode = "00020126580014BR.GOV.BCB.PIX0136123e4567-e89b-12d3-a456-4266141740005204000053039865802BR5913Central Lanches6008Sao Paulo62070503***6304E2CA";
-      
-      // Simula um delay de rede para parecer real
-      await new Promise(r => setTimeout(r, 1500));
-      
-      mostrarPix(fakeQr, fakeCode);
+    const workerUrl = "https://centralanche.fjfjfjfjfjf.workers.dev";
+
+    try {
+        const response = await fetch(workerUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                amount: Math.round(valor * 100),
+                description: descricao
+            })
+        });
+
+        const data = await response.json();
+        if (data.checkout_url) {
+            window.location.href = data.checkout_url;
+        } else {
+            console.error('Erro no Worker:', data);
+            alert('Erro ao processar pagamento. Cheque o console.');
+        }
+    } catch (error) {
+        console.error('Erro de conexão:', error);
+        alert('Sem conexão. Tente novamente.');
+    }
   }
 
   async function finalizarPedido() {
