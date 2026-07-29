@@ -15,23 +15,21 @@ export default async function handler(req, res) {
       throw new Error('Chave da API não configurada');
     }
 
-    // Endpoint correto para criar transação PIX na AnovaPay (verifique na doc oficial)
     const API_URL = 'https://api.anovapay.com/v1/charges'; 
 
     const response = await fetch(API_URL, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${API_KEY}`,
-        'Content-Type': 'application/json',
-        'X-API-Key': API_KEY // Algumas versões usam header adicional
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        amount: Math.round(total * 100), // Valor em centavos
-        description: `Pedido Central Lanches - ${cliente.nome}`,
+        amount: Math.round(total * 100),
+        description: `Pedido Central Lanches`,
         payment_method: 'pix',
         customer: {
           name: cliente.nome,
-          document: cliente.cpf || '00000000000', // CPF é obrigatório em muitos gateways PIX
+          document: cliente.cpf || '00000000000',
           email: cliente.email || 'cliente@exemplo.com'
         }
       })
@@ -43,18 +41,15 @@ export default async function handler(req, res) {
       throw new Error(data.message || 'Erro ao criar cobrança');
     }
 
-    // Ajuste conforme a resposta real da Anova: geralmente vem em 'qr_code' ou 'payload'
-    // Exemplo: data.pix.qr_code ou data.payload
     const pixCode = data.pix?.qr_code || data.payload || data.qr_code;
 
     if (!pixCode) {
-      throw new Error('Código PIX não gerado pela API');
+      throw new Error('Código PIX não gerado');
     }
 
     res.status(200).json({ payload: pixCode });
 
   } catch (error) {
-    console.error("Erro no backend:", error);
     res.status(500).json({ error: error.message });
   }
 }
