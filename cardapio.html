@@ -7,10 +7,8 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
     body { background: #f4f4f4; padding-bottom: 90px; }
-
     header { background: #ff6b00; color: #fff; padding: 20px; text-align: center; }
     header h1 { font-size: 1.5rem; }
-
     .tabs {
       display: flex; gap: 10px; padding: 10px;
       background: #fff; position: sticky; top: 0; z-index: 100;
@@ -23,38 +21,30 @@
       font-size: 0.9rem;
     }
     .tab-btn.active { background: #ff6b00; color: #fff; }
-
     .container { max-width: 1000px; margin: 15px auto; padding: 0 10px; }
-
     .categoria { display: none; animation: fadeIn 0.3s; }
     .categoria.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
     .categoria h2 {
       color: #ff6b00; margin: 15px 0; text-transform: uppercase;
       font-size: 1.1rem; border-left: 4px solid #ff6b00; padding-left: 10px;
     }
-
     .grid-produtos {
       display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
       gap: 10px;
     }
-
     .produto {
       background: #fff; border-radius: 8px; overflow: hidden;
       box-shadow: 0 1px 4px rgba(0,0,0,0.05); text-align: center;
       position: relative;
     }
-
     .img-container {
       position: relative;
       width: 100%; height: 110px; background: #eee;
     }
-
     .produto img {
       width: 100%; height: 100%; object-fit: cover;
     }
-
     .btn-remove-item {
       position: absolute; top: 5px; right: 5px;
       width: 20px; height: 20px;
@@ -63,18 +53,15 @@
       font-size: 12px; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.2); z-index: 10;
     }
     .hidden { display: none !important; }
-
     .info { padding: 10px; }
     .info h3 { font-size: 0.9rem; margin-bottom: 3px; height: 35px; overflow: hidden; line-height: 1.2; }
     .desc { font-size: 0.7rem; color: #777; margin-bottom: 5px; height: 30px; overflow: hidden; }
     .preco { color: #ff6b00; font-weight: bold; font-size: 1rem; margin-bottom: 8px; }
-
     .btn-comprar {
       width: 100%; background: #ff6b00; color: #fff; border: none;
       padding: 8px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 0.9rem;
     }
     .btn-comprar:active { transform: scale(0.98); }
-
     #carrinho-float {
       position: fixed; bottom: 15px; left: 15px; right: 15px;
       background: #222; color: #fff; padding: 12px;
@@ -82,7 +69,6 @@
       display: none; z-index: 200; display: flex; justify-content: space-between; align-items: center; gap: 10px;
     }
     #carrinho-info { font-size: 0.9rem; }
-
     .cart-actions { display: flex; gap: 8px; }
     .cart-btn {
       border: none; padding: 8px 12px;
@@ -90,7 +76,6 @@
     }
     .btn-limpar { background: #444; }
     .btn-finalizar { background: #ff6b00; }
-
     #modal-checkout {
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0,0,0,0.85); z-index: 1000;
@@ -102,9 +87,7 @@
       animation: slideUp 0.3s;
     }
     @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-
     .checkout-content h2 { color: #ff6b00; margin-bottom: 15px; font-size: 1.2rem; }
-
     .item-carrinho {
       display: flex; justify-content: space-between; align-items: center;
       border-bottom: 1px solid #eee; padding: 8px 0; font-size: 0.9rem;
@@ -114,13 +97,11 @@
       background: #eee; border: none; width: 24px; height: 24px;
       border-radius: 4px; font-weight: bold; cursor: pointer;
     }
-
     .form-group { margin-bottom: 12px; }
     .form-group label { display: block; margin-bottom: 4px; font-weight: bold; font-size: 0.85rem; }
     .form-group input, .form-group textarea, .form-group select {
       width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 1rem;
     }
-
     .total-final {
       font-size: 1.1rem; font-weight: bold; color: #333; text-align: right; margin: 15px 0;
       border-top: 1px solid #eee; padding-top: 10px;
@@ -134,7 +115,6 @@
       width: 100%; background: #fff; color: #333; border: 1px solid #ccc; padding: 12px;
       border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 8px;
     }
-
     #modal-pix {
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0,0,0,0.9); z-index: 1100;
@@ -459,16 +439,15 @@
     alert("Código PIX copiado!");
   }
 
-  // --- INTEGRAÇÃO NOVAPAY (TESTE AUTOMÁTICO) ---
+  // --- INTEGRAÇÃO NOVAPAY (URLS OFICIAIS) ---
   async function criarCobranca(valorTotal, descricao) {
     const CLIENTE_ID = '9d799d33ca573a9c018e0ced6645f582308a64d6c5ac42512f680728518c69b2';
+    const IPA = 'sandbox'; // Altere para sua IPA real se tiver uma de produção
     const valorCentavos = Math.round(valorTotal * 100);
-    const descricaoEncoded = encodeURIComponent(descricao);
-
-    // Lista de URLs possíveis para testar
+    
+    // URLs oficiais para teste
     const urls = [
-      `https://api.novapay.com.br/v1/pix?client_id=${CLIENTE_ID}&amount=${valorCentavos}&description=${descricaoEncoded}`,
-      `https://sandbox.novapay.com.br/v1/pix/generate?apiKey=${CLIENTE_ID}&value=${valorCentavos}&desc=${descricaoEncoded}`,
+      `https://api.orendapay.com.br/v1/pix?client_id=${CLIENTE_ID}&amount=${valorCentavos}`,
       `https://api.novapay-sandbox.com.br/v1/qrcode?token=${CLIENTE_ID}&amount=${valorCentavos}`
     ];
 
@@ -477,11 +456,10 @@
     for (const url of urls) {
       try {
         console.log(`Tentando URL: ${url}`);
-        // Usando proxy para evitar erro de CORS no navegador
+        // Usando corsproxy.io para evitar bloqueio de CORS no navegador
         const resposta = await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`);
         const dados = await resposta.json();
         
-        // Se a API responder com algo que parece um Pix
         if (dados.qrCode || dados.qrcode || dados.copiaCola) {
           mostrarPix(dados.qrCode || dados.qrcode, dados.copiaCola || "Código gerado");
           sucesso = true;
