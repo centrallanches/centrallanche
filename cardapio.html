@@ -457,7 +457,8 @@
       }
       
       const dados = await resposta.json();
-      console.log("Resposta API:", dados);
+alert(JSON.stringify(dados));
+console.log("Resposta API:", dados);
       
       const pixCode = dados.pix_copy_paste || dados.copy_paste || dados.qr_code_text || dados.qrcode || dados.br_code;
       
