@@ -432,46 +432,65 @@
 
   // --- INTEGRAÇÃO ANOVAPAY ---
   async function criarCobranca(valorTotal, descricao) {
-    const url = `${ANOVA_CONFIG.BASE_URL}/charges`; 
-    
-    const payload = {
-      amount: valorTotal,
-      description: descricao
-    };
+  const url = `${ANOVA_CONFIG.BASE_URL}/charges`;
 
-    try {
-      const resposta = await fetch(ANOVA_CONFIG.PROXY + encodeURIComponent(url), {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'ci': ANOVA_CONFIG.CLIENT_ID,
-          'cs': ANOVA_CONFIG.CLIENT_SECRET
-        },
-        body: JSON.stringify(payload)
-      });
-      
-      if (!resposta.ok) {
-        const erroTexto = await resposta.text();
-        console.error("Erro API:", erroTexto);
-        throw new Error(`Falha na API (${resposta.status}): ${erroTexto}`);
-      }
-      
-      const dados = await resposta.json();
-alert(JSON.stringify(dados));
-console.log("Resposta API:", dados);
-      
-      const pixCode = dados.pix_copy_paste || dados.copy_paste || dados.qr_code_text || dados.qrcode || dados.br_code;
-      
-      if (!pixCode) {
-        throw new Error("A API não retornou o código PIX. Verifique o console.");
-      }
+  const payload = {
+    amount: valorTotal,
+    description: descricao
+  };
 
-      mostrarPix(pixCode);
-      
-    } catch(e) {
-      console.error(e);
-      alert("Erro ao gerar Pix: " + e.message);
+  try {
+    const resposta = await fetch(ANOVA_CONFIG.PROXY + encodeURIComponent(url), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "ci": ANOVA_CONFIG.CLIENT_ID,
+        "cs": ANOVA_CONFIG.CLIENT_SECRET
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!resposta.ok) {
+      const erroTexto = await resposta.text();
+      throw new Error(erroTexto);
     }
+
+    const dados = await resposta.json();
+    console.log(dados);
+
+    const transacao = dados.transaction || {};
+
+    const pixCode =
+      transacao.pixCopyPaste ||
+      transacao.pix_copy_paste ||
+      transacao.copyPaste ||
+      transacao.copy_paste ||
+      transacao.brCode ||
+      transacao.br_code ||
+      "";
+
+    const qrBase64 = transacao.qrCodeBase64 || "";
+
+    const container = document.getElementById("qr-code-container");
+    container.innerHTML = "";
+
+    if (qrBase64) {
+      const img = document.createElement("img");
+      img.src = qrBase64;
+      img.width = 200;
+      img.height = 200;
+      container.appendChild(img);
+    }
+
+    document.getElementById("pix-copy-paste").innerText =
+      pixCode || "Código PIX não informado pela API.";
+
+    document.getElementById("modal-pix").style.display = "flex";
+
+  } catch (e) {
+    console.error(e);
+    alert("Erro ao gerar PIX: " + e.message);
+  }
   }
 
   async function finalizarPedido() {
