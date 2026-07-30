@@ -303,11 +303,13 @@
 
 <script>
   // --- CONFIGURAÇÃO DA NOVAPAY ---
-  // Atenção: Verifique se a URL base é sandbox ou produção no seu painel.
+  // Credenciais inseridas conforme solicitado
   const NOVAPAY_CONFIG = {
     BASE_URL: "https://api-sandbox.novapay.com.br/v1", 
     CLIENT_ID: "cms0q5i6j000elp019xciyps3",
-    CLIENT_SECRET: "bc529f4aafdad750e55be5d1412014f2832852af490228f34b50e7e2c61be40a"
+    CLIENT_SECRET: "bc529f4aafdad750e55be5d1412014f2832852af490228f34b50e7e2c61be40a",
+    // Proxy para contornar bloqueio de CORS em frontend estático
+    PROXY: "https://corsproxy.io/?"
   };
 
   // --- LÓGICA DO CARRINHO ---
@@ -444,7 +446,8 @@
     };
 
     try {
-      const resposta = await fetch(url, {
+      // Usa o proxy para evitar erro de CORS no navegador
+      const resposta = await fetch(NOVAPAY_CONFIG.PROXY + encodeURIComponent(url), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
