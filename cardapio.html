@@ -425,9 +425,7 @@
   }
 
   function copiarPix() {
-    navigator.clipboard.writeText(document.getElementById('pix-copy-paste').innerText).then(() => {
-        alert("Código PIX copiado!");
-    });
+    navigator.clipboard.writeText(document.getElementById('pix-copy-paste').innerText);
   }
 
   // --- INTEGRAÇÃO ANOVAPAY ---
