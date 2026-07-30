@@ -277,7 +277,7 @@
     </div>
     <div class="form-group">
       <label>Forma de Pagamento:</label>
-      <input type="text" value="PIX via Novapay/OrendaPay" readonly style="background: #eee; color: #555; font-weight: bold;">
+      <input type="text" value="PIX via Novapay" readonly style="background: #eee; color: #555; font-weight: bold;">
     </div>
     <div class="total-final">
       Subtotal: R$ <span id="subtotal-val">0,00</span><br>
@@ -302,10 +302,13 @@
 </div>
 
 <script>
-  // --- CONFIGURAÇÃO DA NOVAPAY/ORENDAPAY ---
-  const NOVA_PAY_API_URL = "https://api-sandbox.novapay.com.br/v1/pix"; 
-  const NOVA_PAY_CLIENT_ID = "9d799d33ca573a9c018e0ced6645f582308a64d6c5ac42512f680728518c69b2";
-  const NOVA_PAY_SECRET = "5197776909c0d97435c835bdb7b7c03c7ff4cee9d6bc654f9375592cb9b4b649";
+  // --- CONFIGURAÇÃO DA NOVAPAY ---
+  // Atenção: Verifique se a URL base é sandbox ou produção no seu painel.
+  const NOVAPAY_CONFIG = {
+    BASE_URL: "https://api-sandbox.novapay.com.br/v1", 
+    CLIENT_ID: "cms0q5i6j000elp019xciyps3",
+    CLIENT_SECRET: "bc529f4aafdad750e55be5d1412014f2832852af490228f34b50e7e2c61be40a"
+  };
 
   // --- LÓGICA DO CARRINHO ---
   let cart = {};
@@ -406,11 +409,14 @@
   function mostrarPix(qrCodeText) {
     const container = document.getElementById('qr-code-container');
     container.innerHTML = '';
+    
+    // Gera QR Code visual usando API pública baseada no texto PIX
     const img = document.createElement('img');
     img.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrCodeText)}`;
     img.width = 200;
     img.height = 200;
     container.appendChild(img);
+    
     document.getElementById('pix-copy-paste').innerText = qrCodeText;
     document.getElementById('modal-pix').style.display = 'flex';
   }
@@ -427,31 +433,44 @@
 
   // --- INTEGRAÇÃO NOVAPAY ---
   async function criarCobranca(valorTotal, descricao) {
-    const dadosRequisicao = {
-      valor: valorTotal,
-      descricao: descricao,
-      cliente_id: NOVA_PAY_CLIENT_ID,
-      moeda: "BRL"
+    // Endpoint específico para criar cobrança PIX
+    const url = `${NOVAPAY_CONFIG.BASE_URL}/charges`; 
+    
+    const payload = {
+      amount: valorTotal,
+      description: descricao,
+      payment_method: "PIX",
+      expires_in: 1800 // 30 minutos
     };
 
     try {
-      const resposta = await fetch(NOVA_PAY_API_URL, {
+      const resposta = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${NOVA_PAY_SECRET}`,
-          'X-Client-ID': NOVA_PAY_CLIENT_ID
+          'ci': NOVAPAY_CONFIG.CLIENT_ID,
+          'cs': NOVAPAY_CONFIG.CLIENT_SECRET
         },
-        body: JSON.stringify(dadosRequisicao)
+        body: JSON.stringify(payload)
       });
       
       if (!resposta.ok) {
         const erroTexto = await resposta.text();
-        throw new Error(`HTTP ${resposta.status}: ${erroTexto}`);
+        console.error("Erro API:", erroTexto);
+        throw new Error(`Falha na API (${resposta.status}): ${erroTexto}`);
       }
       
       const dados = await resposta.json();
-      mostrarPix(dados.pix_copia_cola || dados.qr_code_text || dados.qrCode);
+      console.log("Resposta API:", dados); // Para debug
+      
+      // Tenta encontrar o código PIX em diferentes formatos de resposta comuns
+      const pixCode = dados.pix_copy_paste || dados.copy_paste || dados.qr_code_text || dados.qrcode || dados.pix_qr_code;
+      
+      if (!pixCode) {
+        throw new Error("A API não retornou o código PIX. Verifique o console.");
+      }
+
+      mostrarPix(pixCode);
       
     } catch(e) {
       console.error(e);
@@ -469,13 +488,14 @@
     if(!total || total <= 0) return alert("Carrinho vazio!");
     
     const btn = document.getElementById('btn-confirmar');
+    const originalText = btn.innerText;
     btn.innerText = "Processando...";
     btn.disabled = true;
 
     try {
-      await criarCobranca(total, `Pedido Central Lanches - ${nome} | Whats: ${telefone}`);
+      await criarCobranca(total, `Pedido Central Lanches - ${nome}`);
     } finally {
-      btn.innerText = "Pagar com PIX";
+      btn.innerText = originalText;
       btn.disabled = false;
     }
   }
