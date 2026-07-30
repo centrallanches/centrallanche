@@ -277,7 +277,7 @@
     </div>
     <div class="form-group">
       <label>Forma de Pagamento:</label>
-      <input type="text" value="PIX via Novapay" readonly style="background: #eee; color: #555; font-weight: bold;">
+      <input type="text" value="PIX via AnovaPay" readonly style="background: #eee; color: #555; font-weight: bold;">
     </div>
     <div class="total-final">
       Subtotal: R$ <span id="subtotal-val">0,00</span><br>
@@ -302,13 +302,11 @@
 </div>
 
 <script>
-  // --- CONFIGURAÇÃO DA NOVAPAY ---
-  // Credenciais inseridas conforme solicitado
-  const NOVAPAY_CONFIG = {
-    BASE_URL: "https://api-sandbox.novapay.com.br/v1", 
+  // --- CONFIGURAÇÃO ANOVAPAY ---
+  const ANOVA_CONFIG = {
+    BASE_URL: "https://api.anovapay.com.br",
     CLIENT_ID: "cms0q5i6j000elp019xciyps3",
-    CLIENT_SECRET: "bc529f4aafdad750e55be5d1412014f2832852af490228f34b50e7e2c61be40a",
-    // Proxy para contornar bloqueio de CORS em frontend estático
+    CLIENT_SECRET: "bc529f4aafdad750e55be5d1ba512014f2832852af490228f34b50e7e2c61be40a",
     PROXY: "https://corsproxy.io/?"
   };
 
@@ -412,7 +410,6 @@
     const container = document.getElementById('qr-code-container');
     container.innerHTML = '';
     
-    // Gera QR Code visual usando API pública baseada no texto PIX
     const img = document.createElement('img');
     img.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrCodeText)}`;
     img.width = 200;
@@ -433,26 +430,22 @@
     });
   }
 
-  // --- INTEGRAÇÃO NOVAPAY ---
+  // --- INTEGRAÇÃO ANOVAPAY ---
   async function criarCobranca(valorTotal, descricao) {
-    // Endpoint específico para criar cobrança PIX
-    const url = `${NOVAPAY_CONFIG.BASE_URL}/charges`; 
+    const url = `${ANOVA_CONFIG.BASE_URL}/charges`; 
     
     const payload = {
       amount: valorTotal,
-      description: descricao,
-      payment_method: "PIX",
-      expires_in: 1800 // 30 minutos
+      description: descricao
     };
 
     try {
-      // Usa o proxy para evitar erro de CORS no navegador
-      const resposta = await fetch(NOVAPAY_CONFIG.PROXY + encodeURIComponent(url), {
+      const resposta = await fetch(ANOVA_CONFIG.PROXY + encodeURIComponent(url), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'ci': NOVAPAY_CONFIG.CLIENT_ID,
-          'cs': NOVAPAY_CONFIG.CLIENT_SECRET
+          'ci': ANOVA_CONFIG.CLIENT_ID,
+          'cs': ANOVA_CONFIG.CLIENT_SECRET
         },
         body: JSON.stringify(payload)
       });
@@ -464,10 +457,9 @@
       }
       
       const dados = await resposta.json();
-      console.log("Resposta API:", dados); // Para debug
+      console.log("Resposta API:", dados);
       
-      // Tenta encontrar o código PIX em diferentes formatos de resposta comuns
-      const pixCode = dados.pix_copy_paste || dados.copy_paste || dados.qr_code_text || dados.qrcode || dados.pix_qr_code;
+      const pixCode = dados.pix_copy_paste || dados.copy_paste || dados.qr_code_text || dados.qrcode || dados.br_code;
       
       if (!pixCode) {
         throw new Error("A API não retornou o código PIX. Verifique o console.");
