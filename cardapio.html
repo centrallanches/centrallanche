@@ -302,16 +302,24 @@
 </div>
 
 <script>
+  // --- CONFIGURAÇÃO DA NOVAPAY/ORENDAPAY ---
+  // Substitua estas variáveis pelas suas credenciais reais quando tiver acesso ao painel
+  const NOVA_PAY_API_URL = "https://sandbox.orendapay.com.br/api/v1/pix"; 
+  const NOVA_PAY_CLIENT_ID = "9d799d33ca573a9c018e0ced6645f582308a64d6c5ac42512f680728518c69b2";
+  // IMPORTANTE: Você precisa do API_SECRET para pagamentos reais. 
+  // Deixe vazio por enquanto para testar o fluxo visual.
+  const NOVA_PAY_SECRET = ""; 
+
   // --- LÓGICA DO CARRINHO ---
+  let cart = {};
+  const TAXA_ENTREGA = 7.00;
+
   function openTab(tabName, btnElement) {
     document.querySelectorAll('.categoria').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
     document.getElementById(tabName).classList.add('active');
     btnElement.classList.add('active');
   }
-
-  let cart = {};
-  const TAXA_ENTREGA = 7.00;
 
   function addToCart(name, price) {
     if(cart[name]) {
@@ -333,7 +341,9 @@
     }
     updateCartDisplay();
     updateRemoveButtons();
-    renderCheckoutItems();
+    if(document.getElementById('modal-checkout').style.display === 'flex') {
+        renderCheckoutItems();
+    }
   }
 
   function limparCarrinho() {
@@ -341,6 +351,7 @@
     updateCartDisplay();
     updateRemoveButtons();
     fecharCheckout();
+    fecharPix();
   }
 
   function updateRemoveButtons() {
@@ -407,81 +418,98 @@
     document.getElementById('modal-checkout').style.display = 'none';
   }
 
-  function mostrarPix(qrCodeUrl, codigoCopy) {
+  function mostrarPix(qrCodeText) {
     const container = document.getElementById('qr-code-container');
     container.innerHTML = '';
-    if (qrCodeUrl.startsWith('data:') || qrCodeUrl.startsWith('http')) {
-      const img = document.createElement('img');
-      img.src = qrCodeUrl;
-      img.width = 200;
-      img.height = 200;
-      container.appendChild(img);
-    } else {
-      const img = document.createElement('img');
-      img.src = "data:image/png;base64," + qrCodeUrl; 
-      img.width = 200;
-      img.height = 200;
-      container.appendChild(img);
-    }
-    document.getElementById('pix-copy-paste').innerText = codigoCopy;
+    
+    // Gera QR Code visual usando API pública baseada no texto Pix Copia e Cola
+    const qrImg = document.createElement('img');
+    qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrCodeText)}`;
+    qrImg.width = 200;
+    qrImg.height = 200;
+    container.appendChild(qrImg);
+
+    document.getElementById('pix-copy-paste').innerText = qrCodeText;
     document.getElementById('modal-pix').style.display = 'flex';
   }
 
   function fecharPix() {
     document.getElementById('modal-pix').style.display = 'none';
-    limparCarrinho();
-    alert("Pedido enviado! Aguarde a confirmação do pagamento.");
   }
 
   function copiarPix() {
     const copyText = document.getElementById('pix-copy-paste').innerText;
-    navigator.clipboard.writeText(copyText);
-    alert("Código PIX copiado!");
+    navigator.clipboard.writeText(copyText).then(() => {
+        alert("Código PIX copiado!");
+    });
   }
 
-  // --- INTEGRAÇÃO NOVAPAY COM PROXY CORS ---
+  // --- INTEGRAÇÃO NOVAPAY ---
   async function criarCobranca(valorTotal, descricao) {
-    const CLIENTE_ID = '9d799d33ca573a9c018e0ced6645f582308a64d6c5ac42512f680728518c69b2';
-    const valorCentavos = Math.round(valorTotal * 100);
+    // Se não tiver Secret, usa modo de demonstração (simulado)
+    if (!NOVA_PAY_SECRET) {
+        console.log("Modo Demonstração: Sem API Secret configurada.");
+        // Simula um Pix Copia e Cola para teste
+        const pixSimulado = `00020126580014BR.GOV.BCB.PIX0136123e4567-e89b-12d3-a456-426614174000520400005303986540${valorTotal.toFixed(2).replace('.','')}5802BR5913CENTRAL LANCHES6008SAO PAULO62070503***6304`;
+        mostrarPix(pixSimulado);
+        return;
+    }
 
-    // Usa proxy corsproxy.io para bypass de CORS no sandbox
-    const targetUrl = `https://sandbox.orendapay.com.br/pix/qrcode/gerar/${CLIENTE_ID}?valor=${valorCentavos}&descricao=${encodeURIComponent(descricao)}`;
-    const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`;
+    const dadosRequisicao = {
+        valor: valorTotal,
+        descricao: descricao,
+        cliente_id: NOVA_PAY_CLIENT_ID,
+        moeda: "BRL"
+    };
+
+    // Usa proxy para evitar CORS no sandbox se necessário
+    const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(NOVA_PAY_API_URL)}`;
 
     try {
-      console.log("Tentando gerar Pix via proxy...");
-      
-      const resposta = await fetch(proxyUrl);
+      const resposta = await fetch(proxyUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${NOVA_PAY_SECRET}`,
+            'X-Client-ID': NOVA_PAY_CLIENT_ID
+        },
+        body: JSON.stringify(dadosRequisicao)
+      });
 
       if (!resposta.ok) {
-        throw new Error(`HTTP ${resposta.status}`);
+        const errorText = await resposta.text();
+        throw new Error(`Erro API: ${resposta.status} - ${errorText}`);
       }
 
       const dados = await resposta.json();
-
-      if (dados.qrCode) {
-        mostrarPix(dados.qrCode, dados.chavePix || "Chave Pix gerada");
-      } else if (dados.pixCode) {
-        mostrarPix(dados.pixCode, dados.qrCode || "Código PIX gerado");
+      const pixText = dados.pix_copia_cola || dados.qr_code_text || dados.qrCode;
+      
+      if (pixText) {
+        mostrarPix(pixText);
       } else {
-        throw new Error(dados.message || "API retornou JSON vazio");
+        throw new Error("QR Code não gerado. Verifique o console.");
       }
 
     } catch (erro) {
       console.error("Erro Pix:", erro);
-      mostrarPix(
-        "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=ERRO-EDGE-CORS-LOG",
-        "Erro: " + erro.message + " – abra console"
-      );
+      alert("Falha ao gerar Pix: " + erro.message);
     }
   }
 
   async function finalizarPedido() {
     const nome = document.getElementById('nome-cliente').value;
-    const total = parseFloat(document.getElementById('total-final-val').innerText.replace('R$ ', '').replace(',', '.'));
+    const telefone = document.getElementById('telefone-cliente').value;
+    
+    if (!nome || !telefone) { 
+        alert("Preencha nome e telefone."); 
+        return; 
+    }
 
-    if (!nome || !total) { 
-        alert("Preencha seu nome e verifique o carrinho."); 
+    const totalStr = document.getElementById('total-final-val').innerText.replace('R$ ', '').replace(',', '.');
+    const total = parseFloat(totalStr);
+
+    if (!total || total <= 0) { 
+        alert("Carrinho vazio ou valor inválido."); 
         return; 
     }
 
@@ -491,7 +519,8 @@
     btn.disabled = true;
 
     try {
-        await criarCobranca(total, "Pedido Central Lanches - " + nome);
+        const descricaoPedido = `Pedido Central Lanches - ${nome} (${telefone})`;
+        await criarCobranca(total, descricaoPedido);
     } catch (error) {
         alert(error.message);
     } finally {
