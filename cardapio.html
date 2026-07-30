@@ -86,7 +86,8 @@
       width: 100%; max-height: 90vh; overflow-y: auto;
       animation: slideUp 0.3s;
     }
-    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); }
+    }
     .checkout-content h2 { color: #ff6b00; margin-bottom: 15px; font-size: 1.2rem; }
     .item-carrinho {
       display: flex; justify-content: space-between; align-items: center;
@@ -112,7 +113,7 @@
     }
     .btn-confirmar:disabled { background: #ccc; cursor: not-allowed; }
     .btn-fechar {
-      width: 100%; background: #fff; color: #333; border: 1px solid #ccc; padding: 12px;
+      width: 100%; background: #fff; color: #555; border: 1px solid #ddd; padding: 12px;
       border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 8px;
     }
     #modal-pix {
@@ -143,7 +144,6 @@
 </div>
 
 <div class="container">
-  <!-- LANCHES -->
   <div id="lanches" class="categoria active">
     <h2>Lanches</h2>
     <div class="grid-produtos">
@@ -186,7 +186,7 @@
       <div class="produto">
         <div class="img-container">
           <img src="IMG_20260727_195613.jpg" alt="X-Galinha">
-          <div class="btn-remove-item hidden" onclick="removeFromCart('X-Galinha')">✕</div>
+          <div        <div class="btn-remove-item hidden" onclick="removeFromCart('X-Galinha')">✕</div>
         </div>
         <div class="info">
           <h3>X-Galinha</h3>
@@ -198,7 +198,6 @@
     </div>
   </div>
 
-  <!-- PORÇÕES -->
   <div id="porcoes" class="categoria">
     <h2>Porções</h2>
     <div class="grid-produtos">
@@ -229,7 +228,6 @@
     </div>
   </div>
 
-  <!-- BEBIDAS -->
   <div id="bebidas" class="categoria">
     <h2>Bebidas</h2>
     <div class="grid-produtos">
@@ -249,7 +247,6 @@
   </div>
 </div>
 
-<!-- Carrinho Flutuante -->
 <div id="carrinho-float" style="display: none;">
   <div id="carrinho-info">🛒 <span id="total-items">0</span> itens | R$ <span id="total-val">0,00</span></div>
   <div class="cart-actions">
@@ -258,7 +255,6 @@
   </div>
 </div>
 
-<!-- Modal de Checkout -->
 <div id="modal-checkout">
   <div class="checkout-content">
     <h2>Seu Pedido</h2>
@@ -277,7 +273,7 @@
     </div>
     <div class="form-group">
       <label>Forma de Pagamento:</label>
-      <input type="text" value="PIX" readonly style="background: #eee; color: #555; font-weight: bold;">
+      <input type="text" value="PIX via Novapay/OrendaPay" readonly style="background: #eee; color: #555; font-weight: bold;">
     </div>
     <div class="total-final">
       Subtotal: R$ <span id="subtotal-val">0,00</span><br>
@@ -289,28 +285,23 @@
   </div>
 </div>
 
-<!-- Modal PIX -->
 <div id="modal-pix">
   <div class="pix-content">
     <h2>Pagamento PIX</h2>
-    <p>Escaneie o QR Code ou copie o código:</p>
+    <p>Escaneie o QR Code ou copie o código abaixo:</p>
     <div id="qr-code-container" style="margin: 15px 0; display: flex; justify-content: center;"></div>
-    <div class="pix-code" id="pix-copy-paste">...</div>
+    <div class="pix-code" id="pix-copy-paste"></div>
     <button class="btn-copy" onclick="copiarPix()">Copiar Código PIX</button>
-    <button class="btn-fechar" onclick="fecharPix()">Fechar e Finalizar</button>
+    <button class="btn-fechar" onclick="fecharPix()">Fechar e Finalizar Pedido</button>
   </div>
 </div>
 
 <script>
-  // --- CONFIGURAÇÃO DA NOVAPAY/ORENDAPAY ---
-  // Substitua estas variáveis pelas suas credenciais reais quando tiver acesso ao painel
-  const NOVA_PAY_API_URL = "https://sandbox.orendapay.com.br/api/v1/pix"; 
+  const NOVA_PAY_API_URL = "https://sandbox.orendapay.com.br/api/v1/pix";
   const NOVA_PAY_CLIENT_ID = "9d799d33ca573a9c018e0ced6645f582308a64d6c5ac42512f680728518c69b2";
-  // IMPORTANTE: Você precisa do API_SECRET para pagamentos reais. 
-  // Deixe vazio por enquanto para testar o fluxo visual.
-  const NOVA_PAY_SECRET = ""; 
-
-  // --- LÓGICA DO CARRINHO ---
+  const NOVA_PAY_SECRET = "5197776909c0d97435c835bdb7b7c03c7ff4cee9d6bc654f9375592cb9b4b649";
+</script>
+<script>
   let cart = {};
   const TAXA_ENTREGA = 7.00;
 
@@ -322,65 +313,45 @@
   }
 
   function addToCart(name, price) {
-    if(cart[name]) {
-      cart[name].qtd++;
-    } else {
-      cart[name] = { price: price, qtd: 1 };
-    }
-    updateCartDisplay();
-    updateRemoveButtons();
+    if(cart[name]) cart[name].qtd++;
+    else cart[name] = {price:price, qtd:1};
+    updateCartDisplay(); updateRemoveButtons();
   }
 
   function removeFromCart(name) {
     if(cart[name]) {
-      if(cart[name].qtd > 1) {
-        cart[name].qtd--;
-      } else {
-        delete cart[name];
-      }
+      if(cart[name].qtd > 1) cart[name].qtd--;
+      else delete cart[name];
     }
-    updateCartDisplay();
-    updateRemoveButtons();
-    if(document.getElementById('modal-checkout').style.display === 'flex') {
-        renderCheckoutItems();
-    }
+    updateCartDisplay(); updateRemoveButtons();
+    if(document.getElementById('modal-checkout').style.display==='flex') renderCheckoutItems();
   }
 
   function limparCarrinho() {
-    cart = {};
-    updateCartDisplay();
-    updateRemoveButtons();
-    fecharCheckout();
-    fecharPix();
+    cart = {}; updateCartDisplay(); updateRemoveButtons();
+    fecharCheckout(); fecharPix();
   }
 
   function updateRemoveButtons() {
-    const products = document.querySelectorAll('.produto');
-    products.forEach(prod => {
-      const onclickAttr = prod.querySelector('.btn-comprar').getAttribute('onclick');
-      if (!onclickAttr) return;
-      
-      const name = onclickAttr.split("'")[1];
-      const removeBtn = prod.querySelector('.btn-remove-item');
-      if (cart[name] && cart[name].qtd > 0) {
-        removeBtn.classList.remove('hidden');
-        removeBtn.innerText = cart[name].qtd > 1 ? cart[name].qtd : '✕';
-      } else {
-        removeBtn.classList.add('hidden');
-      }
+    document.querySelectorAll('.produto').forEach(prod => {
+      const name = prod.querySelector('.btn-comprar').getAttribute('onclick').split("'")[1];
+      const btn = prod.querySelector('.btn-remove-item');
+      if(cart[name]?.qtd > 0) {
+        btn.classList.remove('hidden');
+        btn.innerText = cart[name].qtd > 1 ? cart[name].qtd : '✕';
+      } else btn.classList.add('hidden');
     });
   }
 
   function updateCartDisplay() {
-    let total = 0; let count = 0;
-    for(let item in cart) {
+    let total=0, count=0;
+    for(let item in cart){
       total += cart[item].price * cart[item].qtd;
       count += cart[item].qtd;
     }
     document.getElementById('total-items').innerText = count;
-    document.getElementById('total-val').innerText = total.toFixed(2).replace('.', ',');
-    const floatCart = document.getElementById('carrinho-float');
-    floatCart.style.display = count > 0 ? 'flex' : 'none';
+    document.getElementById('total-val').innerText = total.toFixed(2).replace('.',',');
+    document.getElementById('carrinho-float').style.display = count > 0 ? 'flex' : 'none';
   }
 
   function renderCheckoutItems() {
@@ -388,8 +359,7 @@
     container.innerHTML = '';
     let subtotal = 0;
     for(let item in cart) {
-      const data = cart[item];
-      const itemTotal = data.price * data.qtd;
+      const data = cart[item], itemTotal = data.price * data.qtd;
       subtotal += itemTotal;
       const div = document.createElement('div');
       div.className = 'item-carrinho';
@@ -406,126 +376,67 @@
       `;
       container.appendChild(div);
     }
-    document.getElementById('subtotal-val').innerText = subtotal.toFixed(2).replace('.', ',');
-    document.getElementById('total-final-val').innerText = (subtotal + TAXA_ENTREGA).toFixed(2).replace('.', ',');
+    document.getElementById('subtotal-val').innerText = subtotal.toFixed(2).replace('.',',');
+    document.getElementById('total-final-val').innerText = (subtotal + TAXA_ENTREGA).toFixed(2).replace('.',',');
   }
 
-  function abrirCheckout() {
-    renderCheckoutItems();
-    document.getElementById('modal-checkout').style.display = 'flex';
-  }
-  function fecharCheckout() {
-    document.getElementById('modal-checkout').style.display = 'none';
-  }
+  function abrirCheckout() { renderCheckoutItems(); document.getElementById('modal-checkout').style.display = 'flex'; }
+  function fecharCheckout() { document.getElementById('modal-checkout').style.display = 'none'; }
 
   function mostrarPix(qrCodeText) {
     const container = document.getElementById('qr-code-container');
     container.innerHTML = '';
-    
-    // Gera QR Code visual usando API pública baseada no texto Pix Copia e Cola
-    const qrImg = document.createElement('img');
-    qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrCodeText)}`;
-    qrImg.width = 200;
-    qrImg.height = 200;
-    container.appendChild(qrImg);
-
+    const img = document.createElement('img');
+    img.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrCodeText)}`;
+    img.width = 200; img.height = 200;
+    container.appendChild(img);
     document.getElementById('pix-copy-paste').innerText = qrCodeText;
     document.getElementById('modal-pix').style.display = 'flex';
   }
 
-  function fecharPix() {
-    document.getElementById('modal-pix').style.display = 'none';
-  }
+  function fecharPix() { document.getElementById('modal-pix').style.display = 'none'; }
+  function copiarPix() { navigator.clipboard.writeText(document.getElementById('pix-copy-paste').innerText).then(()=>alert("Código copiado!")); }
 
-  function copiarPix() {
-    const copyText = document.getElementById('pix-copy-paste').innerText;
-    navigator.clipboard.writeText(copyText).then(() => {
-        alert("Código PIX copiado!");
-    });
-  }
-
-  // --- INTEGRAÇÃO NOVAPAY ---
   async function criarCobranca(valorTotal, descricao) {
-    // Se não tiver Secret, usa modo de demonstração (simulado)
-    if (!NOVA_PAY_SECRET) {
-        console.log("Modo Demonstração: Sem API Secret configurada.");
-        // Simula um Pix Copia e Cola para teste
-        const pixSimulado = `00020126580014BR.GOV.BCB.PIX0136123e4567-e89b-12d3-a456-426614174000520400005303986540${valorTotal.toFixed(2).replace('.','')}5802BR5913CENTRAL LANCHES6008SAO PAULO62070503***6304`;
-        mostrarPix(pixSimulado);
-        return;
-    }
-
     const dadosRequisicao = {
-        valor: valorTotal,
-        descricao: descricao,
-        cliente_id: NOVA_PAY_CLIENT_ID,
-        moeda: "BRL"
+      valor: valorTotal,
+      descricao: descricao,
+      cliente_id: NOVA_PAY_CLIENT_ID,
+      moeda: "BRL"
     };
-
-    // Usa proxy para evitar CORS no sandbox se necessário
     const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(NOVA_PAY_API_URL)}`;
 
     try {
       const resposta = await fetch(proxyUrl, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${NOVA_PAY_SECRET}`,
-            'X-Client-ID': NOVA_PAY_CLIENT_ID
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${NOVA_PAY_SECRET}`,
+          'X-Client-ID': NOVA_PAY_CLIENT_ID
         },
         body: JSON.stringify(dadosRequisicao)
       });
-
-      if (!resposta.ok) {
-        const errorText = await resposta.text();
-        throw new Error(`Erro API: ${resposta.status} - ${errorText}`);
-      }
-
+      if (!resposta.ok) throw new Error(`HTTP ${resposta.status}`);
       const dados = await resposta.json();
-      const pixText = dados.pix_copia_cola || dados.qr_code_text || dados.qrCode;
-      
-      if (pixText) {
-        mostrarPix(pixText);
-      } else {
-        throw new Error("QR Code não gerado. Verifique o console.");
-      }
-
-    } catch (erro) {
-      console.error("Erro Pix:", erro);
-      alert("Falha ao gerar Pix: " + erro.message);
-    }
+      mostrarPix(dados.pix_copia_cola || dados.qr_code_text || dados.qrCode);
+    } catch(e) { console.error(e); alert("Erro Pix: " + e.message); }
   }
 
   async function finalizarPedido() {
     const nome = document.getElementById('nome-cliente').value;
     const telefone = document.getElementById('telefone-cliente').value;
-    
-    if (!nome || !telefone) { 
-        alert("Preencha nome e telefone."); 
-        return; 
-    }
-
     const totalStr = document.getElementById('total-final-val').innerText.replace('R$ ', '').replace(',', '.');
     const total = parseFloat(totalStr);
 
-    if (!total || total <= 0) { 
-        alert("Carrinho vazio ou valor inválido."); 
-        return; 
-    }
-
+    if(!nome || !telefone) return alert("Preencha nome e telefone!");
+    if(!total || total <= 0) return alert("Carrinho vazio!");
     const btn = document.getElementById('btn-confirmar');
-    const textoOriginal = btn.innerText;
-    btn.innerText = "Gerando Pix..."; 
-    btn.disabled = true;
+    btn.innerText ="Gerando Pagamento..."; btn.disabled = true;
 
     try {
-        const descricaoPedido = `Pedido Central Lanches - ${nome} (${telefone})`;
-        await criarCobranca(total, descricaoPedido);
-    } catch (error) {
-        alert(error.message);
+      await criarCobranca(total, `Pedido Central Lanches - ${nome} | Whats: ${telefone}`);
     } finally {
-        btn.innerText = textoOriginal; 
-        btn.disabled = false;
+      btn.innerText = "Pagar com PIX"; btn.disabled = false;
     }
   }
 </script>
