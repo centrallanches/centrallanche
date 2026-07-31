@@ -512,6 +512,70 @@
       btn.disabled = false;
     }
   }
+
+function verificarHorario() {
+    const agora = new Date();
+    const hora = agora.getHours();
+
+    // Aberto das 18:00 às 01:00
+    if (hora >= 1 && hora < 18) {
+
+        document.body.innerHTML = `
+        <div style="
+            min-height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            background:linear-gradient(135deg,#111,#1c1c1c);
+            font-family:'Segoe UI',sans-serif;
+            padding:20px;
+        ">
+            <div style="
+                max-width:420px;
+                width:100%;
+                background:#222;
+                border:2px solid #ffb300;
+                border-radius:20px;
+                padding:30px;
+                text-align:center;
+                box-shadow:0 0 25px rgba(255,179,0,.4);
+            ">
+                <div style="font-size:70px;">🍔</div>
+
+                <h1 style="color:#ffb300;margin:10px 0;">
+                    Central Lanches
+                </h1>
+
+                <h2 style="color:#fff;">
+                    🔒 Estamos Fechados
+                </h2>
+
+                <p style="color:#ddd;font-size:17px;line-height:1.6;">
+                    Nosso horário de atendimento é:
+                </p>
+
+                <div style="
+                    background:#ffb300;
+                    color:#000;
+                    padding:15px;
+                    border-radius:12px;
+                    font-weight:bold;
+                    font-size:22px;
+                    margin:20px 0;
+                ">
+                    🕕 18:00 às 01:00
+                </div>
+
+                <p style="color:#bbb;">
+                    🍟 Aguardamos você mais tarde!
+                </p>
+            </div>
+        </div>
+        `;
+    }
+}
+
+verificarHorario();
 </script>
 </body>
 </html>
